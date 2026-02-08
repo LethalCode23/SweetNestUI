@@ -1,7 +1,7 @@
 const BASE = "http://localhost:8080/hotel";
 
-export const getAll = async () => {
-  const res = await fetch(`${BASE}/all`);
+export const getAll = async (page, size) => {
+  const res = await fetch(`${BASE}/all?page=${page}&size=${size}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 };

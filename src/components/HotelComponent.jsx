@@ -4,20 +4,39 @@ import { HotelCard } from "./HotelCard";
 import "../styles/HotelComponent.css";
 
 export const HotelComponent = () => {
+
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const size = 20;
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [city, setCity] = useState('');
   const [date, setDate] = useState('');
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { 
+    load(); }, [page] );
 
   const load = async () => {
-    setLoading(true); setError(null);
+
+    setLoading(true); 
+    setError(null);
+
     try {
-      const res = await getAll();
-      setData(res);
-    } catch (err) { setError(err.message); } finally { setLoading(false); }
+
+      const res = await getAll(page, size);
+      // console.log('Hoteles cargados:', res);
+
+      setData(res.content);
+      setTotalPages(res.totalPages);
+
+    } catch (err) { 
+      console.log('Error al cargar hoteles:', err);
+      setError(err.message);
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const handleSearch = () => {
@@ -25,8 +44,8 @@ export const HotelComponent = () => {
     console.log('Buscar hoteles:', { city, date });
   };
 
-  if (loading) return <div className="cn-loading">Cargando hoteles...</div>;
-  if (error) return <div className="cn-error">Error: {error}</div>;
+  // if (loading) return <div className="cn-loading">Cargando hoteles...</div>;
+  // if (error) return <div className="cn-error">Error: {error}</div>;
 
   return (
     <div className="hotel-wrapper">
@@ -60,6 +79,23 @@ export const HotelComponent = () => {
             {data.map(h => <HotelCard key={h.hotSec} hotel={h} />)}
           </div>
         )}
+        <div className="pagination">
+          <button 
+            disabled={page === 0}
+            onClick={() => setPage(prev => prev - 1)}
+          >
+            Anterior
+          </button>
+
+          <span>Página {page + 1} de {totalPages}</span>
+
+          <button 
+            disabled={page + 1 >= totalPages}
+            onClick={() => setPage(prev => prev + 1)}
+          >
+            Siguiente
+          </button>
+        </div>
       </div>
     </div>
   );
