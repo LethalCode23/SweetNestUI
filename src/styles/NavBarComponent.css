@@ -1,0 +1,150 @@
+/* Modern NavBar styles - cleaned, no bullets, modern look */
+.navbar {
+  background: linear-gradient(90deg, var(--surface), color-mix(in srgb, var(--surface) 96%, #ffffff 4%));
+  padding: 0.6rem 1.2rem;
+  border-bottom: 1px solid rgba(11,59,89,0.06);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+body {
+    margin: 0;
+}
+
+#root {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+.container-fluid {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  color: var(--primary-700);
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.brand-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary-700);
+  margin-left: 0.25rem;
+}
+
+/* Remove default list bullets and spacing */
+.navbar-nav {
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.collapse.navbar-collapse { display:flex; gap:1rem; align-items:center; }
+
+.auth-buttons { margin-left: auto; display:flex; gap:0.5rem; align-items:center; }
+.auth-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(11,59,89,0.06);
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform 160ms ease, color 160ms ease;
+}
+.auth-btn:hover { transform: translateY(-3px); background: rgba(17,93,140,0.06); color: var(--primary); }
+.auth-btn.primary { background: linear-gradient(90deg, var(--primary-700), var(--primary)); color: #fff; border: none; }
+.auth-btn.active { box-shadow: 0 8px 20px rgba(11,99,214,0.06); }
+
+/* Brand area: theme toggle + brand */
+.brand-area { display:flex; align-items:center; gap:0.6rem; }
+.brand-toggle { padding: 0.28rem 0.5rem; border-radius: 8px; font-size: 1rem; }
+.brand-toggle:hover { transform: translateY(-2px); }
+.brand-name { margin-left: 0.4rem; }
+
+.nav-item { display: block; }
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  color: var(--muted);
+  border-radius: 999px;
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms, color 180ms;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.nav-link:hover {
+  transform: translateY(-3px);
+  background: rgba(17,93,140,0.06);
+  color: var(--primary);
+  box-shadow: 0 8px 20px rgba(11,99,214,0.06);
+}
+
+.nav-link.active {
+  background: linear-gradient(90deg, var(--primary-700), var(--primary));
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(11,99,214,0.12);
+}
+
+.navbar-toggler {
+  border: none;
+  background: transparent;
+  display: none; /* visible on mobile */
+}
+
+.navbar .badge { vertical-align: middle; }
+
+@media (max-width: 768px) {
+  .navbar-toggler { display: block; }
+  .container-fluid { flex-direction: column; align-items: stretch; }
+  .navbar-nav { flex-direction: column; width: 100%; gap: 0.25rem; padding-top: 0.6rem; }
+  .nav-link { width: 100%; padding: 0.6rem; border-radius: 8px; }
+}
+
+/* Theme toggle button */
+.nav-actions { display:flex; align-items:center; gap:0.5rem; }
+.theme-toggle {
+  background: var(--surface-alt);
+  border: 1px solid rgba(11,59,89,0.06);
+  padding: 0.36rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 160ms ease, background var(--transition);
+  color: var(--text);
+}
+.theme-toggle:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--surface-alt) 85%, var(--primary) 15%); }
+.theme-toggle:focus { outline: 3px solid color-mix(in srgb, var(--primary) 50%, transparent); outline-offset: 2px; }
+.theme-toggle[aria-pressed="true"] { box-shadow: 0 6px 16px rgba(11,59,89,0.08); }
+

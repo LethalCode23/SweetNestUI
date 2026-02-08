@@ -1,0 +1,82 @@
+/* Global design tokens and theme variables */
+:root {
+  --bg: #F0F2F2;
+  --surface: #FFFFFF;
+  --surface-alt: #F8FAFB;
+  --primary: #115D8C;
+  --primary-700: #0B3B59;
+  --accent: #05DBF2;
+  --accent-2: #9498F2;
+  --text: #0B3B59;
+  --muted: #6B7280;
+  --success: #4CAF50;
+  --danger: #D32F2F;
+  --shadow: 0 8px 20px rgba(11,59,89,0.06);
+  --transition: 200ms;
+}
+
+/* Dark theme (toggle by adding `dark` on body) */
+body.dark {
+  --bg: #071826;
+  --surface: #0B3B59;
+  --surface-alt: #0E2940;
+  --primary: #05DBF2;
+  --primary-700: #0B3B59;
+  --accent: #9498F2;
+  --text: #E8F3F6;
+  --muted: #9AA6B2;
+  --shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+
+/* Global base styles */
+body {
+  font-family: Arial;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: all var(--transition), color var(--transition);
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
