@@ -30,7 +30,6 @@
 .card-main { flex:1 1 auto; text-align:left; }
 .badge-wrap { flex:0 0 auto; display:flex; align-items:center; }
 
-/* Mobile: stack card content vertically */
 @media (max-width: 640px) {
   .country-card {
     flex-direction: column;

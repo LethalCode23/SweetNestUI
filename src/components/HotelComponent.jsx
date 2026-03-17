@@ -6,13 +6,14 @@ import "../styles/HotelComponent.css";
 export const HotelComponent = () => {
 
   const [page, setPage] = useState(0);
+  const [city, setCity] = useState('');
   const [totalPages, setTotalPages] = useState(0);
+  
   const size = 20;
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [city, setCity] = useState('');
   const [date, setDate] = useState('');
 
   useEffect(() => { 
@@ -25,8 +26,8 @@ export const HotelComponent = () => {
 
     try {
 
-      const res = await getAll(page, size);
-      // console.log('Hoteles cargados:', res);
+      const res = await getAll(page, size, city);
+      console.log('Hoteles cargados:', res);
 
       setData(res.content);
       setTotalPages(res.totalPages);
@@ -42,6 +43,8 @@ export const HotelComponent = () => {
   const handleSearch = () => {
     // Placeholder: por ahora solo imprimimos los criterios.
     console.log('Buscar hoteles:', { city, date });
+    setPage(0);
+    load();
   };
 
   // if (loading) return <div className="cn-loading">Cargando hoteles...</div>;
@@ -80,7 +83,7 @@ export const HotelComponent = () => {
           </div>
         )}
         <div className="pagination">
-          <button 
+          <button className="btnLeft" 
             disabled={page === 0}
             onClick={() => setPage(prev => prev - 1)}
           >
@@ -89,7 +92,7 @@ export const HotelComponent = () => {
 
           <span>Página {page + 1} de {totalPages}</span>
 
-          <button 
+          <button className="btnRight"
             disabled={page + 1 >= totalPages}
             onClick={() => setPage(prev => prev + 1)}
           >

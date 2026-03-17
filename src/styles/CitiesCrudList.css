@@ -1,0 +1,64 @@
+.crud-city-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.crud-city-item {
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+  transition: box-shadow 0.2s;
+}
+
+.crud-city-item:hover {
+  box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+}
+
+.crud-city-item span {
+  flex: 1;
+  font-size: 1.05rem;
+  color: #34495e;
+}
+
+.crud-city-item button {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  margin-left: 8px;
+  cursor: pointer;
+  background: #3498db;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.crud-city-item button:hover {
+  background: #217dbb;
+}
+
+.crud-city-item button[style*="red"] {
+  background: #e74c3c;
+}
+
+.crud-city-item button[style*="red"]:hover {
+  background: #c0392b;
+}
+
+@media (max-width: 600px) {
+  .crud-city-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 8px;
+  }
+  .crud-city-item span {
+    margin-bottom: 10px;
+  }
+}

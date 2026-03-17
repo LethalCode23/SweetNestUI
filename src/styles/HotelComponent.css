@@ -122,6 +122,31 @@
   display: block;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+.btnLeft {
+  background: linear-gradient(90deg, var(--primary-700), var(--primary));
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.btnRight {
+  background: linear-gradient(90deg, var(--primary-700), var(--primary));
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
 @media (max-width:640px) {
   .hotel-media { height: 120px; }
   .media-overlay { padding: 10px; }
