@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { createCity, updateCity } from "../services/cityService";
-import { getAll } from "../services/departmentService";
-import "../styles/CityForm.css";
+import { createCity, updateCity } from "../../services/cityService";
+import { getAll } from "../../services/departmentService";
+import "../City/CityForm.css";
 
 const initialState = {
   citName: "",
@@ -86,7 +86,7 @@ const CityForm = ({ onSuccess, editingCity, setEditingCity, onClose }) => {
         />
         Activo
       </label>
-      <button type="submit">{editingCity ? "Actualizar" : "Crear"} Ciudad</button>
+      <button type="submit" className="btn btn-primary">{editingCity ? "Actualizar" : "Crear"} Ciudad</button>
       {editingCity && (
         <button type="button" onClick={() => setEditingCity(null)}>
           Cancelar edición

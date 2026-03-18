@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import CityForm from "../components/CityForm";
-import CityCard from "../components/CityCard";
+import CityForm from "../components/City/CityForm";
+import CityCard from "../components/City/CityCard";
 import { getCities, createCity, updateCity, deleteCity } from "../services/cityService";
-import "../styles/CitiesCrudList.css";
+import "../components/City/CitiesCrudList.css";
 
 const CitiesPage = () => {
   const [cities, setCities] = useState([]);

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import "../styles/CountryComponent.css";
-import { getAll, createCountry, updateCountry, deleteCountry } from "../services/countryService";
-import { CountryCard } from "./CountryCard";
-import { CountryForm } from "./CountryForm";
+import "../Country/CountryComponent.css";
+import { getAll, createCountry, updateCountry, deleteCountry } from "../../services/countryService";
+import { CountryCard } from "../Country/CountryCard";
+import { CountryForm } from "../Country/CountryForm";
 
 export const CountryComponent = () => {
   const [data, setData] = useState([]);

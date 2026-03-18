@@ -1,10 +1,10 @@
 
 import { useEffect, useState } from "react";
-import HotelForm from "../components/HotelForm";
+import HotelForm from "../components/Hotel/HotelForm";
 import { getHotels, deleteHotel } from "../services/hotelService";
-import HotelAdminCard from "../components/HotelAdminCard";
-import "../styles/HotelsCrudList.css";
-import "../styles/HotelComponent.css";
+import HotelAdminCard from "../components/Hotel/HotelAdminCard";
+import "../components/Hotel/HotelsCrudList.css";
+import "../components/Hotel/HotelComponent.css";
 
 const HotelsPage = () => {
 

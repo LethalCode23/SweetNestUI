@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { NavBarComponent } from "./components/NavBarComponent";
-import { FooterComponent } from "./components/FooterComponent";
+import { NavBarComponent } from "./components/layout/Navbar/NavBarComponent";
+import { FooterComponent } from "./components/layout/Footer/FooterComponent";
 import HomePage from "./pages/HomePage";
 import CountriesPage from "./pages/CountriesPage";
 import CartPage from "./pages/CartPage";

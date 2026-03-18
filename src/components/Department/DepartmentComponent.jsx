@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import "../styles/CountryComponent.css";
-import { getAll, createDepartment, updateDepartment, deleteDepartment } from "../services/departmentService";
-import { DepartmentCard } from "./DepartmentCard";
-import { DepartmentForm } from "./DepartmentForm";
+import "../Country/CountryComponent.css";
+import { getAll, createDepartment, updateDepartment, deleteDepartment } from "../../services/departmentService";
+import { DepartmentCard } from "../Department/DepartmentCard";
+import { DepartmentForm } from "../Department/DepartmentForm";
 
 export const DepartmentComponent = () => {
   const [data, setData] = useState([]);

@@ -33,15 +33,13 @@ body {
   font-family: Arial;
   background: var(--bg);
   color: var(--text);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: all var(--transition), color var(--transition);
+  margin: 0;
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* max-width: 1280px; */
+  /* margin: 0 auto;
+  padding: 2rem; */
   text-align: center;
 }
 

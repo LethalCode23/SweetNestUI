@@ -1,5 +1,4 @@
-import React from "react";
-import "../styles/CitiesCrudList.css";
+import "../City/CitiesCrudList.css";
 
 const CityCard = ({ city, onEdit, onDelete }) => {
   return (

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { createHotel, updateHotel } from "../services/hotelService";
-import { getCities } from "../services/cityService";
-import "../styles/HotelForm.css";
+import { useEffect, useState } from "react";
+import { createHotel, updateHotel } from "../../services/hotelService";
+import { getCities } from "../../services/cityService";
+import "../Hotel/HotelForm.css";
 
 const initialState = {
   hotName: "",

@@ -1,4 +1,4 @@
-import { CountryComponent } from "../components/CountryComponent";
+import { CountryComponent } from "../components/Country/CountryComponent";
 
 const CountriesPage = () => {
   return (
