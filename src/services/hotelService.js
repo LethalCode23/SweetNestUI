@@ -1,4 +1,4 @@
-const BASE = "http://localhost:8080/hotel";
+const BASE = "http://localhost:8080/api/hotel";
 
 export const getAll = async (page, size, citName) => {
 

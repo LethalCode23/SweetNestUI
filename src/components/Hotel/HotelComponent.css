@@ -367,7 +367,14 @@
 
 /* ═══ PAGINACIÓN ═══ */
 
-.pagination { display: flex; justify-content: center; gap: 12px; margin-top: 3rem; }
+.pagination { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  gap: 12px; 
+  margin-top: 3rem; 
+}
+
 .btnLeft, .btnRight {
   background: linear-gradient(135deg, var(--primary-700), var(--primary));
   color: #fff; border: none; padding: 0.7rem 1.5rem; border-radius: 12px;
