@@ -3,10 +3,11 @@ import { NavBarComponent } from "./components/layout/Navbar/NavBarComponent";
 import { FooterComponent } from "./components/layout/Footer/FooterComponent";
 import HomePage from "./pages/HomePage";
 import CountriesPage from "./pages/CountriesPage";
-import CartPage from "./pages/CartPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
 import HotelsPage from "./pages/HotelsPage";
 import CitiesPage from "./pages/CitiesPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import AdminDashboard from "./components/layout/Dashboard/Dashboard";
 
 const Layout = () => (
   <>
@@ -20,16 +21,28 @@ const Layout = () => (
 
 const router = createBrowserRouter(
   [
+
+    // Rutas públicas CON navbar
     {
       path: "/",
       element: <Layout />,
       children: [
         { index: true, element: <HomePage /> },
-        { path: "countries", element: <CountriesPage /> },
+      ],
+    },
+
+    // Login y Register sin navbar
+    { path: "/login",    element: <LoginPage /> },
+    // { path: "/register", element: <RegisterPage /> },
+
+    {
+      path: "/admin",
+      element: <AdminDashboard />,
+      children: [
+        { path: "hotels",      element: <HotelsPage /> },
+        { path: "countries",   element: <CountriesPage /> },
         { path: "departments", element: <DepartmentsPage /> },
-        { path: "cart", element: <CartPage /> },
-        { path: "hotels", element: <HotelsPage /> },
-        { path: "cities", element: <CitiesPage /> },
+        { path: "cities",      element: <CitiesPage /> },
       ],
     },
   ],
