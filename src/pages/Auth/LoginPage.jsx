@@ -1,7 +1,22 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
 import styles from "./LoginPage.module.css";
+import { login } from "../../services/AuthServices/AuthServices";
+
+// Validation schema
+const loginSchema = yup.object({
+
+  identifier: yup.string()
+    .email("Formato de email inválido.")
+    .required("El email es necesario."),
+  password: yup.string()
+    .required("La contraseña es necesaria.")
+}).required();
 
 export default function LoginPage() {
+
   const [tab, setTab] = useState("email");
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ identifier: "", password: "", remember: false });
@@ -9,6 +24,25 @@ export default function LoginPage() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm(f => ({ ...f, [name]: type === "checkbox" ? checked : value }));
+  };
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(loginSchema)
+  });
+
+  const onSubmit = (e) => {
+
+    const credentials = {
+      email: form.identifier,
+      password: form.password
+    };
+
+    logIn(credentials);
+  };
+
+  const logIn = async (credentials) => {
+
+      const result = await login(credentials);
   };
 
   return (
@@ -67,12 +101,13 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <div className={styles.fields}>
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.fields} >
           <div className={styles.fieldGroup}>
             <label className={styles.label}>
               {tab === "email" ? "Correo electrónico" : "Número de teléfono"}
             </label>
             <input
+              {...register("identifier")}
               className={styles.input}
               type={tab === "email" ? "email" : "tel"}
               name="identifier"
@@ -81,6 +116,7 @@ export default function LoginPage() {
               onChange={handleChange}
               autoComplete="username"
             />
+            {errors.identifier && <span className={styles.errorText}>{errors.identifier.message}</span>}
           </div>
 
           <div className={styles.fieldGroup}>
@@ -90,6 +126,7 @@ export default function LoginPage() {
             </div>
             <div className={styles.inputWrap}>
               <input
+                {...register("password")}
                 className={styles.input}
                 type={showPass ? "text" : "password"}
                 name="password"
@@ -98,6 +135,7 @@ export default function LoginPage() {
                 onChange={handleChange}
                 autoComplete="current-password"
               />
+              {errors.password && <span className={styles.errorText}>{errors.password.message}</span>}
               <button
                 className={styles.eyeBtn}
                 type="button"
@@ -125,10 +163,10 @@ export default function LoginPage() {
             </span>
           </label>
 
-          <button className={styles.submitBtn}>
+          <button type="submit" className={styles.submitBtn}>
             Iniciar sesión
           </button>
-        </div>
+        </form>
 
         <p className={styles.registerRow}>
           ¿No tienes cuenta?{" "}
