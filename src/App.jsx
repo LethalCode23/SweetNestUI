@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { NavBarComponent } from "./components/layout/Navbar/NavBarComponent";
 import { FooterComponent } from "./components/layout/Footer/FooterComponent";
+import { ProtectedRoute } from "./guards/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import CountriesPage from "./pages/CountriesPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
@@ -37,7 +38,11 @@ const router = createBrowserRouter(
 
     {
       path: "/admin",
-      element: <AdminDashboard />,
+      element: (
+        <ProtectedRoute>
+          <AdminDashboard />
+        </ProtectedRoute>
+      ),
       children: [
         { path: "hotels",      element: <HotelsPage /> },
         { path: "countries",   element: <CountriesPage /> },

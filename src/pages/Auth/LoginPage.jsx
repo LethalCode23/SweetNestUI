@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { login as loginService } from "../../services/AuthServices/AuthServices";
 import * as yup from 'yup';
 import styles from "./LoginPage.module.css";
-import { login } from "../../services/AuthServices/AuthServices";
 
 // Validation schema
 const loginSchema = yup.object({
@@ -16,6 +18,9 @@ const loginSchema = yup.object({
 }).required();
 
 export default function LoginPage() {
+
+  const { user, saveUser } = useAuth();
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState("email");
   const [showPass, setShowPass] = useState(false);
@@ -42,7 +47,12 @@ export default function LoginPage() {
 
   const logIn = async (credentials) => {
 
-      const result = await login(credentials);
+    /* login */
+    const result = await loginService(credentials);
+
+    /* save */
+    saveUser(result);
+    navigate("/admin");
   };
 
   return (
