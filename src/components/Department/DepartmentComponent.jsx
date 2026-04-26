@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../Country/CountryComponent.css";
-import { getAll, createDepartment, updateDepartment, deleteDepartment } from "../../services/departmentService";
+import { getAll, createDepartment, updateDepartment, deleteDepartment } from "../../services/departmentServices/departmentService";
 import { DepartmentCard } from "../Department/DepartmentCard";
 import { DepartmentForm } from "../Department/DepartmentForm";
 

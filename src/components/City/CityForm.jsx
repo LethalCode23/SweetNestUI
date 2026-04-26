@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { createCity, updateCity } from "../../services/cityService";
-import { getAll } from "../../services/departmentService";
+import { createCity, updateCity } from "../../services/cityServices/cityService";
+import { getAll } from "../../services/departmentServices/departmentService";
 import "../City/CityForm.css";
 
 const initialState = {

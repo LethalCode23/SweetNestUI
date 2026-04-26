@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAll } from "../../services/hotelService";
+import { getAll } from "../../services/hotelServices/hotelService";
 import { HotelCard } from "../Hotel/HotelCard";
 import "../Hotel/HotelComponent.css";
 

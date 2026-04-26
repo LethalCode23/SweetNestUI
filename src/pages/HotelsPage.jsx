@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import HotelForm from "../components/Hotel/HotelForm";
-import { getHotels, deleteHotel } from "../services/hotelService";
+import { getHotels, deleteHotel } from "../services/hotelServices/hotelService";
 import HotelAdminCard from "../components/Hotel/HotelAdminCard";
 import "../components/Hotel/HotelsCrudList.css";
 import "../components/Hotel/HotelComponent.css";
@@ -13,8 +13,8 @@ const HotelsPage = () => {
   const [showForm, setShowForm] = useState(false);
 
   const fetchHotels = async () => {
+    
     const data = await getHotels();
-    console.log('Hoteles obtenidos:', data);
     setHotels(data.content);
   };
 

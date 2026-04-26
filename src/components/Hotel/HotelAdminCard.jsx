@@ -1,14 +1,60 @@
+import { useState } from "react";
 import "../Hotel/HotelAdminCard.css";
+import { Environment } from "../../Environments/Environment";
 
 const HotelAdminCard = ({ hotel, onEdit, onDelete }) => {
-  
-  const image = hotel.hotImgUrl || null;
+
+  const images = hotel.imageUrls?.length
+    ? hotel.imageUrls.map(url => Environment.API_URL_IMG + url)
+    : [];
+
+  const [current, setCurrent] = useState(0);
   const isActive = hotel.hotState === "A";
+
+  const prev = (e) => {
+    e.stopPropagation();
+    setCurrent(i => (i === 0 ? images.length - 1 : i - 1));
+  };
+
+  const next = (e) => {
+    e.stopPropagation();
+    setCurrent(i => (i === images.length - 1 ? 0 : i + 1));
+  };
 
   return (
     <article className="hotel-card">
-      {image ? (
-        <img className="hotel-card__img" src={image} alt={hotel.hotName} />
+
+      {/* ── Imagen / Carrusel ── */}
+      {images.length > 0 ? (
+        <div className="hotel-card__carousel">
+          <img
+            className="hotel-card__img"
+            src={images[current]}
+            alt={`${hotel.hotName} ${current + 1}`}
+          />
+
+          {/* Flechas — solo si hay más de 1 imagen */}
+          {images.length > 1 && (
+            <>
+              <button className="carousel-btn carousel-btn--prev" onClick={prev}>‹</button>
+              <button className="carousel-btn carousel-btn--next" onClick={next}>›</button>
+
+              {/* Dots */}
+              <div className="carousel-dots">
+                {images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`carousel-dot ${i === current ? "carousel-dot--active" : ""}`}
+                    onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+                  />
+                ))}
+              </div>
+
+              {/* Contador */}
+              <span className="carousel-counter">{current + 1} / {images.length}</span>
+            </>
+          )}
+        </div>
       ) : (
         <div className="hotel-card__img-placeholder">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
@@ -17,6 +63,7 @@ const HotelAdminCard = ({ hotel, onEdit, onDelete }) => {
           </svg>
         </div>
       )}
+
       <div className="hotel-card__body">
         <h3 className="hotel-card__title">{hotel.hotName}</h3>
         <p className="hotel-card__desc">{hotel.hotDescription}</p>

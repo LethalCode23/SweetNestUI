@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAll as getCountries } from "../../services/countryService";
+import { getAll as getCountries } from "../../services/countryServices/countryService";
 
 export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
   const [form, setForm] = useState({ depName: "", depState: "A", depSec: null, depPaiSec: null });

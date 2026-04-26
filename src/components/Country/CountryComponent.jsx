@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import "../Country/CountryComponent.css";
-import { getAll, createCountry, updateCountry, deleteCountry } from "../../services/countryService";
+import { getAll, createCountry, updateCountry, deleteCountry } from "../../services/countryServices/countryService";
 import { CountryCard } from "../Country/CountryCard";
 import { CountryForm } from "../Country/CountryForm";
 
 export const CountryComponent = () => {
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -69,7 +70,9 @@ export const CountryComponent = () => {
   if (error) return <div className="cn-error">Error: {error}</div>;
 
   return (
+    
     <div className="country-wrapper">
+
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <h3>Países</h3>
         <div>

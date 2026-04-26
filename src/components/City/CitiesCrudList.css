@@ -5,6 +5,10 @@
   max-width: 600px;
 }
 
+.cities-page {
+  padding: 1rem 6rem 1rem 6rem;
+}
+
 .crud-city-item {
   background: #f8fafc;
   border: 1px solid #d1d5db;

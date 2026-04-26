@@ -8,6 +8,7 @@ import DepartmentsPage from "./pages/DepartmentsPage";
 import HotelsPage from "./pages/HotelsPage";
 import CitiesPage from "./pages/CitiesPage";
 import LoginPage from "./pages/Auth/LoginPage";
+import RegisterPage from "./pages/Auth/RegisterPage";
 import AdminDashboard from "./components/layout/Dashboard/Dashboard";
 
 const Layout = () => (
@@ -34,7 +35,7 @@ const router = createBrowserRouter(
 
     // Login y Register sin navbar
     { path: "/login",    element: <LoginPage /> },
-    // { path: "/register", element: <RegisterPage /> },
+    { path: "/register",    element: <RegisterPage /> },
 
     {
       path: "/admin",
