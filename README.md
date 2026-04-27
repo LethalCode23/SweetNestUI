@@ -1,16 +1,36 @@
-# React + Vite
+# SweetNest - Hotel Booking System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 1. Definición:
+SweetNest es una herramienta que optimiza y agilizará el proceso de reservas para alojamiento con su interfaz intuitiva, donde el usuario podrá navegar en búsqueda de las mejores opciones para alojarse en su destino. Permite conectar a los usuarios con las mejores ofertas de alojamiento que están disponibles actualmente.
 
-Currently, two official plugins are available:
+# 2. Solucion a desarrollar:
+Nuestra solución consiste en una aplicación web de arquitectura cliente-servidor, que implementa las siguientes funcionalidades en su primera etapa de desarrollo:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+  1. Alcance Funcional (Spring 1)
+     
+     Interfaz Intuitiva:
+     Implementación de un layout responsivo con un encabezado fijo (Sticky Header) que facilita la navegación constante y el acceso a las funciones de usuario.
+     
+     Gestión de Inventario:
+     Módulo administrativo para el registro de productos/habitaciones, incluyendo validaciones de servidor para evitar nombres duplicados y asegurar la integridad de la base de datos.
+     
+     Catálogo Inteligente:
+     Motor de visualización en el home que muestra hasta 10 productos de forma aleatoria y sin repeticiones, organizado en una cuadrícula de 2 columnas por 5 filas.
+     
+     Detalle de Producto:
+     Sistema de rutas dinámicas para visualizar la información específica, descripción e imágenes de cada alojamiento seleccionado.
 
-## React Compiler
+# Propuesta de Valor Tecnica
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+  Escalabilidad:
+  Separación de responsabilidades ya que se usó una arquitectura de cliente-servidor, lo que facilita las actualizaciones futuras del frontend o del backend.
+  
+  Código limpio:
+  Componentes modulares para facilitar el mantenimiento a largo plazo.
+  
+  Persistencia robusta:
+  Manejo de transacciones seguras y validaciones, tanto en la capa del cliente como en la del servicio.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Guía de instalación
+  El proyecto cuenta con una base de datos en memoria, lo que facilita la ejecución del proyecto. El frontend está desarrollado en React con JavaScript y Vite, el backend está construido 
+  con Spring Boot y Java.
