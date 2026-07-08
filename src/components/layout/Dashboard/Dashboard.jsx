@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { path: "countries",   label: "Países",          icon: "◉" },
   { path: "departments", label: "Departamentos",   icon: "❖" },
   { path: "cities",      label: "Ciudades",        icon: "◈" },
+  { path: "categories",  label: "Categorías",      icon: "◆" }
 ];
  
 export default function AdminDashboard() {

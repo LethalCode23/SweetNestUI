@@ -10,6 +10,7 @@ import CitiesPage from "./pages/CitiesPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import AdminDashboard from "./components/layout/Dashboard/Dashboard";
+import CategoryPage from "./pages/CategoryPage";
 
 const Layout = () => (
   <>
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
         { path: "countries",   element: <CountriesPage /> },
         { path: "departments", element: <DepartmentsPage /> },
         { path: "cities",      element: <CitiesPage /> },
+        { path: "categories",  element: <CategoryPage /> },
       ],
     },
   ],

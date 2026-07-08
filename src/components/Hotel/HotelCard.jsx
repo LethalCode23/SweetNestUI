@@ -6,7 +6,7 @@ export const HotelCard = ({ hotel }) => {
   const [current, setCurrent] = useState(0);
   const [imgError, setImgError] = useState(false);
 
-  const { hotName, hotDescription, hotAddress, hotCost, imageUrls } = hotel;
+  const { hotName, hotDescription, hotAddress, hotCost, imageUrls, categories } = hotel;
 
   const price = hotCost
     ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(hotCost / 1000)
@@ -62,8 +62,9 @@ export const HotelCard = ({ hotel }) => {
           <span className="rating">
             <span className="rating-star">★</span> 4.7
           </span>
-          <span className="tag">Nature Stay</span>
-          <span className="tag">3 Day Escape</span>
+            {categories?.filter(cat => cat.catEst === "A").map(cat => (
+              <span key={cat.catSec} className="tag">{cat.catName}</span>
+            ))}
         </div>
 
         <div className="hotel-footer">
