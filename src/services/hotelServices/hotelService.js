@@ -46,10 +46,6 @@ export const uploadHotelImage = async (hotSec, hotImgPri, file) => {
   formData.append("hotImgPri", hotImgPri);
   formData.append("file", file);
 
-  // const res = await api.post(`${BASE_IMGS}/save`, formData, {
-  //   headers: { "Content-Type": "multipart/form-data" },
-  // });
-  
   const res = await api.post(`${BASE_IMGS}/save`, formData);
   return res.data;
 };
