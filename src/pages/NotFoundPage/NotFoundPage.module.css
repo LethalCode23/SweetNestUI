@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+.root {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
+    background: #f8fafc;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL
+   ========================= */
+
+.errorSection,
+.content {
+    width: 50%;
+    min-height: 480px;
+}
+
+/* =========================
+   404
+   ========================= */
+
+.errorSection {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 55px;
+    box-sizing: border-box;
+}
+
+.code {
+    font-size: clamp(9rem, 18vw, 15rem);
+    line-height: 0.85;
+    font-weight: 700;
+    letter-spacing: -0.09em;
+
+    color: #2b67f6;
+
+    user-select: none;
+}
+
+/* El 0 tiene un tono más suave */
+.code::first-letter {
+    color: #2b67f6;
+}
+
+/* =========================
+   CONTENIDO
+   ========================= */
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 55px;
+    box-sizing: border-box;
+
+    border-left: 1px solid #e5eaf1;
+}
+
+.contentInner {
+    max-width: 420px;
+}
+
+/* Pequeño indicador superior */
+
+.label {
+    display: inline-block;
+
+    margin-bottom: 14px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #2b67f6;
+
+    letter-spacing: 0.12em;
+}
+
+/* =========================
+   TÍTULO
+   ========================= */
+
+.title {
+    margin: 0 0 14px;
+
+    color: #0f1f35;
+
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.04em;
+    font-weight: 700;
+}
+
+/* =========================
+   DESCRIPCIÓN
+   ========================= */
+
+.subtitle {
+    max-width: 380px;
+
+    margin: 0 0 28px;
+
+    color: #718096;
+
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+/* =========================
+   BOTÓN
+   ========================= */
+
+.homeLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px 21px;
+
+    background: #2b67f6;
+    color: #ffffff;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.homeLink:hover {
+    background: #1d55d8;
+
+    box-shadow: 0 6px 18px rgba(43, 103, 246, 0.2);
+
+    transform: translateY(-1px);
+}
+
+.homeLink:active {
+    transform: translateY(0);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+    .root {
+        min-height: 100vh;
+
+        flex-direction: column;
+
+        padding: 30px 24px;
+    }
+
+    .errorSection,
+    .content {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .errorSection {
+        justify-content: center;
+
+        padding: 40px 0 20px;
+    }
+
+    .code {
+        font-size: clamp(8rem, 35vw, 11rem);
+    }
+
+    .content {
+        justify-content: center;
+
+        padding: 30px 0 40px;
+
+        border-left: none;
+        border-top: 1px solid #e5eaf1;
+
+        text-align: center;
+    }
+
+    .contentInner {
+        max-width: 420px;
+    }
+
+    .subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .root {
+        padding: 20px;
+    }
+
+    .errorSection {
+        padding-top: 50px;
+    }
+
+    .code {
+        font-size: 8rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+}

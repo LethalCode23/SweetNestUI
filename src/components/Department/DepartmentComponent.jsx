@@ -3,13 +3,17 @@ import "../Country/CountryComponent.css";
 import { getAll, createDepartment, updateDepartment, deleteDepartment } from "../../services/departmentServices/departmentService";
 import { DepartmentCard } from "../Department/DepartmentCard";
 import { DepartmentForm } from "../Department/DepartmentForm";
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 export const DepartmentComponent = () => {
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const { hasActionPermission } = useAuth();
 
   useEffect(() => { load(); }, []);
 
@@ -35,9 +39,12 @@ export const DepartmentComponent = () => {
 
   return (
     <div className="country-wrapper">
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3>Departamentos</h3>
-        <div><button className="btn btn-primary" onClick={handleCreate}>Nuevo departamento</button></div>
+
+        {hasActionPermission(MODULES.DEPARTMENTS, ACTIONS.CREATE) && (
+          <div><button className="btn btn-primary" onClick={handleCreate}>Nuevo departamento</button></div>
+        )}
       </div>
 
       {showForm && <DepartmentForm initial={editing || {}} onCancel={() => { setShowForm(false); setEditing(null); }} onSubmit={handleSubmit} />}

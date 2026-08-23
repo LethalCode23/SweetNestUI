@@ -13,6 +13,25 @@ export const getAll = async (page, size, citName) => {
   return res.data;
 };
 
+export const findByHotel = async (page, size, filters = {}) => { // 👈 este es el nuevo método que acepta filtros, mirar getAll to this
+
+  const { citName, minCost, maxCost, categoryIds } = filters;
+
+  const params = new URLSearchParams();
+  params.append('page', page);
+  params.append('size', size);
+
+  if (citName) params.append('citName', citName);
+  if (minCost != null) params.append('minCost', minCost);
+  if (maxCost != null) params.append('maxCost', maxCost);
+  if (categoryIds?.length) {
+    categoryIds.forEach(id => params.append('categoryIds', id));
+  }
+
+  const res = await api.get(`${BASE}/findByHotel?${params.toString()}`);
+  return res.data;
+};
+
 export const getHotels = async () => { /* este lo uso para crud */
   
   const res = await api.get(`${BASE}/all`);

@@ -1,12 +1,23 @@
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
+
 export const DepartmentCard = ({ department, onEdit, onDelete }) => {
+
+  const { hasActionPermission } = useAuth();
   const { depSec, depName, depState, pais, countryResponseDto } = department;
   const countryName = pais?.paiName || countryResponseDto?.paiName || '—';
 
   return (
     <article className="country-card" key={depSec}>
       <div className="country-actions left">
-        <button className="btn btn-primary" onClick={() => onEdit(department)} aria-label={`Editar ${depName}`}>Editar</button>
-        <button className="btn btn-danger" onClick={() => onDelete(department)} aria-label={`Eliminar ${depName}`}>Eliminar</button>
+
+        {hasActionPermission(MODULES.DEPARTMENTS, ACTIONS.UPDATE) && (
+          <button className="btn btn-primary" onClick={() => onEdit(department)} aria-label={`Editar ${depName}`}>Editar</button>
+        )}
+
+        {hasActionPermission(MODULES.DEPARTMENTS, ACTIONS.DELETE) && (
+          <button className="btn btn-danger" onClick={() => onDelete(department)} aria-label={`Eliminar ${depName}`}>Eliminar</button>
+        )}
       </div>
 
       <div className="card-main">

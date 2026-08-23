@@ -1,19 +1,21 @@
 import { useState } from "react";
 import styles from "./RegisterPage.module.css";
-import { registerUser } from "../../services/AuthServices/AuthServices.js";
+import { registerUser } from "../../services/AuthServices/AuthServices.jsx";
+import { useNavigate } from "react-router-dom";
 
 const EyeIcon = ({ open }) => (
+
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     {open ? (
       <>
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
       </>
     ) : (
       <>
-        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
-        <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
-        <line x1="1" y1="1" x2="23" y2="23"/>
+        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94" />
+        <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+        <line x1="1" y1="1" x2="23" y2="23" />
       </>
     )}
   </svg>
@@ -21,25 +23,32 @@ const EyeIcon = ({ open }) => (
 
 const CheckIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2b67f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
+    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
 export default function Register() {
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // navidate to login page after successful registration
+  const navigate = useNavigate();
+
   const validate = () => {
+
     const errs = {};
+
     if (!form.firstName.trim()) errs.firstName = "El nombre es requerido";
     if (!form.lastName.trim()) errs.lastName = "El apellido es requerido";
     if (!form.email.trim()) {
@@ -47,11 +56,13 @@ export default function Register() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       errs.email = "Correo inválido";
     }
+
     if (!form.password) {
       errs.password = "La contraseña es requerida";
     } else if (form.password.length < 8) {
       errs.password = "Mínimo 8 caracteres";
     }
+
     if (!accepted) errs.terms = "Debes aceptar los términos";
     return errs;
   };
@@ -79,9 +90,9 @@ export default function Register() {
         firstName: form.firstName,
         lastName: form.lastName,
         email: form.email,
-        password: form.password,
+        password: form.password
       });
-      
+
       setSuccess(true);
     } catch (error) {
       setErrors({ api: error.message });
@@ -131,6 +142,7 @@ export default function Register() {
               <div className={styles["rg-success-icon"]}><CheckIcon /></div>
               <h3>¡Cuenta creada!</h3>
               <p>Bienvenido a SweetNest, {form.firstName}.<br />Ya puedes iniciar sesión y buscar tu hotel ideal.</p>
+              <button className={styles["rg-btn"]} onClick={() => navigate("/login")}>Iniciar sesión</button>
             </div>
           ) : (
             <>

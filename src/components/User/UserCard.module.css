@@ -1,0 +1,185 @@
+/* ============================================
+   UserCard.module.css - Tarjeta de usuario
+   ============================================ */
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #e8ecf0;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  transition: box-shadow 0.22s, transform 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #6c63ff 0%, #a78bfa 100%);
+  border-radius: 4px 0 0 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 28px rgba(108, 99, 255, 0.13);
+  transform: translateY(-2px);
+  border-color: #c4b5fd;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Avatar circular */
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff 0%, #a78bfa 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(108, 99, 255, 0.25);
+}
+
+/* Info principal */
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.email {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profileBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.profileBadge.admin {
+  background: #ede9fe;
+  color: #6c63ff;
+}
+
+.profileBadge.user {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+/* Estado */
+.stateBadge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Acciones */
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btnEdit {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #ede9fe;
+  color: #6c63ff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 13px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+}
+
+.btnEdit:hover {
+  background: #6c63ff;
+  color: #fff;
+  transform: scale(1.04);
+}
+
+.btnDelete {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 13px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+}
+
+.btnDelete:hover {
+  background: #dc2626;
+  color: #fff;
+  transform: scale(1.04);
+}
+
+@media (max-width: 640px) {
+  .card {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

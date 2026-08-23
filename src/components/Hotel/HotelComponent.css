@@ -453,6 +453,42 @@
   z-index: 2;
 }
 
+/* CSS nuevo para el page de filtros */
+
+.hotel-results-wrapper {
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  /* padding: 40px 24px 60px; */
+}
+
+.hotel-results-filters {
+  margin-bottom: 32px;
+}
+
+.hotel-results-hero {
+  position: relative;
+  padding: 60px 24px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+}
+
+.hotel-results-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(18, 35, 46, 0.45), rgba(18, 35, 46, 0.65));
+  z-index: 0;
+}
+
+/* La card de HotelFilters debe quedar ENCIMA del overlay oscuro */
+.hotel-results-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* ═══ RESPONSIVE ═══ */
 
 @media (max-width: 640px) {

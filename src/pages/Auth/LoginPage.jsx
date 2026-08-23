@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { login as loginService } from "../../services/AuthServices/AuthServices";
 import * as yup from 'yup';
 import styles from "./LoginPage.module.css";
+import { ROLES } from "../../js/roles";
 
 // Validation schema
 const loginSchema = yup.object({
@@ -24,6 +25,7 @@ export default function LoginPage() {
 
   const [tab, setTab] = useState("email");
   const [showPass, setShowPass] = useState(false);
+  const [loginError, setLoginError] = useState(null);
   const [form, setForm] = useState({ identifier: "", password: "", remember: false });
 
   const handleChange = (e) => {
@@ -47,12 +49,25 @@ export default function LoginPage() {
 
   const logIn = async (credentials) => {
 
-    /* login */
-    const result = await loginService(credentials);
+    setLoginError(null);
 
-    /* save */
-    saveUser(result);
-    navigate("/admin");
+    try {
+
+      const result = await loginService(credentials);
+      const loggedUser = result.data;
+
+      saveUser(loggedUser);
+      console.log(loggedUser);
+      // validar el rol del usuario para redirigir
+      if (loggedUser.user.role === ROLES.ADMIN) {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+
+      setLoginError(error.message);
+    }
   };
 
   return (
@@ -176,6 +191,10 @@ export default function LoginPage() {
           <button type="submit" className={styles.submitBtn}>
             Iniciar sesión
           </button>
+
+          {loginError && (
+            <p className={styles.errorText}>{loginError}</p>
+          )}
         </form>
 
         <p className={styles.registerRow}>

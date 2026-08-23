@@ -1,0 +1,315 @@
+.root {
+    min-height: 100%;
+    padding: 32px;
+    background: #f4f6fb;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+    text-align: start;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+    max-width: 520px;
+    line-height: 1.5;
+}
+
+.newBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.15);
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.newBtn:hover {
+    background: #1d4ed8;
+}
+
+.newBtn:active {
+    transform: translateY(1px);
+}
+
+.newBtnIcon {
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 700;
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.searchBox {
+    flex: 1;
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.searchIcon {
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+.searchInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #0f172a;
+    background: transparent;
+}
+
+.searchInput::placeholder {
+    color: #94a3b8;
+}
+
+.countBadge {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    background: #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ---------- Lista ---------- */
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.cardLeft {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.avatar {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.cardInfo {
+    min-width: 0;
+}
+
+.nameRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profileName {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.defaultBadge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #7c3aed;
+    background: #f3e8ff;
+    padding: 3px 9px;
+    border-radius: 999px;
+}
+
+.profileId {
+    font-size: 12.5px;
+    color: #94a3b8;
+    margin: 3px 0 0;
+}
+
+.cardRight {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.stateBadge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.stateDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.stateActive {
+    color: #15803d;
+    background: #ecfdf3;
+}
+
+.stateActive .stateDot {
+    background: #22c55e;
+}
+
+.stateInactive {
+    color: #b91c1c;
+    background: #fef2f2;
+}
+
+.stateInactive .stateDot {
+    background: #ef4444;
+}
+
+.manageBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #eff4ff;
+    color: #2563eb;
+    border: 1px solid #dbe6fe;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.manageBtn:hover {
+    background: #dbe6fe;
+}
+
+.manageBtnArrow {
+    transition: transform 0.15s ease;
+}
+
+.manageBtn:hover .manageBtnArrow {
+    transform: translateX(2px);
+}
+
+/* ---------- Empty state ---------- */
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 60px 20px;
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+}
+
+.emptyIcon {
+    font-size: 28px;
+    color: #cbd5e1;
+}
+
+.emptyText {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 640px) {
+    .root {
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+    }
+
+    .newBtn {
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    .card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cardRight {
+        justify-content: space-between;
+    }
+}

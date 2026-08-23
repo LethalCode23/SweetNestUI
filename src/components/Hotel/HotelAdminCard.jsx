@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "../Hotel/HotelAdminCard.css";
 import { Environment } from "../../Environments/Environment";
+import { hasActionPermission } from "../../utils/permissions";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 const HotelAdminCard = ({ hotel, onEdit, onDelete }) => {
 
@@ -58,8 +60,8 @@ const HotelAdminCard = ({ hotel, onEdit, onDelete }) => {
       ) : (
         <div className="hotel-card__img-placeholder">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21 15 16 10 5 21"/>
+            <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
           </svg>
         </div>
       )}
@@ -94,8 +96,14 @@ const HotelAdminCard = ({ hotel, onEdit, onDelete }) => {
         </div>
 
         <div className="hotel-card__actions">
-          <button className="btn btn-primary" onClick={onEdit}>Editar</button>
-          <button className="btn btn-danger" onClick={onDelete}>Eliminar</button>
+
+          {hasActionPermission(MODULES.HOTELS, ACTIONS.UPDATE) && (
+            <button className="btn btn-primary" onClick={onEdit}>Editar</button>
+          )}
+
+          {hasActionPermission(MODULES.HOTELS, ACTIONS.DELETE) && (
+            <button className="btn btn-danger" onClick={onDelete}>Eliminar</button>
+          )}
         </div>
       </div>
     </article>

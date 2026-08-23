@@ -4,11 +4,15 @@ import { getHotels, deleteHotel } from "../services/hotelServices/hotelService";
 import HotelTable from "../components/Hotel/HotelTable";
 import HotelForm from "../components/Hotel/HotelForm";
 import styles from "./HotelsPage.module.css";
+import { MODULES, ACTIONS } from "../constants/modules";
+import { useAuth } from "../context/AuthContext";
 
 const formatCOP = (n) =>
   new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
 
 export default function HotelsPage() {
+
+  const { hasActionPermission } = useAuth();
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -25,7 +29,7 @@ export default function HotelsPage() {
   useEffect(() => { fetchHotels(); }, []);
 
   const openCreate = () => { setEditingHotel(null); setDrawerOpen(true); };
-  const openEdit   = (hotel) => { setEditingHotel(hotel); setDrawerOpen(true); };
+  const openEdit = (hotel) => { setEditingHotel(hotel); setDrawerOpen(true); };
   const closeDrawer = () => { setDrawerOpen(false); setEditingHotel(null); };
 
   const handleDelete = async (hotel) => {
@@ -40,7 +44,7 @@ export default function HotelsPage() {
     h.hotAddress?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const totalActive   = hotels.filter((h) => h.hotState === "A").length;
+  const totalActive = hotels.filter((h) => h.hotState === "A").length;
   const totalInactive = hotels.filter((h) => h.hotState === "I").length;
   const avgCost = hotels.length
     ? hotels.reduce((s, h) => s + (h.hotCost || 0), 0) / hotels.length
@@ -54,10 +58,14 @@ export default function HotelsPage() {
           <h1 className={styles.pageTitle}>Hoteles</h1>
           <p className={styles.pageSubtitle}>Gestión del inventario de hoteles</p>
         </div>
-        <button className="btn-primary" onClick={openCreate}>
-          <Plus size={15} style={{ marginRight: 6 }} />
-          Nuevo hotel
-        </button>
+
+        {hasActionPermission(MODULES.HOTELS, ACTIONS.CREATE) && (
+          <button className="btn-primary" onClick={openCreate}>
+            <Plus size={15} style={{ marginRight: 6 }} />
+            Nuevo hotel
+          </button>
+        )}
+
       </div>
 
       {/* Stats */}

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { createCity, updateCity } from "../../services/cityServices/cityService";
 import { getAll } from "../../services/departmentServices/departmentService";
 import "../City/CityForm.css";
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 const initialState = {
   citName: "",
@@ -10,6 +12,8 @@ const initialState = {
 };
 
 const CityForm = ({ onSuccess, editingCity, setEditingCity, onClose }) => {
+
+  const { hasActionPermission } = useAuth();
   const [form, setForm] = useState(initialState);
   const [departments, setDepartments] = useState([]);
 
@@ -38,12 +42,12 @@ const CityForm = ({ onSuccess, editingCity, setEditingCity, onClose }) => {
   };
 
   const handleSubmit = async (e) => {
-    
+
     e.preventDefault();
     const payload = {
       citName: form.citName,
       citState: form.citState ? "A" : "I",
-      citDepSec: form.department ,
+      citDepSec: form.department,
     };
 
     if (editingCity) {
@@ -54,7 +58,7 @@ const CityForm = ({ onSuccess, editingCity, setEditingCity, onClose }) => {
       await createCity(payload);
       if (onClose) onClose();
     }
-    
+
     setForm(initialState);
     onSuccess();
   };
@@ -86,7 +90,15 @@ const CityForm = ({ onSuccess, editingCity, setEditingCity, onClose }) => {
         />
         Activo
       </label>
-      <button type="submit" className="btn btn-primary">{editingCity ? "Actualizar" : "Crear"} Ciudad</button>
+
+      {editingCity && hasActionPermission(MODULES.CITIES, ACTIONS.UPDATE) && (
+        <button type="submit" className="btn btn-primary">Actualizar</button>
+      )}
+
+      {!editingCity && hasActionPermission(MODULES.CITIES, ACTIONS.CREATE) && (
+        <button type="submit" className="btn btn-primary">Crear</button>
+      )}
+
       {editingCity && (
         <button type="button" onClick={() => setEditingCity(null)}>
           Cancelar edición

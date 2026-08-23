@@ -1,5 +1,5 @@
 .page {
-  min-height: 92vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,4 +360,11 @@
   .card {
     padding: 28px 20px;
   }
+}
+
+.errorText {
+  color: #f87171; /* Color rojo para el error */
+  font-size: 14px;
+  margin-top: 8px;
+  text-align: center;
 }

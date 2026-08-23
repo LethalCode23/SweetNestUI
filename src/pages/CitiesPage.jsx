@@ -3,9 +3,11 @@ import CityForm from "../components/City/CityForm";
 import CityCard from "../components/City/CityCard";
 import { getCities, createCity, updateCity, deleteCity } from "../services/cityServices/cityService";
 import "../components/City/CitiesCrudList.css";
+import { useAuth } from "../context/AuthContext";
 
 const CitiesPage = () => {
 
+  const { hasActionPermission } = useAuth();
   const [cities, setCities] = useState([]);
   const [editingCity, setEditingCity] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -20,17 +22,17 @@ const CitiesPage = () => {
   }, []);
 
   return (
-    
+
     <div className="cities-page">
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3>Ciudades</h3>
         <div>
-          {!showForm && !editingCity && (
+          {!showForm && !editingCity && hasActionPermission(MODULES.cities, ACTIONS.create) && (
 
-            <button className="btn btn-primary" 
-                onClick={() => setShowForm(true)} 
-                style={{ marginBottom: '18px' }}>Crear nueva ciudad</button>
+            <button className="btn btn-primary"
+              onClick={() => setShowForm(true)}
+              style={{ marginBottom: '18px' }}>Crear nueva ciudad</button>
           )}
         </div>
       </div>

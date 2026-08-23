@@ -1,0 +1,398 @@
+/* =========================================================
+   UserProfilePage.module.css – Estilo para Mi Cuenta
+   ========================================================= */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 720px;
+}
+
+/* Header */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.pageTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: 13px;
+  color: #475569;
+  margin-top: 3px;
+}
+
+/* Card contenedor principal */
+.card {
+  background: #0a1020;
+  border: 1px solid #1e2d45;
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Secciones */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 0;
+}
+
+.section:first-of-type {
+  padding-top: 0;
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.sectionSubtitle {
+  font-size: 13px;
+  color: #3b82f6;
+}
+
+.divider {
+  height: 1px;
+  background: #1e2d45;
+}
+
+/* ─── Avatar ─── */
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatarWrap {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #1e2d45;
+}
+
+.avatarFallback {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+  border: 2px solid #1e3a6e;
+}
+
+.avatarCameraBtn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #0a1020;
+  background: #2563eb;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.avatarCameraBtn:hover {
+  background: #1d4ed8;
+  transform: scale(1.1);
+}
+
+.avatarInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.avatarTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.avatarHint {
+  font-size: 12px;
+  color: #475569;
+}
+
+.avatarActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btnUpload {
+  padding: 8px 16px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+
+.btnUpload:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btnRemove {
+  padding: 8px 16px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #1e2d45;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.btnRemove:hover:not(:disabled) {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btnRemove:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Campos ─── */
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12.5px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.labelHighlight {
+  font-size: 12.5px;
+  color: #f97316;
+  font-weight: 600;
+}
+
+.input {
+  background: #060e1c;
+  border: 1px solid #1e2d45;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 14px;
+  padding: 10px 14px;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  outline: none;
+}
+
+.inputLocked {
+  color: #475569;
+  cursor: not-allowed;
+  padding-right: 40px;
+}
+
+/* Email row */
+.emailRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.inputLockWrap {
+  position: relative;
+  flex: 1;
+}
+
+.lockIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: #475569;
+  pointer-events: none;
+}
+
+.btnEditEmail {
+  white-space: nowrap;
+  padding: 10px 16px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #1e2d45;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.btnEditEmail:hover {
+  border-color: #2563eb;
+  color: #3b82f6;
+}
+
+/* ─── Seguridad ─── */
+.securitySection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 0;
+}
+
+.btnChangePass {
+  white-space: nowrap;
+  padding: 10px 18px;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #1e2d45;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.btnChangePass:hover {
+  border-color: #7c3aed;
+  color: #a78bfa;
+  background: rgba(124, 58, 237, 0.06);
+}
+
+/* ─── Acciones ─── */
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.savedBadge {
+  font-size: 13px;
+  color: #22c55e;
+  font-weight: 600;
+  margin-right: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.actionBtns {
+  display: flex;
+  gap: 12px;
+}
+
+.btnCancel {
+  padding: 10px 22px;
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+
+.btnCancel:hover {
+  color: #e2e8f0;
+}
+
+.btnSave {
+  padding: 10px 24px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  font-family: inherit;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btnSave:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
+}
+
+.btnSave:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .card { padding: 20px; }
+  .fieldsGrid { grid-template-columns: 1fr; }
+  .securitySection { flex-direction: column; align-items: flex-start; }
+  .avatarRow { flex-direction: column; align-items: flex-start; }
+  .emailRow { flex-direction: column; align-items: stretch; }
+  .btnEditEmail { width: 100%; text-align: center; }
+}

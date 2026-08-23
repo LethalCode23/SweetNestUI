@@ -86,6 +86,11 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
     setPreviews((p) => p.filter((_, idx) => idx !== i));
   };
 
+  const removeExistingImage = (hotImgSec) => {
+    setExistingImages((p) => p.filter((img) => img.hotImgSec !== hotImgSec));
+    setRemovedExistingImages((p) => [...p, hotImgSec]);
+  };
+
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -292,13 +297,13 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
               {(existingImages.length > 0 || previews.length > 0) && (
                 <div className={styles.previews}>
                   {/* Imágenes ya guardadas en el servidor */}
-                  {existingImages.map((url, i) => (
-                    <div key={`existing-${url}`} className={styles.previewItem}>
-                      <img src={`${BASE_URL}${url}`} alt="" />
+                  {existingImages.map((img, i) => (
+                    <div key={`existing-${img.hotImgSec}`} className={styles.previewItem}>
+                      <img src={`${BASE_URL}${img.hotImgUrl}`} alt="" />
                       <button
                         type="button"
                         className={styles.removeBtn}
-                        onClick={() => removeExistingImage(url)}
+                        onClick={() => removeExistingImage(img.hotImgSec)}
                       >
                         <X size={11} />
                       </button>

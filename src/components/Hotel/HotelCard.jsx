@@ -6,20 +6,27 @@ export const HotelCard = ({ hotel }) => {
   const [current, setCurrent] = useState(0);
   const [imgError, setImgError] = useState(false);
 
-  const { hotName, hotDescription, hotAddress, hotCost, imageUrls, categories } = hotel;
+  const { hotName, hotDescription, hotAddress, hotCost, hotelImagesUrl, categories } = hotel;
 
   const price = hotCost
     ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(hotCost / 1000)
     : null;
 
-  const images = Array.isArray(imageUrls) && imageUrls.length > 0
-    ? imageUrls.map(url => url.startsWith("http") ? url : `${BASE_URL}${url}`)
+  /*const images = Array.isArray(imageUrls.hotelImagesUrl) && imageUrls.hotelImagesUrl.length > 0
+    ? imageUrls.hotelImagesUrl.map(url => url.startsWith("http") ? url : `${BASE_URL}${url}`)
+    : ["/hotel-placeholder.svg"];*/
+
+  const images = Array.isArray(hotelImagesUrl) && hotelImagesUrl.length > 0
+    ? hotelImagesUrl
+      .sort((a, b) => a.hotImgPri - b.hotImgPri)
+      .map(img => img.hotImgUrl.startsWith("http") ? img.hotImgUrl : `${BASE_URL}${img.hotImgUrl}`)
     : ["/hotel-placeholder.svg"];
 
   const nextImg = (e) => { e.stopPropagation(); setCurrent(c => (c + 1) % images.length); };
   const prevImg = (e) => { e.stopPropagation(); setCurrent(c => (c - 1 + images.length) % images.length); };
 
   return (
+
     <article className="hotel-card">
       <div
         className="hotel-media"
@@ -62,9 +69,9 @@ export const HotelCard = ({ hotel }) => {
           <span className="rating">
             <span className="rating-star">★</span> 4.7
           </span>
-            {categories?.filter(cat => cat.catEst === "A").map(cat => (
-              <span key={cat.catSec} className="tag">{cat.catName}</span>
-            ))}
+          {categories?.filter(cat => cat.catEst === "A").map(cat => (
+            <span key={cat.catSec} className="tag">{cat.catName}</span>
+          ))}
         </div>
 
         <div className="hotel-footer">

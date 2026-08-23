@@ -3,6 +3,8 @@ import { getAll, createCategory, updateCategory, deleteCategory } from "../../se
 import { CategoryCard } from "../Categories/CategoryCard";
 import { CategoryForm } from "../Categories/CategoryForm";
 import categoryStyles from "./Category.module.css";
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 export const CategoryComponent = () => {
 
@@ -11,18 +13,23 @@ export const CategoryComponent = () => {
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const { hasActionPermission } = useAuth();
 
   useEffect(() => {
     load();
   }, []);
 
   const load = async () => {
+
     setLoading(true);
     setError(null);
+
     try {
+
       const res = await getAll();
       res.sort((a, b) => String(a.catName).localeCompare(String(b.catName)));
       setData(res);
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -41,10 +48,14 @@ export const CategoryComponent = () => {
   };
 
   const handleDelete = async (category) => {
+
     if (!confirm(`¿Eliminar "${category.catName}"?`)) return;
+
     try {
+
       await deleteCategory(category.catSec);
       await load();
+
     } catch (err) {
       alert(`Error: ${err.message}`);
     }
@@ -73,13 +84,19 @@ export const CategoryComponent = () => {
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h3>Categorías</h3>
-        <button className={`${categoryStyles.btn} ${categoryStyles["btn-primary"]}`} onClick={handleCreate}>
-          Nueva categoría
-        </button>
+
+        {hasActionPermission(MODULES.CATEGORIES, ACTIONS.CREATE) && (
+
+          <button className={`${categoryStyles.btn} ${categoryStyles["btn-primary"]}`} onClick={handleCreate}>
+            Nueva categoría
+          </button>
+        )}
       </div>
 
       {showForm && (
+
         <CategoryForm
+
           initial={editing || {}}
           onCancel={() => { setShowForm(false); setEditing(null); }}
           onSubmit={handleSubmit}
@@ -90,8 +107,15 @@ export const CategoryComponent = () => {
         <div className={categoryStyles["cn-empty"]}>No hay categorías disponibles.</div>
       ) : (
         <div className={categoryStyles["categories-grid"]}>
+
           {data.map((c) => (
-            <CategoryCard key={c.catSec} category={c} onEdit={handleEdit} onDelete={handleDelete} />
+
+            <CategoryCard
+              key={c.catSec}
+              category={c}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}

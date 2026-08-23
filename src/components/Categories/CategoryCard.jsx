@@ -1,7 +1,11 @@
+import { useAuth } from "../../context/AuthContext";
 import styles from "./CategoryCard.module.css";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 export const CategoryCard = ({ category, onEdit, onDelete }) => {
+
   const { catSec, catName, catEst } = category;
+  const { hasActionPermission } = useAuth();
 
   return (
     <article className={styles["category-card"]}>
@@ -15,8 +19,15 @@ export const CategoryCard = ({ category, onEdit, onDelete }) => {
         </span>
       </div>
       <div className={styles["card-actions"]}>
-        <button className={`${styles.btn} ${styles["btn-primary"]}`} onClick={() => onEdit(category)}>Editar</button>
-        <button className={`${styles.btn} ${styles["btn-danger"]}`} onClick={() => onDelete(category)}>Eliminar</button>
+
+        {hasActionPermission(MODULES.CATEGORIES, ACTIONS.UPDATE) && (
+          <button className={`${styles.btn} ${styles["btn-primary"]}`} onClick={() => onEdit(category)}>Editar</button>
+        )}
+
+        {hasActionPermission(MODULES.CATEGORIES, ACTIONS.DELETE) && (
+          <button className={`${styles.btn} ${styles["btn-danger"]}`} onClick={() => onDelete(category)}>Eliminar</button>
+        )}
+
       </div>
     </article>
   );

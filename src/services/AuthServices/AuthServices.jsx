@@ -1,8 +1,8 @@
-import { Environment } from "../../Environments/Environment"
+import { Environment } from "../../Environments/Environment";
 const URL_API = Environment.API_URL;
 
 /*
-* iniciar sesion
+* Iniciar sesión
 */
 export const login = async (credentials) => {
 
@@ -11,12 +11,18 @@ export const login = async (credentials) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
     });
-    
-    return res.json();
-}
+
+    const result = await res.json();
+
+    if (!res.ok) {
+        throw new Error(result.message || "Error al iniciar sesión");
+    }
+
+    return result;
+};
 
 /*
-* registrar usuario
+* Registrar usuario
 */
 export const registerUser = async (credentials) => {
 
@@ -25,6 +31,12 @@ export const registerUser = async (credentials) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
     });
-    console.log(res)
-    return res;
-}
+
+    const result = await res.json();
+
+    if (!res.ok) {
+        throw new Error(result.message || "Error al registrar usuario");
+    }
+
+    return result;
+};

@@ -1,6 +1,8 @@
 import { Pencil, Trash2 } from "lucide-react";
 import styles from "./HotelTable.module.css";
 import { BASE_URL } from "../../Js/constants";
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 const PLACEHOLDER = "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=80";
 
@@ -8,7 +10,9 @@ const formatCOP = (n) =>
   new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
 
 export default function HotelTable({ hotels, onEdit, onDelete }) {
-  
+
+  const { hasActionPermission } = useAuth();
+
   if (!hotels.length) {
     return (
       <div className={styles.empty}>
@@ -36,7 +40,7 @@ export default function HotelTable({ hotels, onEdit, onDelete }) {
               <td>
                 <div className={styles.hotelCell}>
                   <img
-                    src={`${BASE_URL}${hotel.imageUrls?.[0] ?? PLACEHOLDER}`}
+                    src={`${BASE_URL}${hotel.hotelImagesUrl?.[0].hotImgUrl ?? PLACEHOLDER}`}
                     alt={hotel.hotName}
                     className={styles.thumb}
                   />
@@ -69,20 +73,27 @@ export default function HotelTable({ hotels, onEdit, onDelete }) {
               </td>
               <td>
                 <div className={styles.actions}>
-                  <button
-                    className="btn-icon"
-                    title="Editar"
-                    onClick={() => onEdit(hotel)}
-                  >
-                    <Pencil size={15} />
-                  </button>
-                  <button
-                    className="btn-icon btn-icon-danger"
-                    title="Eliminar"
-                    onClick={() => onDelete(hotel)}
-                  >
-                    <Trash2 size={15} />
-                  </button>
+
+                  {hasActionPermission(MODULES.HOTELS, ACTIONS.UPDATE) && (
+                    <button
+                      className="btn-icon"
+                      title="Editar"
+                      onClick={() => onEdit(hotel)}
+                    >
+                      <Pencil size={15} />
+                    </button>
+                  )}
+
+                  {hasActionPermission(MODULES.HOTELS, ACTIONS.DELETE) && (
+                    <button
+                      className="btn-icon btn-icon-danger"
+                      title="Eliminar"
+                      onClick={() => onDelete(hotel)}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  )}
+
                 </div>
               </td>
             </tr>

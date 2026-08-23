@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAll } from "../../services/hotelServices/hotelService";
 import { HotelCard } from "../Hotel/HotelCard";
+import { useNavigate } from "react-router-dom";
 import "../Hotel/HotelComponent.css";
 
 export const HotelComponent = () => {
@@ -10,6 +11,7 @@ export const HotelComponent = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const size = 10;
+  const navigate = useNavigate();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,9 +45,9 @@ export const HotelComponent = () => {
 
   const handleSearch = () => {
 
-    console.log('Buscar hoteles:', { city, date });
-    setPage(0);
-    load();
+    const params = new URLSearchParams();
+    if (city) params.append("citName", city);
+    navigate(`/hoteles?${params.toString()}`);
   };
 
   // if (loading) return <div className="cn-loading">Cargando hoteles...</div>;

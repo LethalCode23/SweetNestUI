@@ -1,6 +1,8 @@
-import { NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../../../context/AuthContext"; // ajusta la ruta según tu estructura real
 import "../Navbar/NavBarComponent.css";
+import { ROLES } from "../../../js/roles";
 
 export const NavBarComponent = () => {
   const [isDark, setIsDark] = useState(() => {
@@ -12,11 +14,39 @@ export const NavBarComponent = () => {
   });
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const profileRef = useRef(null);
+  const navigate = useNavigate();
 
+  const { user, logout } = useAuth();
+
+  // Cierra el popover si se hace click fuera
   useEffect(() => {
-    document.body.classList.toggle("dark", isDark);
-    try { localStorage.setItem("theme", isDark ? "dark" : "light"); } catch {}
-  }, [isDark]);
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfile(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Toma solo el primer nombre y el primer apellido, evita que el texto colapse
+  const shortFirstName = user?.firstName?.trim().split(" ")[0] ?? "";
+  const shortLastName = user?.lastName?.trim().split(" ")[0] ?? "";
+  const shortFullName = `${shortFirstName} ${shortLastName}`.trim();
+
+  // Iniciales del usuario para el avatar
+  const initials = user
+    ? `${shortFirstName?.[0] ?? ""}${shortLastName?.[0] ?? ""}`.toUpperCase()
+    : "?";
+
+  const roleLabel = user?.role === ROLES.ADMIN ? "ADMIN" : "USUARIO";
+
+  const goTo = (path) => {
+    setShowProfile(false);
+    navigate(path);
+  };
 
   return (
     <nav className="navbar">
@@ -37,28 +67,70 @@ export const NavBarComponent = () => {
               Home
             </NavLink>
           </li>
-          {/* Agrega más rutas aquí */}
         </ul>
 
         {/* Derecha */}
         <div className="nav-right">
-          {/* <button
-            className="theme-toggle"
-            onClick={() => setIsDark(s => !s)}
-            aria-pressed={isDark}
-            title="Cambiar tema"
-          >
-            {isDark ? "☀" : "🌙"}
-          </button> */}
-
           <div className="nav-divider" />
 
-          <NavLink to="/register" className={({ isActive }) => `auth-btn auth-btn-ghost${isActive ? " active" : ""}`}>
-            Registrarse
-          </NavLink>
-          <NavLink to="/login" className={({ isActive }) => `auth-btn auth-btn-primary${isActive ? " active" : ""}`}>
-            Iniciar sesión
-          </NavLink>
+          {user ? (
+            /* ===== Usuario logueado: avatar + popover ===== */
+            <div className="avatar-wrapper" ref={profileRef}>
+
+              <div
+                className={`navbar-avatar${showProfile ? " is-hidden" : ""}`}
+                onClick={() => setShowProfile(s => !s)}
+                title="Ver perfil"
+              >
+                {initials}
+              </div>
+
+              {showProfile && (
+                <div className="navbar-profile-card">
+                  <div className="profile-header">
+                    <div className="profile-avatar-lg">{initials}</div>
+                    <div className="profile-header-text">
+                      <div className="profile-name">
+                        {shortFullName}
+                        <span className="profile-role-badge">{roleLabel}</span>
+                      </div>
+                      <p className="profile-email">{user.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="profile-divider" />
+
+                  <nav className="profile-menu">
+                    <button className="profile-menu-item" onClick={() => goTo("/dashboard")}>
+                      <span>Ir al Dashboard</span>
+                    </button>
+                    <button className="profile-menu-item" onClick={() => goTo("/dashboard/profile")}>
+                      <span>Mi Perfil</span>
+                    </button>
+                    <button className="profile-menu-item" onClick={() => goTo("/dashboard/profile")}>
+                      <span>Configuración</span>
+                    </button>
+                  </nav>
+
+                  <div className="profile-divider" />
+
+                  <button className="logout-btn" onClick={logout}>
+                    <span>Cerrar sesión</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* ===== Sin usuario: botones de auth ===== */
+            <>
+              <NavLink to="/register" className={({ isActive }) => `auth-btn auth-btn-ghost${isActive ? " active" : ""}`}>
+                Registrarse
+              </NavLink>
+              <NavLink to="/login" className={({ isActive }) => `auth-btn auth-btn-primary${isActive ? " active" : ""}`}>
+                Iniciar sesión
+              </NavLink>
+            </>
+          )}
 
           {/* Toggler mobile */}
           <button
@@ -84,14 +156,30 @@ export const NavBarComponent = () => {
             </NavLink>
           </li>
         </ul>
-        <div className="mobile-auth">
-          <NavLink to="/register" className="auth-btn auth-btn-ghost" onClick={() => setMenuOpen(false)}>
-            Registrarse
-          </NavLink>
-          <NavLink to="/login" className="auth-btn auth-btn-primary" onClick={() => setMenuOpen(false)}>
-            Iniciar sesión
-          </NavLink>
-        </div>
+
+        {user ? (
+          <div className="mobile-profile">
+            <div className="mobile-profile-info">
+              <div className="navbar-avatar">{initials}</div>
+              <div>
+                <p className="profile-name">{shortFullName}</p>
+                <span className="profile-role-badge">{roleLabel}</span>
+              </div>
+            </div>
+            <button className="logout-btn" onClick={() => { logout(); setMenuOpen(false); }}>
+              Cerrar sesión
+            </button>
+          </div>
+        ) : (
+          <div className="mobile-auth">
+            <NavLink to="/register" className="auth-btn auth-btn-ghost" onClick={() => setMenuOpen(false)}>
+              Registrarse
+            </NavLink>
+            <NavLink to="/login" className="auth-btn auth-btn-primary" onClick={() => setMenuOpen(false)}>
+              Iniciar sesión
+            </NavLink>
+          </div>
+        )}
       </div>
     </nav>
   );
