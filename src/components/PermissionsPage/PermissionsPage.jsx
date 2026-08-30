@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import styles from "./PermissionsPage.module.css";
+import { toggleActionPermission } from "../../services/permissionsPage/permissionsPageService";
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
+import { AddModuleSection } from "../../components/PermissionsPage/AddModuleSection";
 import {
     getProfileModules,
-    toggleActionPermission,
-} from "../../services/permissionsPage/permissionsPageService";
+    grantSubModule,
+    revokeSubModule,
+    updateEntryAllowed,
+} from "../../services/profileServices/ProfileServices";
 
 const ACTION_LABELS = {
     R: "Listar",
@@ -12,10 +18,13 @@ const ACTION_LABELS = {
     U: "Editar",
     D: "Borrar",
 };
+
 const ACTION_ORDER = ["R", "C", "U", "D"];
 
 const getSubModuleState = (subModule) => {
+
     const allowedCount = subModule.actions.filter((a) => a.allowed).length;
+
     if (allowedCount === 0) return "none";
     if (allowedCount === subModule.actions.length) return "full";
     return "partial";
@@ -28,49 +37,54 @@ const STATE_LABEL = {
 };
 
 export default function PermissionsPage() {
-    // La ruta se espera como /profiles/:profileId/permissions
     const { profileId } = useParams();
     const location = useLocation();
-    // Si venimos de ProfilesPage, ya trae el nombre en el state y evitamos un fetch extra
     const [profileName] = useState(location.state?.profileName ?? `Perfil ${profileId}`);
 
     const [modules, setModules] = useState([]);
+    const [myModules, setMyModules] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState(null);
     const [moduleFilter, setModuleFilter] = useState("all");
     const [search, setSearch] = useState("");
-    // Guarda la llave compuesta "moduleSec-submoduleId-code" de la acción en vuelo,
-    // para deshabilitar ese switch mientras responde el PATCH
     const [pendingKey, setPendingKey] = useState(null);
 
+    const { user, hasActionPermission } = useAuth();
+
+    const loadData = async () => {
+        setLoading(true);
+        setLoadError(null);
+        try {
+            const [mine, target] = await Promise.all([
+                getProfileModules(user.profile.proId),
+                getProfileModules(profileId),
+            ]);
+            setMyModules(mine ?? []);
+            setModules(target ?? []); // <-- esta es la que pinta la tabla
+        } catch (error) {
+            console.error("Error al cargar los módulos del perfil:", error);
+            setLoadError("No se pudieron cargar los permisos de este perfil.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        if (!profileId) return;
-        let ignore = false;
-
-        const fetchModules = async () => {
-            setLoading(true);
-            setLoadError(null);
-            try {
-                const data = await getProfileModules(profileId);
-                if (!ignore) {
-                    setModules(data ?? []);
-                }
-            } catch (error) {
-                console.error("Error al cargar los módulos del perfil:", error);
-                if (!ignore) {
-                    setLoadError("No se pudieron cargar los permisos de este perfil.");
-                }
-            } finally {
-                if (!ignore) setLoading(false);
-            }
-        };
-
-        fetchModules();
-
-        return () => {
-            ignore = true;
-        };
+        loadData();
     }, [profileId]);
+
+    const handleAddModule = async (moduleId, subModuleId, needsEntryAllowed) => {
+        if (needsEntryAllowed) {
+            await updateEntryAllowed(profileId, moduleId, true);
+        }
+        await grantSubModule(profileId, moduleId, subModuleId);
+        await loadData();
+    };
+
+    const onRevoke = async (moduleId, subModuleId) => {
+        await revokeSubModule(profileId, moduleId, subModuleId);
+        await loadData();
+    };
 
     const handleToggle = async (moduleSec, submoduleId, action) => {
         const key = `${moduleSec}-${submoduleId}-${action.code}`;
@@ -136,6 +150,11 @@ export default function PermissionsPage() {
             {/* Header */}
             <header className={styles.header}>
                 <div>
+
+                    <Link to="/dashboard/profiles" className={styles.backLink}>
+                        ← Volver a perfiles
+                    </Link>
+
                     <p className={styles.eyebrow}>Perfil: {profileName}</p>
                     <h1 className={styles.title}>Control de accesos</h1>
                     <p className={styles.subtitle}>
@@ -143,6 +162,12 @@ export default function PermissionsPage() {
                     </p>
                 </div>
             </header>
+
+            <AddModuleSection
+                myModules={myModules}
+                targetModules={modules}
+                onAdd={handleAddModule}
+            />
 
             {/* Filtros */}
             <div className={styles.filters}>
@@ -209,6 +234,7 @@ export default function PermissionsPage() {
                                 </div>
 
                                 <div className={styles.table}>
+
                                     <div className={styles.tableHead}>
                                         <span className={styles.colEntity}>Submódulo</span>
                                         {ACTION_ORDER.map((code) => (
@@ -217,6 +243,7 @@ export default function PermissionsPage() {
                                             </span>
                                         ))}
                                         <span className={styles.colState}>Estado</span>
+                                        <span className={styles.colDelete}></span>
                                     </div>
 
                                     {module.subModules.map((sub) => {
@@ -255,6 +282,15 @@ export default function PermissionsPage() {
                                                     <span className={`${styles.stateBadge} ${styles[`state_${state}`]}`}>
                                                         {STATE_LABEL[state]}
                                                     </span>
+                                                </div>
+
+                                                <div className={styles.colDelete}>
+                                                    <button
+                                                        type="button"
+                                                        className={styles.deleteBtn}
+                                                        title={`Eliminar acceso a ${sub.name}`}
+                                                        onClick={() => onRevoke(module.moduleSec, sub.id)}
+                                                    >✕</button>
                                                 </div>
                                             </div>
                                         );

@@ -88,6 +88,10 @@ export const AuthProvider = ({ children }) => {
     return false;
   };
 
+  const hasControlAccess = () => {
+    return user?.profile.hasControlAccess === "S"
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -97,7 +101,8 @@ export const AuthProvider = ({ children }) => {
         modules,
         loadingModules,
         hasSubmodulePermission,
-        hasActionPermission
+        hasActionPermission,
+        hasControlAccess
       }}
     >
       {children}

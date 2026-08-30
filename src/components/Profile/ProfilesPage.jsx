@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./ProfilesPage.module.css";
+import { useAuth } from "../../context/AuthContext";
 
 // Data de ejemplo -- se reemplaza luego por getAllProfiles() del service real
 const MOCK_PROFILES = [
@@ -20,6 +21,7 @@ export default function ProfilesPage() {
 
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
+    const { hasControlAccess } = useAuth();
 
     const profiles = MOCK_PROFILES.filter((p) =>
         p.proName.toLowerCase().includes(search.toLowerCase())
@@ -98,15 +100,16 @@ export default function ProfilesPage() {
                                     {profile.proState === "A" ? "Activo" : "Inactivo"}
                                 </span>
 
-                                <button
-                                    className={styles.manageBtn}
-                                    onClick={() => goToPermissions(profile)}
-                                >
-                                    Accesos
-                                    <span className={styles.manageBtnArrow}>→</span>
-                                </button>
+                                {hasControlAccess() && (
+                                    <button
+                                        className={styles.manageBtn}
+                                        onClick={() => goToPermissions(profile)}
+                                    >
+                                        Accesos
+                                        <span className={styles.manageBtnArrow}>→</span>
+                                    </button>
+                                )}
                             </div>
-
                         </article>
                     ))
                 )}

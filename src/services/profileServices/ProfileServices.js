@@ -1,29 +1,47 @@
 ﻿import api from "../api";
 
-/**
- * Obtiene los modulos permitidos para un perfil dado.
- * El Bearer token se adjunta automaticamente via el interceptor de api.js.
- *
- * @param {number|string} proId - ID del perfil (viene de user.profile.proId tras el login)
- * @returns {Promise<Array>} Array de modulos { moduleName, entryAllowed, subModules[] }
- */
+// Controlador: RbacController
 export const getProfileModules = async (proId) => {
-
   const res = await api.get(`/profiles/${proId}/modules`);
-
-  // El backend devuelve { code, data: [...], message, success }
   return res.data?.data ?? res.data;
 };
 
-/**
- * Obtiene la lista completa de perfiles del sistema.
- *
- * @returns {Promise<Array>} Array de perfiles { proId, proName, proState, isDefault }
- */
+// Controlador: RbacController
+export const updateEntryAllowed = async (profileId, moduleId, entryAllowed) => {
+  const res = await api.patch(
+    `/profiles/${profileId}/modules/${moduleId}/entry-allowed`,
+    { entryAllowed }
+  );
+  return res.data?.data ?? res.data;
+};
+
+// Controlador: RbacController
+export const updateActionAllowed = async (profileId, moduleId, subModuleId, code, allowed) => {
+  const res = await api.patch(
+    `/profiles/${profileId}/modules/${moduleId}/submodules/${subModuleId}/actions/${code}`,
+    { allowed }
+  );
+  return res.data?.data ?? res.data;
+};
+
+// Controlador: PermissionProfilesModuleController
+export const grantSubModule = async (profileId, moduleId, subModuleId) => {
+  const res = await api.post(
+    `/PermissionProMod/${profileId}/modules/${moduleId}/submodules/${subModuleId}`
+  );
+  return res.data?.data ?? res.data;
+};
+
+// Controlador: PermissionProfilesModuleController
+export const revokeSubModule = async (profileId, moduleId, subModuleId) => {
+  const res = await api.delete(
+    `/PermissionProMod/${profileId}/modules/${moduleId}/submodules/${subModuleId}`
+  );
+  return res.data?.data ?? res.data;
+};
+
+// Controlador: ProfileController
 export const getAllProfiles = async () => {
-
   const res = await api.get(`/profile/all`);
-
-  // El backend devuelve { code, data: [...], message, success }
   return res.data?.data ?? res.data;
 };
