@@ -1,0 +1,63 @@
+.department-form {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background: var(--surface-alt);
+  box-shadow: 0 2px 6px rgba(11, 59, 89, 0.04);
+  display: grid;
+  gap: 0.6rem;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row input,
+.form-row select {
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba(11, 59, 89, 0.06);
+}
+
+.form-row label {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 0.5px solid;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.12s;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.btn-cancel {
+  background: #ffffff;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+
+.btn-cancel:hover {
+  background: #f1f5f9;
+}

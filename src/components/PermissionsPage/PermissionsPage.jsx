@@ -12,13 +12,6 @@ import {
     updateEntryAllowed,
 } from "../../services/profileServices/ProfileServices";
 
-const ACTION_LABELS = {
-    R: "Listar",
-    C: "Agregar",
-    U: "Editar",
-    D: "Borrar",
-};
-
 const ACTION_ORDER = ["R", "C", "U", "D"];
 
 const getSubModuleState = (subModule) => {
@@ -216,6 +209,7 @@ export default function PermissionsPage() {
                     <p className={styles.emptyText}>{loadError}</p>
                 </div>
             ) : (
+
                 /* Módulos */
                 <div className={styles.moduleList}>
                     {filteredModules.length === 0 ? (
@@ -223,8 +217,15 @@ export default function PermissionsPage() {
                             <span className={styles.emptyIcon}>◌</span>
                             <p className={styles.emptyText}>No se encontraron submódulos con ese criterio.</p>
                         </div>
-                    ) : (
-                        filteredModules.map((module) => (
+
+                    ) : (filteredModules.map((module) => {
+
+                        // Códigos de acción que realmente existen en este módulo (según la data real)
+                        const moduleActionCodes = [...new Set(
+                            module.subModules.flatMap((sm) => sm.actions.map((a) => a.code))
+                        )];
+
+                        return (
                             <section key={module.moduleSec} className={styles.moduleBlock}>
 
                                 <div className={styles.moduleHeader}>
@@ -237,11 +238,18 @@ export default function PermissionsPage() {
 
                                     <div className={styles.tableHead}>
                                         <span className={styles.colEntity}>Submódulo</span>
-                                        {ACTION_ORDER.map((code) => (
-                                            <span key={code} className={styles.colAction}>
-                                                {ACTION_LABELS[code]}
-                                            </span>
-                                        ))}
+                                        {moduleActionCodes.map((code) => {
+                                            // Busca cualquier acción con ese código, en cualquier submódulo del módulo,
+                                            // solo para sacar el "name" (el texto ya viene del backend, no hay que traducirlo)
+                                            const sample = module.subModules
+                                                .flatMap((sm) => sm.actions)
+                                                .find((a) => a.code === code);
+                                            return (
+                                                <span key={code} className={styles.colAction}>
+                                                    {sample?.name ?? code}
+                                                </span>
+                                            );
+                                        })}
                                         <span className={styles.colState}>Estado</span>
                                         <span className={styles.colDelete}></span>
                                     </div>
@@ -255,7 +263,7 @@ export default function PermissionsPage() {
                                                     <p className={styles.subUrl}>{sub.url}</p>
                                                 </div>
 
-                                                {ACTION_ORDER.map((code) => {
+                                                {moduleActionCodes.map((code) => {
                                                     const action = sub.actions.find((a) => a.code === code);
                                                     const key = `${module.moduleSec}-${sub.id}-${code}`;
                                                     const isPending = pendingKey === key;
@@ -269,8 +277,7 @@ export default function PermissionsPage() {
                                                                 onClick={() =>
                                                                     handleToggle(module.moduleSec, sub.id, action)
                                                                 }
-                                                                className={`${styles.toggle} ${action?.allowed ? styles.toggleOn : ""
-                                                                    }`}
+                                                                className={`${styles.toggle} ${action?.allowed ? styles.toggleOn : ""}`}
                                                             >
                                                                 <span className={styles.toggleThumb} />
                                                             </button>
@@ -297,8 +304,8 @@ export default function PermissionsPage() {
                                     })}
                                 </div>
                             </section>
-                        ))
-                    )}
+                        );
+                    }))}
                 </div>
             )}
         </div>

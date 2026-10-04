@@ -1,0 +1,46 @@
+.departments-page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--shell-text);
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-align: left;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  padding: 1rem 0;
+}
+
+.cn-loading,
+.cn-error,
+.cn-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #888;
+}
+
+.cn-error {
+  color: #dc2626;
+}

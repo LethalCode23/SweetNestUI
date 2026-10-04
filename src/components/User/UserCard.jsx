@@ -1,55 +1,79 @@
+import { useNavigate } from "react-router-dom";
+import { KeyRound, Pencil, Trash2 } from "lucide-react";
 import styles from "./UserCard.module.css";
 import { useAuth } from "../../context/AuthContext";
-import { MODULES, ACTIONS } from "../../constants/modules";
+import { MODULES, ACTIONS } from "../../constants/modules"
 
-const getInitials = (firstName = "", lastName = "") =>
+const initials = (firstName = "", lastName = "") =>
   `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase();
 
-const UserCard = ({ user, onEdit, onDelete }) => {
+export default function UserCard({ user, onEdit, onDelete }) {
 
   const { hasActionPermission } = useAuth();
-  const initials = getInitials(user.firstName, user.lastName);
-  const isAdmin = user.profile?.proId === 1 || user.profile?.proName?.toLowerCase().includes("admin");
+  const navigate = useNavigate();
   const isActive = user.profile?.proState === "A";
+  const profileId = user.profile?.proId;
+
+  const handlePermissions = () => {
+    if (profileId) {
+      navigate(`/dashboard/profiles/${profileId}/permissions`, {
+        state: { profileName: user.profile?.proName ?? `Perfil ${profileId}` },
+      });
+    }
+  };
 
   return (
     <article className={styles.card}>
-      {/* Avatar */}
-      <div className={styles.avatar}>{initials}</div>
 
-      {/* Info */}
-      <div className={styles.info}>
-        <p className={styles.name}>
-          {user.firstName} {user.lastName}
-        </p>
-        <p className={styles.email}>{user.email}</p>
-        <span className={`${styles.profileBadge} ${isAdmin ? styles.admin : styles.user}`}>
-          {isAdmin ? "⬡ Admin" : "◈ Usuario"}
-        </span>
+      <div className={styles.left}>
+        <div className={styles.avatar}>{initials(user.firstName, user.lastName)}</div>
+        <div className={styles.info}>
+          <p className={styles.name}>
+            {user.firstName} {user.lastName}
+          </p>
+          <p className={styles.email}>{user.email}</p>
+        </div>
       </div>
 
-      {/* Estado */}
-      <span className={`${styles.stateBadge} ${isActive ? styles.active : styles.inactive}`}>
-        {isActive ? "Activo" : "Inactivo"}
-      </span>
+      <div className={styles.right}>
+        <span className={styles.profileBadge}>{user.profile?.proName ?? "Sin perfil"}</span>
 
-      {/* Acciones */}
-      <div className={styles.actions}>
+        <span className={`${styles.stateDot} ${isActive ? styles.active : styles.inactive}`} />
 
-        {hasActionPermission(MODULES.USERS, ACTIONS.UPDATE) && (
-          <button className={styles.btnEdit} onClick={() => onEdit(user)}>
-            ✏ Editar
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.actionBtn}
+            title={profileId ? `Ver permisos (${user.profile?.proName})` : "Sin perfil asignado"}
+            disabled={!profileId}
+            onClick={handlePermissions}
+          >
+            <KeyRound size={15} />
           </button>
-        )}
 
-        {hasActionPermission(MODULES.USERS, ACTIONS.DELETE) && (
-          <button className={styles.btnDelete} onClick={() => onDelete(user)}>
-            🗑 Eliminar
-          </button>
-        )}
+          {hasActionPermission(MODULES.USERS, ACTIONS.UPDATE) && (
+            <button
+              type="button"
+              className={styles.actionBtn}
+              title="Editar usuario"
+              onClick={() => onEdit(user)}
+            >
+              <Pencil size={15} />
+            </button>
+          )}
+
+          {hasActionPermission(MODULES.USERS, ACTIONS.DELETE) && (
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${styles.danger}`}
+              title="Eliminar usuario"
+              onClick={() => onDelete(user)}
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );
-};
-
-export default UserCard;
+}

@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import "../Country/CountryComponent.css";
+import styles from "./CountryPage.module.css";
 import { getAll, createCountry, updateCountry, deleteCountry } from "../../services/countryServices/countryService";
 import { CountryCard } from "../Country/CountryCard";
 import { CountryForm } from "../Country/CountryForm";
+import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 export const CountryComponent = () => {
 
+  const { hasActionPermission } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -66,18 +71,26 @@ export const CountryComponent = () => {
     }
   };
 
-  if (loading) return <div className="cn-loading">Cargando...</div>;
-  if (error) return <div className="cn-error">Error: {error}</div>;
+  if (loading) return <div className={styles["cn-loading"]}>Cargando...</div>;
+  if (error) return <div className={styles["cn-error"]}>Error: {error}</div>;
 
   return (
-    
-    <div className="country-wrapper">
 
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-        <h3>Países</h3>
+    <div className={styles["countries-page"]}>
+
+      <div className={styles["page-header"]}>
         <div>
-          <button className="btn btn-primary" onClick={handleCreate}>Nuevo país</button>
+          <h1 className={styles["page-title"]}>Países</h1>
+          <p className={styles["page-subtitle"]}>Gestión de los países donde se encuentran los hoteles</p>
         </div>
+
+        {hasActionPermission(MODULES.COUNTRIES, ACTIONS.CREATE) && (
+
+          <button className="btn-primary" onClick={handleCreate}>
+            <Plus size={15} style={{ marginRight: 6 }} />
+            Nuevo país
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -85,9 +98,9 @@ export const CountryComponent = () => {
       )}
 
       {data.length === 0 ? (
-        <div className="cn-empty">No hay países disponibles.</div>
+        <div className={styles["cn-empty"]}>No hay países disponibles.</div>
       ) : (
-        <div className="country-grid">
+        <div className={styles["countries-grid"]}>
           {data.map((c) => (
             <CountryCard key={c.paiSec} country={c} onEdit={handleEdit} onDelete={handleDelete} />
           ))}

@@ -1,26 +1,23 @@
 import { useState, useEffect } from "react";
+import styles from "./DepartmentForm.module.css";
 import { getAll as getCountries } from "../../services/countryServices/countryService";
 
 export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
-  const [form, setForm] = useState({ depName: "", depState: "A", depSec: null, depPaiSec: null });
+  const [form, setForm] = useState(() => ({
+    depName: initial.depName || "",
+    depState: initial.depState || "A",
+    depSec: initial.depSec ?? null,
+    depPaiSec: initial.pais?.paiSec || initial.depPaiSec || null,
+  }));
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    if (initial) {
-      setForm({ depName: initial.depName || "", depState: initial.depState || "A", depSec: initial.depSec || null, depPaiSec: initial.pais?.paiSec || initial.depPaiSec || null });
-    }
-    loadCountries();
-  }, [initial]);
-
-  const loadCountries = async () => {
-    try {
-      const res = await getCountries();
-      setCountries(res);
-    } catch (err) {
-      console.error(err);
-      setCountries([]);
-    }
-  };
+    let active = true;
+    getCountries()
+      .then((res) => { if (active) setCountries(res); })
+      .catch(() => { if (active) setCountries([]); });
+    return () => { active = false; };
+  }, []);
 
   const handleChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
 
@@ -29,10 +26,9 @@ export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
     if (!form.depName.trim()) return alert("Nombre requerido");
 
     const payload = {
-      // depSec: form.depSec,
+      depSec: form.depSec,
       depName: form.depName,
       depState: form.depState,
-      // depPaiSec: Number(form.depPaiSec)
       countryResponseDto: {
         paiSec: Number(form.depPaiSec),
         paiName: "" // si el backend no lo usa para guardar, puedes mandarlo vacío
@@ -43,13 +39,13 @@ export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
   };
 
   return (
-    <form className="country-form" onSubmit={submit}>
-      <div className="form-row">
+    <form className={styles["department-form"]} onSubmit={submit}>
+      <div className={styles["form-row"]}>
         <label>Nombre</label>
         <input name="depName" value={form.depName} onChange={handleChange} />
       </div>
 
-      <div className="form-row">
+      <div className={styles["form-row"]}>
         <label>País</label>
         <select name="depPaiSec" value={form.depPaiSec || ""} onChange={handleChange}>
           <option value="">-- seleccionar --</option>
@@ -59,7 +55,7 @@ export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
         </select>
       </div>
 
-      <div className="form-row">
+      <div className={styles["form-row"]}>
         <label>Estado</label>
         <select name="depState" value={form.depState} onChange={handleChange}>
           <option value="A">Activo</option>
@@ -67,9 +63,9 @@ export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
         </select>
       </div>
 
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary">Guardar</button>
-        <button type="button" className="btn" onClick={onCancel}>Cancelar</button>
+      <div className={styles["form-actions"]}>
+        <button type="submit" className={`${styles.btn} ${styles["btn-primary"]}`}>Guardar</button>
+        <button type="button" className={`${styles.btn} ${styles["btn-cancel"]}`} onClick={onCancel}>Cancelar</button>
       </div>
     </form>
   );

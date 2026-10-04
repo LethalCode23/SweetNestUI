@@ -1,83 +1,98 @@
 import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 import CityForm from "../components/City/CityForm";
 import CityCard from "../components/City/CityCard";
-import { getCities, createCity, updateCity, deleteCity } from "../services/cityServices/cityService";
-import "../components/City/CitiesCrudList.css";
+import { deleteCity, getCities } from "../services/cityServices/cityService";
+import styles from "../components/City/CityPage.module.css";
 import { useAuth } from "../context/AuthContext";
 import { MODULES, ACTIONS } from "../constants/modules";
 
 const CitiesPage = () => {
 
   const { hasActionPermission } = useAuth();
-  const [cities, setCities] = useState([]);
-  const [editingCity, setEditingCity] = useState(null);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState(null);
 
-  const fetchCities = async () => {
-    const data = await getCities();
-    setCities(data);
+  const load = async () => {
+    try {
+      setData(await getCities());
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   useEffect(() => {
-    fetchCities();
+    let active = true;
+    getCities()
+      .then((res) => { if (active) setData(res); })
+      .catch((err) => { if (active) setError(err.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
+
+  const handleCreate = () => { setEditing(null); setShowForm(true); };
+
+  const handleEdit = (city) => { setEditing(city); setShowForm(true); };
+
+  const handleDelete = async (city) => {
+    if (!confirm(`Eliminar ${city.citName}?`)) return;
+    try {
+      await deleteCity(city.citSec);
+      await load();
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  if (loading) return <div className={styles["cn-loading"]}>Cargando...</div>;
+  if (error) return <div className={styles["cn-error"]}>Error: {error}</div>;
 
   return (
 
-    <div className="cities-page">
+    <div className={styles["cities-page"]}>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3>Ciudades</h3>
+      <div className={styles["page-header"]}>
         <div>
-          {!showForm && !editingCity && hasActionPermission(MODULES.cities, ACTIONS.create) && (
-
-            <button className="btn btn-primary"
-              onClick={() => setShowForm(true)}
-              style={{ marginBottom: '18px' }}>Crear nueva ciudad</button>
-          )}
+          <h1 className={styles["page-title"]}>Ciudades</h1>
+          <p className={styles["page-subtitle"]}>Gestión de las ciudades de cada departamento</p>
         </div>
+
+        {hasActionPermission(MODULES.CITIES, ACTIONS.CREATE) && (
+
+          <button className="btn-primary" onClick={handleCreate}>
+            <Plus size={15} style={{ marginRight: 6 }} />
+            Nueva ciudad
+          </button>
+        )}
       </div>
 
-      {(showForm || editingCity) && (
-        <>
-          <CityForm
-            onSuccess={fetchCities}
-            editingCity={editingCity}
-            setEditingCity={setEditingCity}
-            onClose={() => {
-              setShowForm(false);
-              setEditingCity(null);
-            }}
-          />
-          {!editingCity && (
-            <button onClick={() => setShowForm(false)} style={{ marginTop: '8px' }}>Cancelar</button>
-          )}
-        </>
+      {showForm && (
+        <CityForm
+          key={editing?.citSec ?? "new"}
+          editingCity={editing}
+          onSuccess={load}
+          onClose={() => { setShowForm(false); setEditing(null); }}
+        />
       )}
 
-      {cities.length === 0 ? (
-        <div className="cn-empty">No hay ciudades disponibles.</div>
+      {data.length === 0 ? (
+        <div className={styles["cn-empty"]}>No hay ciudades disponibles.</div>
       ) : (
-
-        <div className="crud-city-list">
-          {cities.map((city) => (
+        <div className={styles["cities-grid"]}>
+          {data.map((city) => (
             <CityCard
               key={city.citSec}
               city={city}
-              onEdit={() => {
-                setEditingCity(city);
-                setShowForm(true);
-              }}
-              onDelete={async () => {
-                if (window.confirm('¿Eliminar ciudad?')) {
-                  await deleteCity(city.citSec);
-                  fetchCities();
-                }
-              }}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           ))}
         </div>
       )}
+
     </div>
   );
 };

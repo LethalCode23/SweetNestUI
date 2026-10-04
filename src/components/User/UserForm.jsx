@@ -1,40 +1,29 @@
 import { useEffect, useState } from "react";
 import { createUser, updateUser, getProfiles } from "../../services/userServices/userService";
 import styles from "./UserForm.module.css";
-import { MODULES, ACTIONS } from "../../constants/modules";
-import { useAuth } from "../../context/AuthContext";
 
-const initialState = {
+const EMPTY_FORM = {
   firstName: "",
   lastName: "",
   email: "",
   password: "",
   profileId: "",
-  active: true,
 };
 
-const UserForm = ({ onSuccess, editingUser, setEditingUser, onClose }) => {
+export default function UserForm({ editingUser, setEditingUser, onSuccess, onClose }) {
 
-  const [form, setForm] = useState(initialState);
+  const [form, setForm] = useState(EMPTY_FORM);
   const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const { hasActionPermission } = useAuth();
+  const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
-  // Cargar perfiles disponibles
+  const isEditing = !!editingUser;
+
   useEffect(() => {
-    getProfiles()
-      .then(setProfiles)
-      .catch(() => {
-        // Si el endpoint de perfiles no existe, usar perfiles dummy
-        setProfiles([
-          { proId: 1, proName: "Administrador" },
-          { proId: 2, proName: "Usuario" },
-        ]);
-      });
+    getProfiles().then(setProfiles).catch(() => setProfiles([]));
   }, []);
 
-  // Rellenar formulario al editar
   useEffect(() => {
     if (editingUser) {
       setForm({
@@ -43,195 +32,153 @@ const UserForm = ({ onSuccess, editingUser, setEditingUser, onClose }) => {
         email: editingUser.email ?? "",
         password: "",
         profileId: editingUser.profile?.proId ?? "",
-        active: editingUser.profile?.proState === "A",
       });
-    } else {
-      setForm(initialState);
     }
-    setError("");
   }, [editingUser]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+    setErrors((err) => ({ ...err, [name]: null }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.firstName.trim()) newErrors.firstName = "Requerido";
+    if (!form.lastName.trim()) newErrors.lastName = "Requerido";
+    if (!form.email.trim()) newErrors.email = "Requerido";
+    if (!isEditing && !form.password.trim()) newErrors.password = "Requerido";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setApiError(null);
 
-    const payload = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      ...(form.password ? { password: form.password } : {}),
-      profileId: Number(form.profileId),
-      state: form.active ? "A" : "I",
-    };
+    if (!validate()) return;
 
+    setSaving(true);
     try {
-      if (editingUser) {
-        await updateUser(editingUser.email, payload);
-        setEditingUser(null);
+      if (isEditing) {
+        await updateUser(editingUser.userSec, {
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          profileId: form.profileId || null,
+        });
       } else {
-        await createUser(payload);
+        await createUser({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          password: form.password,
+          profileId: form.profileId || null,
+        });
       }
-      setForm(initialState);
       onSuccess();
-      if (onClose) onClose();
+      handleClose();
     } catch (err) {
-      setError(
-        err?.response?.data?.message ??
-        "Ocurrió un error. Verifica los datos e intenta nuevamente."
-      );
+      setApiError(err?.response?.data?.message ?? "No se pudo guardar el usuario.");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   const handleClose = () => {
-    setForm(initialState);
-    setError("");
-    if (setEditingUser) setEditingUser(null);
-    if (onClose) onClose();
+    setForm(EMPTY_FORM);
+    setEditingUser(null);
+    onClose();
   };
 
   return (
-    <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && handleClose()}>
+    <div className={styles.overlay}>
       <div className={styles.modal}>
-        {/* Header */}
+
         <div className={styles.header}>
-          <h2 className={styles.title}>
-            <span>{editingUser ? "✏" : "＋"}</span>
-            {editingUser ? "Editar usuario" : "Nuevo usuario"}
-          </h2>
-          <button className={styles.closeBtn} onClick={handleClose} type="button">
-            ✕
-          </button>
+          <h3 className={styles.title}>{isEditing ? "Editar usuario" : "Nuevo usuario"}</h3>
+          <button type="button" className={styles.closeBtn} onClick={handleClose}>✕</button>
         </div>
 
-        {/* Formulario */}
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={styles.form}>
+
+          {apiError && <p className={styles.apiError}>{apiError}</p>}
+
           <div className={styles.row}>
             <div className={styles.field}>
-              <label className={styles.label} htmlFor="firstName">Nombre</label>
+              <label className={styles.label}>Nombre *</label>
               <input
-                id="firstName"
-                className={styles.input}
-                type="text"
                 name="firstName"
-                placeholder="Ej: Cristian"
                 value={form.firstName}
                 onChange={handleChange}
-                required
+                className={`${styles.input} ${errors.firstName ? styles.inputError : ""}`}
               />
+              {errors.firstName && <span className={styles.errorText}>{errors.firstName}</span>}
             </div>
+
             <div className={styles.field}>
-              <label className={styles.label} htmlFor="lastName">Apellido</label>
+              <label className={styles.label}>Apellido *</label>
               <input
-                id="lastName"
-                className={styles.input}
-                type="text"
                 name="lastName"
-                placeholder="Ej: Díaz"
                 value={form.lastName}
                 onChange={handleChange}
-                required
+                className={`${styles.input} ${errors.lastName ? styles.inputError : ""}`}
               />
+              {errors.lastName && <span className={styles.errorText}>{errors.lastName}</span>}
             </div>
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="email">Correo electrónico</label>
+            <label className={styles.label}>Email *</label>
             <input
-              id="email"
-              className={styles.input}
               type="email"
               name="email"
-              placeholder="usuario@sweetnest.com"
               value={form.email}
               onChange={handleChange}
-              required
-              disabled={!!editingUser}
+              className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
             />
+            {errors.email && <span className={styles.errorText}>{errors.email}</span>}
           </div>
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">
-              {editingUser ? "Nueva contraseña (opcional)" : "Contraseña"}
-            </label>
-            <input
-              id="password"
-              className={styles.input}
-              type="password"
-              name="password"
-              placeholder={editingUser ? "Dejar en blanco para no cambiar" : "••••••••"}
-              value={form.password}
-              onChange={handleChange}
-              {...(!editingUser ? { required: true } : {})}
-            />
-          </div>
+          {!isEditing && (
+            <div className={styles.field}>
+              <label className={styles.label}>Contraseña *</label>
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
+              />
+              {errors.password && <span className={styles.errorText}>{errors.password}</span>}
+            </div>
+          )}
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="profileId">Perfil / Rol</label>
+            <label className={styles.label}>Perfil</label>
             <select
-              id="profileId"
-              className={styles.select}
               name="profileId"
               value={form.profileId}
               onChange={handleChange}
-              required
+              className={styles.input}
             >
-              <option value="">Selecciona un perfil</option>
+              <option value="">Por defecto (Usuario)</option>
               {profiles.map((p) => (
-                <option key={p.proId} value={p.proId}>
-                  {p.proName}
-                </option>
+                <option key={p.proId} value={p.proId}>{p.proName}</option>
               ))}
             </select>
           </div>
 
-          <div className={styles.toggleRow}>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                name="active"
-                checked={form.active}
-                onChange={handleChange}
-              />
-              <span className={styles.slider} />
-            </label>
-            <span className={styles.toggleLabel}>
-              {form.active ? "Usuario activo" : "Usuario inactivo"}
-            </span>
-          </div>
-
-          {error && <p className={styles.errorMsg}>{error}</p>}
-
-          <div className={styles.footer}>
-            <button
-              type="button"
-              className={styles.btnCancel}
-              onClick={handleClose}
-            >
+          <div className={styles.actions}>
+            <button type="button" className={styles.cancelBtn} onClick={handleClose}>
               Cancelar
             </button>
-            <button
-              type="submit"
-              className={styles.btnSave}
-              disabled={loading}
-            >
-              {loading ? "Guardando…" : editingUser ? "Actualizar" : "Crear usuario"}
+            <button type="submit" className={styles.saveBtn} disabled={saving}>
+              {saving ? "Guardando..." : isEditing ? "Guardar cambios" : "Crear usuario"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
-
-export default UserForm;
+}

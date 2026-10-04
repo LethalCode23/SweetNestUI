@@ -14,10 +14,12 @@ import Dashboard from "./components/layout/Dashboard/Dashboard";
 import CategoryPage from "./pages/CategoryPage";
 import HotelSearchPage from "./pages/HotelSearchPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import HotelDetailPage from "./pages/HotelDetailPage";
 import UsersPage from "./pages/UsersPage";
 import ProfilesPage from "../src/components/Profile/ProfilesPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import PermissionsPage from "../src/components/PermissionsPage/PermissionsPage";
+import FeaturesPage from "./pages/FeaturesPage";
 
 const Layout = () => (
   <>
@@ -39,6 +41,7 @@ const router = createBrowserRouter(
       children: [
         { index: true, element: <HomePage /> },
         { path: "hoteles", element: <HotelSearchPage /> },
+        { path: "hoteles/:id", element: <HotelDetailPage /> },
       ],
     },
 
@@ -59,7 +62,7 @@ const router = createBrowserRouter(
         {
           path: "hotels",
           element: (
-            <ProtectedRoute requiredSubModule="hotels">
+            <ProtectedRoute requiredSubModule="Hoteles">
               <HotelsPage />
             </ProtectedRoute>
           ),
@@ -67,7 +70,7 @@ const router = createBrowserRouter(
         {
           path: "countries",
           element: (
-            <ProtectedRoute requiredSubModule="countries">
+            <ProtectedRoute requiredSubModule="Países">
               <CountriesPage />
             </ProtectedRoute>
           ),
@@ -75,7 +78,7 @@ const router = createBrowserRouter(
         {
           path: "departments",
           element: (
-            <ProtectedRoute requiredSubModule="departments">
+            <ProtectedRoute requiredSubModule="Departamentos">
               <DepartmentsPage />
             </ProtectedRoute>
           ),
@@ -83,7 +86,7 @@ const router = createBrowserRouter(
         {
           path: "cities",
           element: (
-            <ProtectedRoute requiredSubModule="cities">
+            <ProtectedRoute requiredSubModule="Ciudades">
               <CitiesPage />
             </ProtectedRoute>
           ),
@@ -91,15 +94,23 @@ const router = createBrowserRouter(
         {
           path: "categories",
           element: (
-            <ProtectedRoute requiredSubModule="categories">
+            <ProtectedRoute requiredSubModule="Categorías">
               <CategoryPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "features",
+          element: (
+            <ProtectedRoute requiredSubModule="Características">
+              <FeaturesPage />
             </ProtectedRoute>
           ),
         },
         {
           path: "users",
           element: (
-            <ProtectedRoute requiredSubModule="users">
+            <ProtectedRoute requiredSubModule="Usuarios">
               <UsersPage />
             </ProtectedRoute>
           ),
@@ -107,7 +118,7 @@ const router = createBrowserRouter(
         {
           path: "userProfile",
           element: (
-            <ProtectedRoute requiredSubModule="userProfile">
+            <ProtectedRoute>
               <UserProfilePage />
             </ProtectedRoute>
           ),
@@ -115,7 +126,7 @@ const router = createBrowserRouter(
         {
           path: "profiles",
           element: (
-            <ProtectedRoute requiredSubModule="profiles">
+            <ProtectedRoute requiredSubModule="Perfiles">
               <ProfilesPage />
             </ProtectedRoute>
           ),

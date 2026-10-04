@@ -1,12 +1,13 @@
 
 export const MODULES = {
-    HOTELS: "hotels",
-    COUNTRIES: "countries",
-    DEPARTMENTS: "departments",
-    CITIES: "cities",
-    CATEGORIES: "categories",
-    USERS: "users",
-    PROFILE: "profile",
+    HOTELS: "Hoteles",
+    COUNTRIES: "Países",
+    DEPARTMENTS: "Departamentos",
+    CITIES: "Ciudades",
+    CATEGORIES: "Categorías",
+    USERS: "Usuarios",
+    PROFILE: "Perfiles",
+    FEATURES: "Características",
 };
 
 export const ACTIONS = {

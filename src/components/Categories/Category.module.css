@@ -1,5 +1,29 @@
-.country-wrapper {
-  padding: 1.5rem;
+.categories-page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--shell-text);
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-align: left;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: #475569;
+  margin-top: 2px;
 }
 
 .categories-grid {

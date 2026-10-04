@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import { getAll, createCategory, updateCategory, deleteCategory } from "../../services/categoryServices/categoryService";
 import { CategoryCard } from "../Categories/CategoryCard";
 import { CategoryForm } from "../Categories/CategoryForm";
@@ -80,14 +81,18 @@ export const CategoryComponent = () => {
   if (error) return <div className={categoryStyles["cn-error"]}>Error: {error}</div>;
 
   return (
-    <div className={categoryStyles["country-wrapper"]}>
+    <div className={categoryStyles["categories-page"]}>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h3>Categorías</h3>
+      <div className={categoryStyles["page-header"]}>
+        <div>
+          <h1 className={categoryStyles["page-title"]}>Categorías</h1>
+          <p className={categoryStyles["page-subtitle"]}>Gestión de las categorías de hoteles</p>
+        </div>
 
         {hasActionPermission(MODULES.CATEGORIES, ACTIONS.CREATE) && (
 
-          <button className={`${categoryStyles.btn} ${categoryStyles["btn-primary"]}`} onClick={handleCreate}>
+          <button className="btn-primary" onClick={handleCreate}>
+            <Plus size={15} style={{ marginRight: 6 }} />
             Nueva categoría
           </button>
         )}

@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Js/constants";
 
 export const HotelCard = ({ hotel }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [current, setCurrent] = useState(0);
   const [imgError, setImgError] = useState(false);
+  const navigate = useNavigate();
 
   const { hotName, hotDescription, hotAddress, hotCost, hotelImagesUrl, categories } = hotel;
 
@@ -27,7 +29,7 @@ export const HotelCard = ({ hotel }) => {
 
   return (
 
-    <article className="hotel-card">
+    <article className="hotel-card" onClick={() => navigate(`/hoteles/${hotel.hotSec}`)} style={{ cursor: "pointer" }}>
       <div
         className="hotel-media"
         onMouseEnter={() => setIsHovered(true)}
@@ -79,7 +81,7 @@ export const HotelCard = ({ hotel }) => {
             <span className="loc-icon">📍</span>
             {hotAddress}
           </span>
-          <button className="btn-book">Book now</button>
+          <button className="btn-book" onClick={(e) => { e.stopPropagation(); navigate(`/hoteles/${hotel.hotSec}`); }}>Book now</button>
         </div>
       </div>
     </article>

@@ -32,8 +32,14 @@ export const findByHotel = async (page, size, filters = {}) => { // 👈 este es
   return res.data;
 };
 
+export const findDetailById = async (hotSec) => { // metodo ayuda a consumir el detalle del hotel
+
+  const res = await api.get(`${BASE}/findDetailById/${hotSec}`);
+  return res.data;
+}
+
 export const getHotels = async () => { /* este lo uso para crud */
-  
+
   const res = await api.get(`${BASE}/all`);
   return res.data;
 }
@@ -45,7 +51,7 @@ export const createHotel = async (payload) => {
 };
 
 export const updateHotel = async (hotSec, payload) => {
-
+  console.log("Payload", payload);
   const res = await api.put(`${BASE}/update/${hotSec}`, payload);
   return res.data;
 }

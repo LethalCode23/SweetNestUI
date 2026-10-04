@@ -1,0 +1,264 @@
+/* ============================
+   BookingCard — Sticky Sidebar
+   ============================ */
+
+.card {
+  position: sticky;
+  top: 100px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--surface, #fff);
+  padding: 28px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Price header */
+.priceHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.originalPrice {
+  font-size: 13px;
+  color: var(--muted, #6B7280);
+  text-decoration: line-through;
+}
+
+.discountBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #05DBF2, #115D8C);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.currentPrice {
+  margin-top: 4px;
+}
+
+.priceValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+}
+
+.priceUnit {
+  font-size: 14px;
+  color: var(--muted, #6B7280);
+}
+
+.ratingMini {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.starFilled {
+  fill: var(--text, #0B3B59);
+  color: var(--text, #0B3B59);
+}
+
+.ratingValue {
+  font-weight: 600;
+  color: var(--text, #0B3B59);
+}
+
+.ratingCount {
+  color: var(--muted, #6B7280);
+}
+
+/* Selectors */
+.selectors {
+  margin-top: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dateField {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dateField:first-child {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dateField:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.fieldLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text, #0B3B59);
+}
+
+.dateInput {
+  margin-top: 4px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: var(--text, #0B3B59);
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.guestRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.guestRow:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.guestInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.guestValue {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--text, #0B3B59);
+}
+
+.chevron {
+  color: var(--muted, #6B7280);
+}
+
+/* Reserve button */
+.reserveBtn {
+  margin-top: 18px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary, #115D8C), var(--primary-700, #0B3B59));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(17, 93, 140, 0.35);
+}
+
+.reserveBtn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(17, 93, 140, 0.45);
+}
+
+.reserveBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.noCharge {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted, #6B7280);
+}
+
+/* Breakdown */
+.breakdown {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.breakdownRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.breakdownLabel {
+  color: var(--text, #0B3B59);
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.15);
+  text-underline-offset: 3px;
+  font-weight: 400;
+}
+
+.breakdownValue {
+  color: var(--text, #0B3B59);
+  font-weight: 500;
+}
+
+.discountRow {
+  color: #059669;
+}
+
+.discountRow dt,
+.discountRow dd {
+  color: #059669;
+  font-weight: 500;
+}
+
+/* Total */
+.totalRow {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.totalLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+}
+
+.totalValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+}
+
+.taxNote {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted, #6B7280);
+}

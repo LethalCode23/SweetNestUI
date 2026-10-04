@@ -1,16 +1,21 @@
 import { useEffect, useState, useMemo } from "react";
+import { Plus, Search } from "lucide-react";
 import { getUsers, deleteUser } from "../services/userServices/userService";
 import UserCard from "../components/User/UserCard";
 import UserForm from "../components/User/UserForm";
 import styles from "./UsersPage.module.css";
+import { MODULES, ACTIONS } from "../constants/modules"
+import { useAuth } from "../context/AuthContext";
 
 const UsersPage = () => {
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [search, setSearch] = useState("");
+  const { hasActionPermission } = useAuth();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -40,9 +45,9 @@ const UsersPage = () => {
   }, [users, search]);
 
   // Estadísticas
-  const totalUsers  = users.length;
+  const totalUsers = users.length;
   const activeCount = users.filter((u) => u.profile?.proState === "A").length;
-  const adminCount  = users.filter((u) => u.profile?.proId === 1).length;
+  const adminCount = users.filter((u) => u.profile?.proId === 1).length;
 
   const handleEdit = (user) => {
     setEditingUser(user);
@@ -53,7 +58,7 @@ const UsersPage = () => {
 
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
-    await deleteUser(deleteTarget.email);
+    await deleteUser(deleteTarget.userSec);
     setDeleteTarget(null);
     fetchUsers();
   };
@@ -68,20 +73,26 @@ const UsersPage = () => {
             Administra los usuarios registrados en la plataforma
           </p>
         </div>
-        <button
-          className={styles.btnCreate}
-          onClick={() => {
-            setEditingUser(null);
-            setShowForm(true);
-          }}
-        >
-          ＋ Nuevo usuario
-        </button>
+
+        {hasActionPermission(MODULES.USERS, ACTIONS.CREATE) && (
+          <button
+            className="btn-primary"
+            onClick={() => {
+              setEditingUser(null);
+              setShowForm(true);
+            }}
+          >
+            <Plus size={15} style={{ marginRight: 6 }} />
+            Nuevo usuario
+          </button>
+        )}
       </div>
 
       {/* Barra de búsqueda */}
       <div className={styles.searchBar}>
-        <span className={styles.searchIcon}>🔍</span>
+        <span className={styles.searchIcon} aria-hidden="true">
+          <Search size={16} />
+        </span>
         <input
           className={styles.searchInput}
           type="text"

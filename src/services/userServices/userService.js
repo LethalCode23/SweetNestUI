@@ -1,29 +1,32 @@
-import { Environment } from "../../Environments/Environment";
 import api from "../api";
 
-const BASE = Environment.API_URL + '/user';
+// api ya tiene baseURL con /api configurado (mismo patrón que ProfileServices)
 
 export const getUsers = async () => {
-  const res = await api.get(`${BASE}/all`);
-  return res.data;
+  const res = await api.get(`/users/all`);
+  return res.data?.data ?? res.data;
 };
 
 export const getProfiles = async () => {
-  const res = await api.get(`${BASE}/profile/all`);
-  return res.data;
+  const res = await api.get(`/profile/all`);
+  return res.data?.data ?? res.data;
 };
 
 export const createUser = async (user) => {
-  const res = await api.post(`${BASE}/save`, user);
-  return res.data;
+  // La creación de usuario va por el flujo de registro
+  const res = await api.post(`/auth/register`, user);
+  return res.data?.data ?? res.data;
 };
 
-export const updateUser = async (email, user) => {
-  const res = await api.put(`${BASE}/update/${email}`, user);
-  return res.data;
+export const updateUser = async (userSec, user) => {
+  const res = await api.put(`/users/${userSec}`, user);
+  return res.data?.data ?? res.data;
 };
 
-export const deleteUser = async (email) => {
-  const res = await api.delete(`${BASE}/delete/${email}`);
-  return res.data;
+export const deleteUser = async (userSec) => {
+
+  console.log(userSec);
+  const res = await api.delete(`/users/${userSec}`);
+
+  return res.data?.data ?? res.data;
 };

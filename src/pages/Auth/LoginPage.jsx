@@ -57,7 +57,7 @@ export default function LoginPage() {
       const loggedUser = result.data;
 
       saveUser(loggedUser);
-      console.log(loggedUser);
+
       // validar el rol del usuario para redirigir
       if (loggedUser.user.role === ROLES.ADMIN) {
         navigate("/admin");

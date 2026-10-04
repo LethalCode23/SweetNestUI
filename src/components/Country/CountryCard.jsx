@@ -1,4 +1,5 @@
 import { useAuth } from "../../context/AuthContext";
+import styles from "./CountryCard.module.css";
 import { MODULES, ACTIONS } from "../../constants/modules";
 
 export const CountryCard = ({ country, onEdit, onDelete }) => {
@@ -7,37 +8,27 @@ export const CountryCard = ({ country, onEdit, onDelete }) => {
   const { paiSec, paiName, paiState } = country;
 
   return (
-    <article className="country-card" key={paiSec}>
-      <div className="country-actions left">
+    <article className={styles["country-card"]}>
+      <div className={styles["card-top"]}>
+        <div>
+          <h4 className={styles["country-name"]}>{paiName}</h4>
+          <p className={styles["country-id"]}>ID: <strong>{paiSec}</strong></p>
+        </div>
+        <span className={`${styles["state-badge"]} ${paiState === "A" ? styles.active : styles.inactive}`}>
+          {paiState === "A" ? "Activo" : "Inactivo"}
+        </span>
+      </div>
+
+      <div className={styles["card-actions"]}>
 
         {hasActionPermission(MODULES.COUNTRIES, ACTIONS.UPDATE) && (
-          <button className="btn btn-primary" onClick={() => onEdit(country)}>
-            Editar
-          </button>
+          <button className={`${styles.btn} ${styles["btn-primary"]}`} onClick={() => onEdit(country)}>Editar</button>
         )}
 
         {hasActionPermission(MODULES.COUNTRIES, ACTIONS.DELETE) && (
-          <button className="btn btn-danger" onClick={() => onDelete(country)}>
-            Eliminar
-          </button>
+          <button className={`${styles.btn} ${styles["btn-danger"]}`} onClick={() => onDelete(country)}>Eliminar</button>
         )}
-      </div>
-      <div className="card-main">
-        <div className="card-header">
-          <h4 className="country-name">{paiName}</h4>
-        </div>
 
-        <div className="card-body">
-          <p>
-            ID: <strong>{paiSec}</strong>
-          </p>
-        </div>
-      </div>
-
-      <div className="badge-wrap">
-        <span className={`state-badge ${paiState === "A" ? "active" : "inactive"}`}>
-          {paiState === "A" ? "Activo" : "Inactivo"}
-        </span>
       </div>
     </article>
   );

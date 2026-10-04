@@ -1,0 +1,98 @@
+/* Estilos del formulario de Características.
+   Extraídos de FeatureComponent.css sin cambio visual.
+   Los botones van scopeados bajo .feature-form para que
+   FeatureForm.jsx no dependa de clases globales compartidas. */
+
+.feature-form {
+  background: var(--surface-alt, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease-in-out;
+}
+
+.feature-form-header h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: var(--text, #0f172a);
+}
+
+.feature-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted, #475569);
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #cbd5e1);
+  background: #ffffff;
+  font-size: 0.95rem;
+  color: var(--text, #0f172a);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.feature-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.feature-form .btn {
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-form .btn:active {
+  transform: scale(0.98);
+}
+
+.feature-form .btn-primary {
+  background: var(--primary, #2563eb);
+  color: #ffffff;
+}
+
+.feature-form .btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.feature-form .btn-secondary {
+  background: var(--surface, #e2e8f0);
+  color: var(--text, #334155);
+}
+
+.feature-form .btn-secondary:hover {
+  background: #cbd5e1;
+}

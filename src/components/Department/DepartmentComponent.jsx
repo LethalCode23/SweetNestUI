@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import "../Country/CountryComponent.css";
+import { Plus } from "lucide-react";
+import styles from "./DepartmentPage.module.css";
 import { getAll, createDepartment, updateDepartment, deleteDepartment } from "../../services/departmentServices/departmentService";
 import { DepartmentCard } from "../Department/DepartmentCard";
 import { DepartmentForm } from "../Department/DepartmentForm";
@@ -34,23 +35,32 @@ export const DepartmentComponent = () => {
     } catch (err) { alert(err.message); }
   };
 
-  if (loading) return <div className="cn-loading">Cargando...</div>;
-  if (error) return <div className="cn-error">Error: {error}</div>;
+  if (loading) return <div className={styles["cn-loading"]}>Cargando...</div>;
+  if (error) return <div className={styles["cn-error"]}>Error: {error}</div>;
 
   return (
-    <div className="country-wrapper">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3>Departamentos</h3>
+
+    <div className={styles["departments-page"]}>
+
+      <div className={styles["page-header"]}>
+        <div>
+          <h1 className={styles["page-title"]}>Departamentos</h1>
+          <p className={styles["page-subtitle"]}>Gestión de los departamentos de cada país</p>
+        </div>
 
         {hasActionPermission(MODULES.DEPARTMENTS, ACTIONS.CREATE) && (
-          <div><button className="btn btn-primary" onClick={handleCreate}>Nuevo departamento</button></div>
+
+          <button className="btn-primary" onClick={handleCreate}>
+            <Plus size={15} style={{ marginRight: 6 }} />
+            Nuevo departamento
+          </button>
         )}
       </div>
 
-      {showForm && <DepartmentForm initial={editing || {}} onCancel={() => { setShowForm(false); setEditing(null); }} onSubmit={handleSubmit} />}
+      {showForm && <DepartmentForm key={editing?.depSec ?? "new"} initial={editing || {}} onCancel={() => { setShowForm(false); setEditing(null); }} onSubmit={handleSubmit} />}
 
-      {data.length === 0 ? <div className="cn-empty">No hay departamentos disponibles.</div> : (
-        <div className="country-grid">
+      {data.length === 0 ? <div className={styles["cn-empty"]}>No hay departamentos disponibles.</div> : (
+        <div className={styles["departments-grid"]}>
           {
             data.map((d) => <DepartmentCard key={d.depSec} department={d} onEdit={handleEdit} onDelete={handleDelete} />)
           }

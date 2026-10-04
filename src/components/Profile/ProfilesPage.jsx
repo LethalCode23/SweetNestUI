@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./ProfilesPage.module.css";
 import { useAuth } from "../../context/AuthContext";
+import { MODULES, ACTIONS } from "../../constants/modules";
 
 // Data de ejemplo -- se reemplaza luego por getAllProfiles() del service real
 const MOCK_PROFILES = [
@@ -21,7 +22,7 @@ export default function ProfilesPage() {
 
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
-    const { hasControlAccess } = useAuth();
+    const { hasControlAccess, hasActionPermission } = useAuth();
 
     const profiles = MOCK_PROFILES.filter((p) =>
         p.proName.toLowerCase().includes(search.toLowerCase())
@@ -44,10 +45,12 @@ export default function ProfilesPage() {
                         Administra los perfiles del sistema y configura sus permisos de acceso por módulo.
                     </p>
                 </div>
-                <button className={styles.newBtn}>
-                    <span className={styles.newBtnIcon}>+</span>
-                    Nuevo perfil
-                </button>
+                {hasActionPermission(MODULES.PROFILE, ACTIONS.CREATE) && (
+                    <button className={styles.newBtn}>
+                        <span className={styles.newBtnIcon}>+</span>
+                        Nuevo perfil
+                    </button>
+                )}
             </header>
 
             {/* Barra de búsqueda */}
@@ -100,7 +103,7 @@ export default function ProfilesPage() {
                                     {profile.proState === "A" ? "Activo" : "Inactivo"}
                                 </span>
 
-                                {hasControlAccess() && (
+                                {hasActionPermission(MODULES.PROFILE, ACTIONS.UPDATE) && (
                                     <button
                                         className={styles.manageBtn}
                                         onClick={() => goToPermissions(profile)}

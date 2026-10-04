@@ -1,22 +1,10 @@
-﻿import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import styles from "./Dashboard.module.css";
 import { useState, useRef, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import { ROLES } from "../../../js/roles";
-
-// Mapa de iconos para sub-modulos por nombre (fallback a icono generico)
-const MODULE_ICONS = {
-  hotels: "⌂",
-  countries: "◉",
-  departments: "❖",
-  cities: "◈",
-  categories: "◆",
-  users: "👥",
-  profile: "👤",
-  userProfile: "👤",
-  profiles: "👥",
-  PermissionsPage: "👥",
-};
+import { getModuleIcon } from "../../../constants/moduleIcons";
 
 /**
  * Extrae el segmento de ruta relativo de una URL.
@@ -30,9 +18,6 @@ export default function Dashboard() {
   const [showProfile, setShowProfile] = useState(false);
   const profileRef = useRef(null);
   const { user, logout, modules, loadingModules } = useAuth();
-
-  console.log(modules);
-  console.log(loadingModules);
 
   // Cierra el popover si se hace click fuera
   useEffect(() => {
@@ -60,7 +45,7 @@ export default function Dashboard() {
 
   return (
     <div className={styles.root}>
-      <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
+      <aside className={`${styles.sidebar} dark ${collapsed ? styles.collapsed : ""}`}>
         <div className={styles.logo}>
           <div className={styles.logoIcon}>S</div>
           <div className={styles.logoTexts}>
@@ -80,7 +65,7 @@ export default function Dashboard() {
                 <span className={styles.navLabel}>{section.moduleName}</span>
                 {(section.subModules ?? []).map((sub) => {
                   const relativePath = toRelativePath(sub.url);
-                  const icon = MODULE_ICONS[sub.name] ?? "■";
+                  const Icon = getModuleIcon(sub.name);
                   return (
                     <NavLink
                       key={sub.name}
@@ -89,7 +74,9 @@ export default function Dashboard() {
                         `${styles.navItem} ${isActive ? styles.navItemActive : ""}`
                       }
                     >
-                      <span className={styles.navIcon}>{icon}</span>
+                      <span className={styles.navIcon}>
+                        <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
+                      </span>
                       <span className={styles.navText}>{sub.name}</span>
                     </NavLink>
                   );
@@ -99,18 +86,27 @@ export default function Dashboard() {
           )}
         </nav>
 
-        <button className={styles.collapseBtn} onClick={() => setCollapsed(c => !c)}>
-          <span className={styles.collapseIcon}>{collapsed ? "›" : "‹"}</span>
+        <button
+          className={styles.collapseBtn}
+          onClick={() => setCollapsed(c => !c)}
+          aria-label={collapsed ? "Expandir menu" : "Contraer menu"}
+        >
+          <span className={styles.collapseIcon}>
+            {collapsed ? <ChevronRight size={18} aria-hidden="true" /> : <ChevronLeft size={18} aria-hidden="true" />}
+          </span>
         </button>
       </aside>
 
       <div className={styles.main}>
-        <header className={styles.topbar}>
+        <header className={`${styles.topbar} dark`}>
           <div className={styles.topbarLeft}>
             <span className={styles.topbarTitle}>Panel de administracion</span>
           </div>
           <div className={styles.topbarRight}>
-            <span className={styles.onlineBadge}>● En linea</span>
+            <span className={styles.onlineBadge}>
+              <span className={styles.onlineDot} aria-hidden="true" />
+              En linea
+            </span>
 
             {/* Avatar con popover */}
             <div className={styles.avatarWrapper} ref={profileRef}>

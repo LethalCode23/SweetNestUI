@@ -30,6 +30,7 @@ export default function HotelTable({ hotels, onEdit, onDelete }) {
             <th>Ciudad</th>
             <th>Costo / noche</th>
             <th>Categorías</th>
+            <th>Características</th>
             <th>Estado</th>
             <th></th>
           </tr>
@@ -58,9 +59,20 @@ export default function HotelTable({ hotels, onEdit, onDelete }) {
               </td>
               <td>
                 <div className={styles.catList}>
+
                   {hotel.categories?.map((c) => (
                     <span key={c.catSec} className={styles.catBadge}>
                       {c.catName}
+                    </span>
+                  )) ?? <span className={styles.none}>—</span>}
+                </div>
+              </td>
+              <td>
+                <div className={styles.feaList}>
+
+                  {hotel.features?.map((f) => (
+                    <span key={f.feaSec} className={styles.feaBadge}>
+                      {f.feaName}
                     </span>
                   )) ?? <span className={styles.none}>—</span>}
                 </div>

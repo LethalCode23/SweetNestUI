@@ -104,11 +104,8 @@ export const NavBarComponent = () => {
                     <button className="profile-menu-item" onClick={() => goTo("/dashboard")}>
                       <span>Ir al Dashboard</span>
                     </button>
-                    <button className="profile-menu-item" onClick={() => goTo("/dashboard/profile")}>
+                    <button className="profile-menu-item" onClick={() => goTo("/dashboard/userProfile")}>
                       <span>Mi Perfil</span>
-                    </button>
-                    <button className="profile-menu-item" onClick={() => goTo("/dashboard/profile")}>
-                      <span>Configuración</span>
                     </button>
                   </nav>
 

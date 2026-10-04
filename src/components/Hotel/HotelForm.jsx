@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { X, Upload, Loader2 } from "lucide-react";
-import { getHotels, deleteHotel, updateHotel, createHotel, uploadHotelImage } from "../../services/hotelServices/hotelService";
+import { updateHotel, createHotel, uploadHotelImage } from "../../services/hotelServices/hotelService";
 import { getCities } from "../../services/cityServices/cityService";
 import { getAll as getCategories } from "../../services/categoryServices/categoryService";
+import { getAllFeatures } from "../../services/featureServices/featureService";
 import { BASE_URL } from "../../Js/constants";
 import styles from "./HotelForm.module.css";
 
@@ -19,8 +20,10 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
 
   const [form, setForm] = useState(INITIAL);
   const [selectedCatIds, setSelectedCatIds] = useState([]);
+  const [selectedFeaIds, setSelectedFeaIds] = useState([]);
   const [cities, setCities] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [features, setFeatures] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [saving, setSaving] = useState(false);
@@ -30,6 +33,7 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
   useEffect(() => {
     getCities().then(setCities);
     getCategories().then(setCategories);
+    getAllFeatures().then(setFeatures);
   }, []);
 
   useEffect(() => {
@@ -46,6 +50,7 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
         hotState: editingHotel.hotState === "A" || editingHotel.hotState === true,
       });
       setSelectedCatIds(editingHotel.categories?.map((c) => c.catSec) ?? []);
+      setSelectedFeaIds(editingHotel.features?.map((f) => f.feaSec) ?? []);
       setExistingImages(editingHotel.hotelImagesUrl ?? []);
       setRemovedExistingImages([]);
       setImageFiles([]);
@@ -54,6 +59,7 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
 
       setForm(INITIAL);
       setSelectedCatIds([]);
+      setSelectedFeaIds([]);
       setExistingImages([]);
       setRemovedExistingImages([]);
       setImageFiles([]);
@@ -70,6 +76,12 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
   const toggleCat = (catSec) => {
     setSelectedCatIds((prev) =>
       prev.includes(catSec) ? prev.filter((id) => id !== catSec) : [...prev, catSec]
+    );
+  };
+
+  const toggleFea = (feaSec) => {
+    setSelectedFeaIds((prev) =>
+      prev.includes(feaSec) ? prev.filter((id) => id !== feaSec) : [...prev, feaSec]
     );
   };
 
@@ -103,6 +115,7 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
         hotState: form.hotState ? "A" : "I",
         hotCitSec: Number(form.city),
         categoryIds: selectedCatIds,
+        featureIds: selectedFeaIds
       };
 
       if (editingHotel) {
@@ -270,6 +283,34 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
                       >
                         {active && <span className={styles.catCheck}>✓</span>}
                         {cat.catName}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Features */}
+            <div className="form-section">
+              <p className="form-section-label">Características</p>
+              {features.length === 0 ? (
+                <p className={styles.loadingText}>Cargando características...</p>
+              ) : (
+                <div className={styles.catGrid}>
+
+                  {features.map((feature) => {
+
+                    const active = selectedFeaIds.includes(feature.feaSec);
+
+                    return (
+                      <button
+                        key={feature.feaSec}
+                        type="button"
+                        className={`${styles.catChip} ${active ? styles.catChipActive : ""}`}
+                        onClick={() => toggleFea(feature.feaSec)}
+                      >
+                        {active && <span className={styles.catCheck}>✓</span>}
+                        {feature.feaName}
                       </button>
                     );
                   })}

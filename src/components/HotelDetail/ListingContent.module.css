@@ -1,0 +1,265 @@
+/* ============================
+   ListingContent — Main Content Area
+   ============================ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.section:first-child {
+  padding-top: 0;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+  letter-spacing: -0.01em;
+}
+
+/* Host header */
+.hostHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hostMeta {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted, #6B7280);
+  line-height: 1.5;
+}
+
+.avatarWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--surface, #fff);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.superhostBadge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary, #115D8C);
+  color: #fff;
+  box-shadow: 0 0 0 3px var(--surface, #fff);
+}
+
+/* Highlights grid */
+.highlightsGrid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.highlight {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.highlightIcon {
+  margin-top: 2px;
+  color: var(--primary, #115D8C);
+  flex-shrink: 0;
+}
+
+.highlightTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text, #0B3B59);
+}
+
+.highlightBody {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--muted, #6B7280);
+  line-height: 1.5;
+}
+
+/* About text */
+.aboutText {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted, #6B7280);
+}
+
+/* Verified badge */
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(5, 219, 242, 0.1), rgba(148, 152, 242, 0.1));
+  color: var(--primary, #115D8C);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Categories */
+.categoryList {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.categoryChip {
+  padding: 6px 14px;
+  border-radius: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--surface, #fff);
+  color: var(--primary, #115D8C);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Amenities */
+.amenitiesList {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+}
+
+.amenityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--text, #0B3B59);
+  line-height: 1.4;
+}
+
+.amenityCheck {
+  margin-top: 2px;
+  color: var(--primary, #115D8C);
+  flex-shrink: 0;
+}
+
+.showMoreBtn {
+  margin-top: 24px;
+  padding: 12px 22px;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text, #0B3B59);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.showMoreBtn:hover {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Where you sleep */
+.sleepCard {
+  margin-top: 20px;
+  max-width: 320px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--surface, #fff);
+  transition: box-shadow 0.2s;
+}
+
+.sleepCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.bedIcon {
+  color: var(--text, #0B3B59);
+}
+
+.sleepTitle {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text, #0B3B59);
+}
+
+.sleepDesc {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted, #6B7280);
+  line-height: 1.5;
+}
+
+/* Rules */
+.rulesList {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  list-style: none;
+  padding: 0;
+}
+
+.ruleItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--text, #0B3B59);
+}
+
+.ruleIcon {
+  color: var(--muted, #6B7280);
+  flex-shrink: 0;
+}
+
+/* ============================
+   Responsive — sm+
+   ============================ */
+
+@media (min-width: 640px) {
+  .highlightsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .amenitiesList {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rulesList {
+    grid-template-columns: 1fr 1fr;
+  }
+}
