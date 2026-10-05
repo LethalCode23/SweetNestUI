@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: #fff;
-  border: 0.5px solid #e5e5e5;
+  background: #0a1020;
+  border: 1px solid #1e2d45;
   border-radius: 12px;
   padding: 1rem 1.1rem;
   transition: border-color 0.15s;
@@ -12,7 +12,7 @@
 }
 
 .card:hover {
-  border-color: #c8c8c8;
+  border-color: #2d4a6a;
 }
 
 .left {
@@ -27,7 +27,7 @@
   width: 42px;
   height: 42px;
   border-radius: 11px;
-  background: var(--grad-avatar);
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
   color: #fff;
   display: flex;
   align-items: center;
@@ -43,7 +43,7 @@
 .name {
   font-size: 14.5px;
   font-weight: 700;
-  color: var(--text);
+  color: #f1f5f9;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -52,7 +52,7 @@
 
 .email {
   font-size: 12.5px;
-  color: #9ca3af;
+  color: #94a3b8;
   margin: 2px 0 0;
 }
 
@@ -66,8 +66,8 @@
 .profileBadge {
   font-size: 12px;
   font-weight: 600;
-  color: var(--nav-active-fg);
-  background: var(--nav-active-bg);
+  color: #60a5fa;
+  background: rgba(37, 99, 235, 0.12);
   padding: 5px 12px;
   border-radius: 999px;
   white-space: nowrap;
@@ -81,11 +81,11 @@
 }
 
 .active {
-  background: #059669;
+  background: #4ade80;
 }
 
 .inactive {
-  background: #dc2626;
+  background: #f87171;
 }
 
 .actions {
@@ -102,13 +102,15 @@
   border: none;
   border-radius: 9px;
   background: transparent;
+  color: #94a3b8;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .actionBtn:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: #111f35;
+  color: #f1f5f9;
 }
 
 .actionBtn:disabled {
@@ -116,8 +118,12 @@
   cursor: not-allowed;
 }
 
+.actionBtn.danger {
+  color: #f87171;
+}
+
 .actionBtn.danger:hover:not(:disabled) {
-  background: #fef2f2;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 @media (max-width: 640px) {
