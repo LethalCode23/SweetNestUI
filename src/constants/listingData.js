@@ -23,13 +23,6 @@ export const listing = {
     service: 32000,
     earlyBirdDiscount: 40000,
   },
-  host: {
-    name: "Joey SweetNest",
-    avatar: "/images/host-joey.jpg",
-    superhost: true,
-    years: 8,
-    responseTime: "menos de 1h",
-  },
   amenities: [
     "Wi-Fi de fibra óptica ultra rápido (300 Mbps)",
     "Cocina gourmet equipada con cafetera espresso",
@@ -41,24 +34,6 @@ export const listing = {
     "Café colombiano de origen y té artesanal incluido",
   ],
   totalAmenities: 34,
-  highlights: [
-    {
-      title: "Llegada autónoma sin fricciones",
-      body: "Accede de inmediato mediante cerradura con teclado numérico digital y código único.",
-    },
-    {
-      title: "Ubicación inmejorable en Chapinero Alto",
-      body: "El 98% de los huéspedes valoraron el vecindario con 5 estrellas por su seguridad y oferta gastronómica.",
-    },
-    {
-      title: "Cancelación flexible",
-      body: "Cancela sin penalidad hasta 48 horas antes del check-in para un reembolso completo.",
-    },
-    {
-      title: "SweetNest Protect™",
-      body: "Garantía de reembolso y atención al cliente prioritaria 24/7 durante tu viaje.",
-    },
-  ],
   rules: [
     "Check-in: 3:00 PM – 9:00 PM",
     "Check-out: 11:00 AM",

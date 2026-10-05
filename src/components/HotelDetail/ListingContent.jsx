@@ -1,63 +1,10 @@
-import {
-  KeyRound,
-  MapPin,
-  CalendarCheck,
-  ShieldCheck,
-  BadgeCheck,
-  BedDouble,
-  Clock,
-  Check,
-} from "lucide-react";
+import { BadgeCheck, BedDouble, Clock, Check } from "lucide-react";
 import { listing } from "../../constants/listingData";
 import styles from "./ListingContent.module.css";
-
-const highlightIcons = [KeyRound, MapPin, CalendarCheck, ShieldCheck];
 
 export const ListingContent = ({ hotel }) => {
   return (
     <div className={styles.content}>
-      {/* Host + highlights */}
-      <section className={styles.section}>
-        <div className={styles.hostHeader}>
-          <div>
-            <h2 className={styles.sectionTitle}>
-              Anfitrión: {listing.host.name}
-            </h2>
-            <p className={styles.hostMeta}>
-              Superhost certificado · {listing.host.years} años brindando
-              hospitalidad · Tiempo de respuesta: {listing.host.responseTime}
-            </p>
-          </div>
-          <div className={styles.avatarWrap}>
-            <img
-              src={listing.host.avatar}
-              alt={`Foto de ${listing.host.name}`}
-              className={styles.avatar}
-            />
-            {listing.host.superhost && (
-              <span className={styles.superhostBadge}>
-                <BadgeCheck size={14} />
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.highlightsGrid}>
-          {listing.highlights.map((h, i) => {
-            const Icon = highlightIcons[i] ?? ShieldCheck;
-            return (
-              <div key={h.title} className={styles.highlight}>
-                <Icon size={20} className={styles.highlightIcon} />
-                <div>
-                  <h3 className={styles.highlightTitle}>{h.title}</h3>
-                  <p className={styles.highlightBody}>{h.body}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
       {/* About */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Sobre este alojamiento</h2>
