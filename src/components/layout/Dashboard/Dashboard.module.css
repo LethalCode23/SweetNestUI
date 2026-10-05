@@ -33,6 +33,14 @@
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.logo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .logoIcon {
@@ -47,6 +55,11 @@
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.logo:hover .logoIcon {
+  transform: translateY(-1px);
 }
 
 .logoTexts {
