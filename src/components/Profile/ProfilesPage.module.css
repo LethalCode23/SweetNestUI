@@ -1,8 +1,8 @@
 .root {
     min-height: 100%;
     padding: 32px;
-    background: #f4f6fb;
-    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    background: transparent;
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
 }
 
 /* ---------- Header ---------- */
@@ -18,7 +18,7 @@
 .title {
     font-size: 24px;
     font-weight: 700;
-    color: #0f172a;
+    color: #f1f5f9;
     margin: 0 0 6px;
     letter-spacing: -0.01em;
     text-align: start;
@@ -26,7 +26,7 @@
 
 .subtitle {
     font-size: 14px;
-    color: #64748b;
+    color: #475569;
     margin: 0;
     max-width: 520px;
     line-height: 1.5;
@@ -78,14 +78,20 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #fff;
-    border: 1px solid #e2e8f0;
+    background: #0a1020;
+    border: 1px solid #1e2d45;
     border-radius: 10px;
     padding: 10px 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.searchBox:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .searchIcon {
-    color: #94a3b8;
+    color: #475569;
     font-size: 15px;
 }
 
@@ -94,19 +100,19 @@
     border: none;
     outline: none;
     font-size: 14px;
-    color: #0f172a;
+    color: #e2e8f0;
     background: transparent;
 }
 
 .searchInput::placeholder {
-    color: #94a3b8;
+    color: #475569;
 }
 
 .countBadge {
     font-size: 13px;
     font-weight: 600;
-    color: #475569;
-    background: #e2e8f0;
+    color: #94a3b8;
+    background: #111827;
     padding: 6px 12px;
     border-radius: 999px;
     white-space: nowrap;
@@ -125,16 +131,16 @@
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    background: #fff;
-    border: 1px solid #e8edf5;
+    background: #0a1020;
+    border: 1px solid #1e2d45;
     border-radius: 14px;
     padding: 18px 20px;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+    border-color: #2d4a6a;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
 .cardLeft {
@@ -149,7 +155,7 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
     color: #fff;
     display: flex;
     align-items: center;
@@ -172,7 +178,7 @@
 .profileName {
     font-size: 15px;
     font-weight: 600;
-    color: #0f172a;
+    color: #f1f5f9;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -183,8 +189,8 @@
     flex-shrink: 0;
     font-size: 11px;
     font-weight: 600;
-    color: #7c3aed;
-    background: #f3e8ff;
+    color: #c4b5fd;
+    background: rgba(148, 152, 242, 0.14);
     padding: 3px 9px;
     border-radius: 999px;
 }
@@ -219,30 +225,30 @@
 }
 
 .stateActive {
-    color: #15803d;
-    background: #ecfdf3;
+    color: #4ade80;
+    background: #0f3d2e;
 }
 
 .stateActive .stateDot {
-    background: #22c55e;
+    background: #4ade80;
 }
 
 .stateInactive {
-    color: #b91c1c;
-    background: #fef2f2;
+    color: #f87171;
+    background: #3d1515;
 }
 
 .stateInactive .stateDot {
-    background: #ef4444;
+    background: #f87171;
 }
 
 .manageBtn {
     display: flex;
     align-items: center;
     gap: 6px;
-    background: #eff4ff;
-    color: #2563eb;
-    border: 1px solid #dbe6fe;
+    background: rgba(37, 99, 235, 0.12);
+    color: #60a5fa;
+    border: 1px solid rgba(37, 99, 235, 0.35);
     border-radius: 9px;
     padding: 9px 16px;
     font-size: 13.5px;
@@ -252,7 +258,7 @@
 }
 
 .manageBtn:hover {
-    background: #dbe6fe;
+    background: rgba(37, 99, 235, 0.22);
 }
 
 .manageBtnArrow {
@@ -272,14 +278,14 @@
     justify-content: center;
     gap: 10px;
     padding: 60px 20px;
-    background: #fff;
-    border: 1px dashed #cbd5e1;
+    background: #0a1020;
+    border: 1px dashed #1e2d45;
     border-radius: 14px;
 }
 
 .emptyIcon {
     font-size: 28px;
-    color: #cbd5e1;
+    color: #475569;
 }
 
 .emptyText {

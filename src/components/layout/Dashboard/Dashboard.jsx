@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, Link } from "react-router-dom";
 import styles from "./Dashboard.module.css";
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -46,13 +46,13 @@ export default function Dashboard() {
   return (
     <div className={styles.root}>
       <aside className={`${styles.sidebar} dark ${collapsed ? styles.collapsed : ""}`}>
-        <div className={styles.logo}>
+        <Link to="/" className={styles.logo} aria-label="SweetNest — ir al inicio">
           <div className={styles.logoIcon}>S</div>
           <div className={styles.logoTexts}>
             <span className={styles.logoName}>SweetNest</span>
             <span className={styles.logoBadge}>{user?.role === ROLES.ADMIN ? "ADMIN" : "USER"}</span>
           </div>
-        </div>
+        </Link>
 
         <nav className={styles.nav}>
           {loadingModules ? (
