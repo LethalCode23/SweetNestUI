@@ -345,3 +345,22 @@ compacto y, con un container query, los dos campos se apilan si la card mide men
 
 - Nueva deuda: DT-038 (el admin va a `/admin` después del login y esa ruta no existe).
 - `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-04 — "Mis favoritos" con permiso RBAC + lista
+
+Plan: [`planes/en-curso/favoritos-lista.md`](./planes/en-curso/favoritos-lista.md).
+
+| Archivo | Cambio |
+|---|---|
+| `constants/modules.js`, `constants/moduleIcons.js` | `MY_PROFILE` y `FAVORITES` (`"Mis favoritos"`, igual que el backend); íconos `UserRound` y `Heart` en el sidebar |
+| `App.jsx` | `/favoritos` y la nueva `/dashboard/favorites` exigen `requiredSubModule="Mis favoritos"` |
+| `pages/FavoritesPage.jsx` + `.module.css` | Prop `inPanel` (sin `<h1>` dentro del panel), contador, estados vacío y error en tarjeta con "Reintentar"; si se quitan todas las cards de una página, retrocede o vuelve a pedir la primera |
+| `components/layout/Navbar/NavBarComponent.jsx` + `.css` | "Mis favoritos" solo con permiso; el menú mobile suma Dashboard, Mi Perfil y Mis favoritos |
+
+- El permiso se siembra en el backend (`DataInitializer`, módulo "Mi Cuenta", acciones R y D, perfiles Administrador y Usuario).
+  Verificado contra `GET /api/profiles/{id}/modules`. Hay que volver a iniciar sesión para que se recarguen los módulos.
+- El ajuste de página se hace durante el render y no en un efecto: la regla `react-hooks/set-state-in-effect` lo bloquea.
+- Nueva deuda: DT-039 (perfiles creados desde el panel no reciben "Mis favoritos").
+- `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.

@@ -36,7 +36,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 | `/` | `HomePage` | — |
 | `/hoteles` | `HotelSearchPage` | — |
 | `/hoteles/:id` | `HotelDetailPage` | — |
-| `/favoritos` | `FavoritesPage` | sesión válida (`ProtectedRoute`) |
+| `/favoritos` | `FavoritesPage` | `ProtectedRoute requiredSubModule="Mis favoritos"` |
 | `*` | `NotFoundPage` | — |
 
 ### Autenticación (sin layout público)
@@ -62,6 +62,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 | `/dashboard/profiles` | `ProfilesPage` | `Perfiles` |
 | `/dashboard/profiles/:profileId/permissions` | `PermissionsPage` | sesión válida |
 | `/dashboard/userProfile` | `UserProfilePage` | sesión válida |
+| `/dashboard/favorites` | `FavoritesPage` (`inPanel`) | `Mis favoritos` |
 
 > **Pendiente conocido:** `/dashboard` no tiene ruta `index`; entrar a esa URL pinta el shell con el `<Outlet />` vacío. Ver [DT-011](./DEUDA_TECNICA.md#abiertas).
 
@@ -96,7 +97,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 
 | Constante | Valores |
 | :--- | :--- |
-| `MODULES` | `Hoteles`, `Países`, `Departamentos`, `Ciudades`, `Categorías`, `Usuarios`, `Perfiles`, `Características` |
+| `MODULES` | `Hoteles`, `Países`, `Departamentos`, `Ciudades`, `Categorías`, `Usuarios`, `Perfiles`, `Características`, `Mi Perfil`, `Mis favoritos` |
 | `ACTIONS` | `LIST: "R"`, `CREATE: "C"`, `UPDATE: "U"`, `DELETE: "D"` |
 
 ### Guard — `src/guards/ProtectedRoute.jsx`

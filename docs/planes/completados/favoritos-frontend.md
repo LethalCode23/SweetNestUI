@@ -22,4 +22,4 @@ Detalle de lo hecho → `docs/BITACORA.md`.
 - [x] `HotelDetailPage`: botón "Guardar" ↔ "Guardado"
 - [x] `pages/FavoritesPage.jsx` en `/favoritos` (`ProtectedRoute`) + enlace "Mis favoritos" en el menú del perfil
 - [x] `npm run build` OK · `npm run lint` = 13 (sin subir)
-- [ ] Revisión visual en el navegador
+- [ ] Revisión visual en el navegador → pasa a `en-curso/favoritos-lista.md`
