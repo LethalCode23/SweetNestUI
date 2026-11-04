@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getAll, findByHotel } from "../services/hotelServices/hotelService";
+import { findByHotel } from "../services/hotelServices/hotelService";
 import { HotelCard } from "../components/Hotel/HotelCard";
 import { HotelFilters } from "../components/Hotel/HotelFilters";
 import "../components/Hotel/HotelComponent.css";
@@ -13,6 +13,8 @@ const HotelSearchPage = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [filters, setFilters] = useState({
         citName: searchParams.get("citName") || "",
+        startDate: searchParams.get("startDate") || "",
+        endDate: searchParams.get("endDate") || "",
         minCost: null,
         maxCost: null,
         categoryIds: [],
@@ -28,8 +30,10 @@ const HotelSearchPage = () => {
     }, [page, filters]);
 
     const load = async () => {
+
         setLoading(true);
         setError(null);
+
         try {
             const res = await findByHotel(page, size, filters);
             setData(res.content);
@@ -57,7 +61,12 @@ const HotelSearchPage = () => {
                     className="hotel-results-hero"           // 👈 nuevo div contenedor
                     style={{ backgroundImage: `url(${background})` }}
                 >
-                    <HotelFilters onSearch={handleFiltersSearch} initialCitName={filters.citName} />
+                    <HotelFilters
+                        onSearch={handleFiltersSearch}
+                        initialCitName={filters.citName}
+                        initialStartDate={filters.startDate}
+                        initialEndDate={filters.endDate}
+                    />
                 </div>
             </div>
 

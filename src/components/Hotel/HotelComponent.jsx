@@ -3,6 +3,9 @@ import { getAll } from "../../services/hotelServices/hotelService";
 import { HotelCard } from "../Hotel/HotelCard";
 import { useNavigate } from "react-router-dom";
 import "../Hotel/HotelComponent.css";
+import { DestinationAutocomplete } from "./DestinationAutocomplete/DestinationAutocomplete";
+
+const TODAY = new Date().toISOString().slice(0, 10);
 
 export const HotelComponent = () => {
 
@@ -16,7 +19,8 @@ export const HotelComponent = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [date, setDate] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     load();
@@ -43,10 +47,23 @@ export const HotelComponent = () => {
     }
   };
 
+  const handleStartDateChange = (e) => {
+    const value = e.target.value;
+    setStartDate(value);
+    // Si la salida elegida queda anterior a la nueva llegada, se limpia
+    if (endDate && value && endDate < value) setEndDate('');
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+  };
+
   const handleSearch = () => {
 
     const params = new URLSearchParams();
     if (city) params.append("citName", city);
+    if (startDate) params.append("startDate", startDate);
+    if (endDate) params.append("endDate", endDate);
     navigate(`/hoteles?${params.toString()}`);
   };
 
@@ -75,25 +92,41 @@ export const HotelComponent = () => {
           <div className="hotel-search">
             <div className="search-field">
               <span className="field-label">Destino</span>
-              <input
-                className="search-input city-input"
-                type="text"
-                placeholder="¿A dónde vas?"
+              <DestinationAutocomplete
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
-                aria-label="Buscar por ciudad"
+                onChange={setCity}
+                onSubmit={handleSearch}
+                inputClassName="search-input city-input"
+                placeholder="¿A dónde vas?"
+                ariaLabel="Destino: ciudad u hotel"
               />
             </div>
-            <div className="search-field">
-              <span className="field-label">Llegada</span>
-              <input
-                className="search-input date-input"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                aria-label="Fecha de llegada"
-              />
+
+            <div className="search-fields-group">
+              <div className="search-field">
+                <span className="field-label">Llegada</span>
+                <input
+                  className="search-input date-input"
+                  type="date"
+                  value={startDate}
+                  min={TODAY}
+                  onChange={handleStartDateChange}
+                  aria-label="Fecha de llegada"
+                />
+              </div>
+              <div className="search-field">
+                <span className="field-label">Salida</span>
+                <input
+                  className="search-input date-input"
+                  type="date"
+                  value={endDate}
+                  min={startDate || TODAY}
+                  onChange={handleEndDateChange}
+                  aria-label="Fecha de salida"
+                />
+              </div>
             </div>
+
             <button className="search-btn" onClick={handleSearch}>
               Buscar <span className="btn-arrow">→</span>
             </button>
