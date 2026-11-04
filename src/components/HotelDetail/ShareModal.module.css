@@ -1,0 +1,260 @@
+/* ============================
+   ShareModal — misma línea que HotelDetailPage
+   ============================ */
+
+.paper {
+  border-radius: 16px !important;
+  font-family: inherit;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 24px;
+  color: var(--text, #0B3B59);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text, #0B3B59);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.closeBtn:hover {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Vista previa */
+.preview {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.previewImg {
+  width: 112px;
+  height: 88px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #F3F4F6;
+}
+
+.previewBody {
+  min-width: 0;
+}
+
+.previewName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.previewCity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted, #6B7280);
+}
+
+.previewDesc {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted, #6B7280);
+}
+
+/* Formulario */
+.label {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  color: inherit;
+  resize: vertical;
+}
+
+.textarea:focus,
+.linkInput:focus {
+  outline: 2px solid rgba(11, 59, 89, 0.25);
+  border-color: var(--text, #0B3B59);
+}
+
+.counter {
+  margin: 4px 0 14px;
+  font-size: 12px;
+  text-align: right;
+  color: var(--muted, #6B7280);
+}
+
+/* Redes */
+.networks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.networkBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text, #0B3B59);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.networkBtn:hover {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.networkBtn:active {
+  transform: scale(0.97);
+}
+
+/* Color de marca solo en el ícono */
+.facebook svg { color: #1877F2; }
+.x svg { color: #000; }
+.whatsapp svg { color: #25D366; }
+.telegram svg { color: #229ED9; }
+.instagram svg { color: #E1306C; }
+
+.hint {
+  margin: 6px 0 16px;
+  font-size: 12px;
+  color: var(--muted, #6B7280);
+}
+
+/* Enlace */
+.linkRow {
+  display: flex;
+  gap: 8px;
+}
+
+.linkInput {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #F9FAFB;
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+}
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--text, #0B3B59);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.copyBtn:hover {
+  opacity: 0.9;
+}
+
+.copyBtnDone {
+  background: #16A34A;
+}
+
+.notice {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(22, 163, 74, 0.08);
+  font-size: 13px;
+  color: #166534;
+}
+
+.noticeWarn {
+  background: rgba(217, 119, 6, 0.1);
+  color: #92400E;
+}
+
+/* Mobile */
+@media (max-width: 639px) {
+  .paper {
+    border-radius: 0 !important;
+  }
+
+  .modal {
+    padding: 16px;
+  }
+
+  .networks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .preview {
+    flex-direction: column;
+  }
+
+  .previewImg {
+    width: 100%;
+    height: 160px;
+  }
+
+  .linkRow {
+    flex-direction: column;
+  }
+
+  .copyBtn {
+    justify-content: center;
+  }
+}

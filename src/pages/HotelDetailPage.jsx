@@ -6,6 +6,7 @@ import { findDetailById } from "../services/hotelServices/hotelService";
 import { PhotoGallery } from "../components/HotelDetail/PhotoGallery";
 import { BookingCard } from "../components/HotelDetail/BookingCard";
 import { ListingContent } from "../components/HotelDetail/ListingContent";
+import { ShareModal } from "../components/HotelDetail/ShareModal";
 import { useFavoriteToggle } from "../hooks/useFavoriteToggle";
 import styles from "./HotelDetailPage.module.css";
 
@@ -17,6 +18,7 @@ const HotelDetailPage = () => {
   const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -84,7 +86,7 @@ const HotelDetailPage = () => {
             </div>
           </div>
           <div className={styles.actions}>
-            <button className={styles.actionBtn}>
+            <button type="button" className={styles.actionBtn} onClick={() => setShareOpen(true)}>
               <Share2 size={16} />
               <span>Compartir</span>
             </button>
@@ -114,6 +116,15 @@ const HotelDetailPage = () => {
           </aside>
         </div>
       </div>
+
+      {/* key: si cambia el hotel, el mensaje por defecto se rearma */}
+      <ShareModal
+        key={id}
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        hotel={hotel}
+        url={`${window.location.origin}/hoteles/${id}`}
+      />
     </div>
   );
 };

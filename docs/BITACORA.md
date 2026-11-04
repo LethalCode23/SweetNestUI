@@ -364,3 +364,19 @@ Plan: [`planes/en-curso/favoritos-lista.md`](./planes/en-curso/favoritos-lista.m
 - El ajuste de página se hace durante el render y no en un efecto: la regla `react-hooks/set-state-in-effect` lo bloquea.
 - Nueva deuda: DT-039 (perfiles creados desde el panel no reciben "Mis favoritos").
 - `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-04 — Req. #27: compartir alojamientos en redes
+
+Plan: [`planes/en-curso/compartir-redes.md`](./planes/en-curso/compartir-redes.md).
+
+| Archivo | Cambio |
+|---|---|
+| `components/HotelDetail/ShareModal.jsx` + `.module.css` | Nuevo modal (`Dialog` de MUI, pantalla completa en mobile): vista previa con imagen, nombre, ciudad y descripción breve; mensaje personalizado (280 caracteres); Facebook, X, WhatsApp, Telegram, Instagram y "Más opciones" (`navigator.share`); copiar enlace |
+| `pages/HotelDetailPage.jsx` | El botón "Compartir" (que no hacía nada) abre el modal |
+
+- `lucide-react` v1 no trae íconos de marcas: se usan los de `@mui/icons-material`.
+- Instagram no tiene URL para compartir desde la web: se copia el mensaje y se abre instagram.com. Facebook solo toma la URL.
+- Nueva deuda: DT-040 (sin Open Graph, las redes no muestran vista previa).
+- `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
