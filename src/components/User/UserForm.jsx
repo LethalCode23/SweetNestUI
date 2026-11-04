@@ -1,184 +1,120 @@
 import { useEffect, useState } from "react";
 import { createUser, updateUser, getProfiles } from "../../services/userServices/userService";
-import styles from "./UserForm.module.css";
+import { unwrapList } from "../../Utils/apiError";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { Field, FieldRow } from "../ui/Form/Form";
 
-const EMPTY_FORM = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  profileId: "",
-};
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function UserForm({ editingUser, setEditingUser, onSuccess, onClose }) {
+/**
+ * Crear/editar usuario en el panel lateral (antes era un modal propio).
+ * Guarda por su cuenta y avisa con onSuccess; los errores del backend van al banner del drawer.
+ */
+export default function UserForm({ editingUser, onSuccess, onClose }) {
 
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [profiles, setProfiles] = useState([]);
+  const isEditing = Boolean(editingUser);
+  const [form, setForm] = useState(() => ({
+    firstName: editingUser?.firstName ?? "",
+    lastName: editingUser?.lastName ?? "",
+    email: editingUser?.email ?? "",
+    password: "",
+    profileId: editingUser?.profile?.proId ?? "",
+  }));
   const [errors, setErrors] = useState({});
-  const [saving, setSaving] = useState(false);
-  const [apiError, setApiError] = useState(null);
-
-  const isEditing = !!editingUser;
+  const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
-    getProfiles().then(setProfiles).catch(() => setProfiles([]));
+    getProfiles().then((res) => setProfiles(unwrapList(res))).catch(() => setProfiles([]));
   }, []);
 
-  useEffect(() => {
-    if (editingUser) {
-      setForm({
-        firstName: editingUser.firstName ?? "",
-        lastName: editingUser.lastName ?? "",
-        email: editingUser.email ?? "",
-        password: "",
-        profileId: editingUser.profile?.proId ?? "",
-      });
-    }
-  }, [editingUser]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const set = (name, value) => {
     setForm((f) => ({ ...f, [name]: value }));
     setErrors((err) => ({ ...err, [name]: null }));
   };
 
   const validate = () => {
-    const newErrors = {};
-    if (!form.firstName.trim()) newErrors.firstName = "Requerido";
-    if (!form.lastName.trim()) newErrors.lastName = "Requerido";
-    if (!form.email.trim()) newErrors.email = "Requerido";
-    if (!isEditing && !form.password.trim()) newErrors.password = "Requerido";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const next = {};
+    if (!form.firstName.trim()) next.firstName = "Escribe el nombre.";
+    if (!form.lastName.trim()) next.lastName = "Escribe el apellido.";
+    if (!form.email.trim()) next.email = "Escribe el email.";
+    else if (!EMAIL_RE.test(form.email.trim())) next.email = "El email no tiene un formato válido.";
+    if (!isEditing && !form.password.trim()) next.password = "Escribe una contraseña.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setApiError(null);
+  const submit = async () => {
+    if (!validate()) return false;
 
-    if (!validate()) return;
+    const base = {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim(),
+      profileId: form.profileId || null,
+    };
 
-    setSaving(true);
-    try {
-      if (isEditing) {
-        await updateUser(editingUser.userSec, {
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          profileId: form.profileId || null,
-        });
-      } else {
-        await createUser({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          password: form.password,
-          profileId: form.profileId || null,
-        });
-      }
-      onSuccess();
-      handleClose();
-    } catch (err) {
-      setApiError(err?.response?.data?.message ?? "No se pudo guardar el usuario.");
-    } finally {
-      setSaving(false);
+    if (isEditing) {
+      await updateUser(editingUser.userSec, base);
+    } else {
+      await createUser({ ...base, password: form.password });
     }
+    await onSuccess();
   };
 
-  const handleClose = () => {
-    setForm(EMPTY_FORM);
-    setEditingUser(null);
-    onClose();
-  };
+  const fullName = [editingUser?.firstName, editingUser?.lastName].filter(Boolean).join(" ");
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-
-        <div className={styles.header}>
-          <h3 className={styles.title}>{isEditing ? "Editar usuario" : "Nuevo usuario"}</h3>
-          <button type="button" className={styles.closeBtn} onClick={handleClose}>✕</button>
-        </div>
-
-        <form onSubmit={handleSubmit} className={styles.form}>
-
-          {apiError && <p className={styles.apiError}>{apiError}</p>}
-
-          <div className={styles.row}>
-            <div className={styles.field}>
-              <label className={styles.label}>Nombre *</label>
-              <input
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                className={`${styles.input} ${errors.firstName ? styles.inputError : ""}`}
-              />
-              {errors.firstName && <span className={styles.errorText}>{errors.firstName}</span>}
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label}>Apellido *</label>
-              <input
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                className={`${styles.input} ${errors.lastName ? styles.inputError : ""}`}
-              />
-              {errors.lastName && <span className={styles.errorText}>{errors.lastName}</span>}
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label}>Email *</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
-            />
-            {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-          </div>
-
-          {!isEditing && (
-            <div className={styles.field}>
-              <label className={styles.label}>Contraseña *</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
-              />
-              {errors.password && <span className={styles.errorText}>{errors.password}</span>}
-            </div>
+    <FormDrawer
+      title={isEditing ? `Editar a ${fullName || "usuario"}` : "Nuevo usuario"}
+      description={isEditing
+        ? "La contraseña no se cambia desde acá."
+        : "La persona podrá entrar con este email y contraseña."}
+      submitLabel={isEditing ? "Guardar cambios" : "Crear usuario"}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <FieldRow>
+        <Field label="Nombre" required error={errors.firstName}>
+          {(p) => (
+            <input {...p} className="sn-input" value={form.firstName} autoComplete="given-name"
+              onChange={(e) => set("firstName", e.target.value)} />
           )}
+        </Field>
+        <Field label="Apellido" required error={errors.lastName}>
+          {(p) => (
+            <input {...p} className="sn-input" value={form.lastName} autoComplete="family-name"
+              onChange={(e) => set("lastName", e.target.value)} />
+          )}
+        </Field>
+      </FieldRow>
 
-          <div className={styles.field}>
-            <label className={styles.label}>Perfil</label>
-            <select
-              name="profileId"
-              value={form.profileId}
-              onChange={handleChange}
-              className={styles.input}
-            >
-              <option value="">Por defecto (Usuario)</option>
-              {profiles.map((p) => (
-                <option key={p.proId} value={p.proId}>{p.proName}</option>
-              ))}
-            </select>
-          </div>
+      <Field label="Email" required error={errors.email}>
+        {(p) => (
+          <input {...p} type="email" className="sn-input" value={form.email} autoComplete="email"
+            placeholder="nombre@correo.com" onChange={(e) => set("email", e.target.value)} />
+        )}
+      </Field>
 
-          <div className={styles.actions}>
-            <button type="button" className={styles.cancelBtn} onClick={handleClose}>
-              Cancelar
-            </button>
-            <button type="submit" className={styles.saveBtn} disabled={saving}>
-              {saving ? "Guardando..." : isEditing ? "Guardar cambios" : "Crear usuario"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      {!isEditing && (
+        <Field label="Contraseña" required error={errors.password}>
+          {(p) => (
+            <input {...p} type="password" className="sn-input" value={form.password} autoComplete="new-password"
+              onChange={(e) => set("password", e.target.value)} />
+          )}
+        </Field>
+      )}
+
+      <Field label="Perfil" hint="Define a qué secciones del panel puede entrar.">
+        {(p) => (
+          <select {...p} className="sn-select sn-select--block" value={form.profileId}
+            onChange={(e) => set("profileId", e.target.value)}>
+            <option value="">Por defecto (Usuario)</option>
+            {profiles.map((pr) => (
+              <option key={pr.proId} value={pr.proId}>{pr.proName}</option>
+            ))}
+          </select>
+        )}
+      </Field>
+    </FormDrawer>
   );
 }

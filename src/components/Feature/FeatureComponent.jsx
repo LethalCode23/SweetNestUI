@@ -1,45 +1,99 @@
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Pencil, Plus, Sparkles, Trash2 } from "lucide-react";
 import {
   getAllFeatures,
   createFeature,
   updateFeature,
   deleteFeature
 } from "../../services/featureServices/featureService";
-import { FeatureCard } from "./FeatureCard";
 import { FeatureForm } from "./FeatureForm";
-import "./FeatureForm.css";
+import ui from "../ui/catalog.module.css";
 import styles from "./FeaturePage.module.css";
 import { useAuth } from "../../context/AuthContext";
 import { MODULES, ACTIONS } from "../../constants/modules";
+import { Environment } from "../../Environments/Environment";
+import { DataTable } from "../ui/DataTable/DataTable";
+import { StatusBadge } from "../ui/StatusBadge/StatusBadge";
+import { ConfirmDialog } from "../ui/ConfirmDialog/ConfirmDialog";
+import { useConfirmDelete } from "../ui/ConfirmDialog/useConfirmDelete";
+import { FilterSelect } from "../ui/FilterSelect/FilterSelect";
+import { STATE_OPTIONS } from "../ui/FilterSelect/options";
+import { apiErrorMessage, unwrapList } from "../../Utils/apiError";
+
+// La API usa feaSec/feaName/feaEst/feaIconUrl; id/name/state quedan por compatibilidad
+const idOf = (f) => f.feaSec ?? f.id;
+const nameOf = (f) => f.feaName ?? f.name ?? "";
+const stateOf = (f) => f.feaEst ?? f.feaState ?? f.state ?? "A";
+
+const iconSrc = (url) => (!url ? null : /^https?:\/\//.test(url) ? url : `${Environment.API_URL_IMG}${url}`);
+
+const COLUMNS = [
+  {
+    key: "icon",
+    header: "Icono",
+    width: 72,
+    render: (f) => {
+      const src = iconSrc(f.feaIconUrl);
+      return (
+        <span className={styles.icon} aria-hidden="true">
+          {src ? <img src={src} alt="" /> : <Sparkles size={16} strokeWidth={1.75} />}
+        </span>
+      );
+    },
+  },
+  {
+    key: "feaName",
+    header: "Nombre",
+    sortable: true,
+    sortValue: nameOf,
+    render: (f) => <span className={ui.name}>{nameOf(f)}</span>,
+  },
+  {
+    key: "feaSec",
+    header: "ID",
+    sortable: true,
+    numeric: true,
+    align: "left",
+    width: 96,
+    sortValue: idOf,
+    render: (f) => <span className={ui.muted}>{idOf(f)}</span>,
+  },
+  {
+    key: "feaEst",
+    header: "Estado",
+    render: (f) =>
+      stateOf(f) === "A"
+        ? <StatusBadge tone="success" dot>Activo</StatusBadge>
+        : <StatusBadge tone="neutral" dot>Inactivo</StatusBadge>,
+  },
+];
 
 export const FeatureComponent = () => {
   const [features, setFeatures] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Form state
-  const [showForm, setShowForm] = useState(true); // Header form visible by default
+  const [showForm, setShowForm] = useState(false);
   const [editingFeature, setEditingFeature] = useState(null);
+  const [stateFilter, setStateFilter] = useState("");
 
   const { hasActionPermission } = useAuth();
+
+  // "Features" es el nombre viejo del submódulo; se mantiene por compatibilidad
+  const can = (action) =>
+    hasActionPermission(MODULES.FEATURES, action) || hasActionPermission("Features", action);
+  const canCreate = can(ACTIONS.CREATE);
+  const canUpdate = can(ACTIONS.UPDATE);
+  const canDelete = can(ACTIONS.DELETE);
 
   const loadFeatures = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getAllFeatures();
-      const featureList = Array.isArray(data) ? data : [];
-      // Sort alphabetically by name
-      featureList.sort((a, b) =>
-        String(a.name || a.feaName || "").localeCompare(
-          String(b.name || b.feaName || "")
-        )
-      );
+      const featureList = unwrapList(await getAllFeatures());
+      featureList.sort((a, b) => nameOf(a).localeCompare(nameOf(b)));
       setFeatures(featureList);
     } catch (err) {
-      console.error("Error al cargar características:", err);
-      setError(err?.response?.data?.message || err.message || "Error al cargar las características.");
+      setError(apiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -49,110 +103,88 @@ export const FeatureComponent = () => {
     loadFeatures();
   }, []);
 
+  const del = useConfirmDelete({
+    onDelete: (f) => deleteFeature(idOf(f)),
+    onDone: loadFeatures,
+    conflictMessage: "No se puede eliminar: hay hoteles con esta característica. Desactívala en su lugar.",
+  });
+
+  const handleCreate = () => {
+    setEditingFeature(null);
+    setShowForm(true);
+  };
+
   const handleEdit = (feature) => {
     setEditingFeature(feature);
     setShowForm(true);
-    // Scroll smoothly to form header
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleDelete = async (feature) => {
-    const id = feature?.id ?? feature?.feaSec;
-    const name = feature?.name ?? feature?.feaName ?? "esta característica";
-
-    if (!window.confirm(`¿Estás seguro de eliminar "${name}"?`)) return;
-
-    try {
-      await deleteFeature(id);
-      await loadFeatures();
-    } catch (err) {
-      console.error("Error al eliminar la característica:", err);
-      alert(err?.response?.data?.message || err.message || "Error al eliminar.");
-    }
-  };
-
-  const handleSubmit = async (payload) => {
-    try {
-      const targetId = editingFeature?.id ?? editingFeature?.feaSec;
-
-      if (targetId) {
-        await updateFeature(targetId, payload);
-      } else {
-        await createFeature(payload);
-      }
-
-      setEditingFeature(null);
-      await loadFeatures();
-    } catch (err) {
-      console.error("Error al guardar la característica:", err);
-      alert(err?.response?.data?.message || err.message || "Error al guardar.");
-    }
   };
 
   const handleCancelForm = () => {
     setEditingFeature(null);
+    setShowForm(false);
   };
 
-  const canCreate =
-    hasActionPermission(MODULES.FEATURES, ACTIONS.CREATE) ||
-    hasActionPermission("Features", ACTIONS.CREATE);
+  // Guarda y recarga; si falla, el error sube al drawer
+  const handleSubmit = async (payload) => {
+    const targetId = editingFeature ? idOf(editingFeature) : null;
+
+    if (targetId) {
+      await updateFeature(targetId, payload);
+    } else {
+      await createFeature(payload);
+    }
+    await loadFeatures();
+  };
+
+  const rows = features.filter((f) => !stateFilter || stateOf(f) === stateFilter);
 
   return (
-    <div className={styles["features-page"]}>
-      <div className={styles["page-header"]}>
-        <div>
-          <h1 className={styles["page-title"]}>Características</h1>
-          <p className={styles["page-subtitle"]}>Gestión de las características de los hoteles</p>
-        </div>
-        {!showForm && canCreate && (
-          <button
-            className="btn-primary"
-            onClick={() => {
-              setEditingFeature(null);
-              setShowForm(true);
-            }}
-          >
-            <Plus size={15} style={{ marginRight: 6 }} />
-            Nueva característica
-          </button>
-        )}
-      </div>
+    <div className={ui.page}>
 
-      {/* Formulario en el encabezado */}
+      <p className={ui.intro}>Servicios y comodidades que se pueden marcar en cada alojamiento (Wi-Fi, piscina, parqueadero…).</p>
+
       {showForm && (
         <FeatureForm
+          key={editingFeature ? idOf(editingFeature) : "new"}
           initial={editingFeature}
-          onCancel={editingFeature ? handleCancelForm : null}
+          onClose={handleCancelForm}
           onSubmit={handleSubmit}
         />
       )}
 
-      {/* Indicadores de carga y error */}
-      {loading && <div className={styles["cn-loading"]}>Cargando características...</div>}
-      {error && <div className={styles["cn-error"]}>Error: {error}</div>}
+      <DataTable
+        ariaLabel="Características"
+        columns={COLUMNS}
+        rows={rows}
+        rowKey={idOf}
+        loading={loading}
+        error={error}
+        onRetry={loadFeatures}
+        search={{ placeholder: "Buscar por nombre", keys: ["feaName", "name"] }}
+        filters={
+          <FilterSelect label="Filtrar por estado" allLabel="Todos los estados"
+            value={stateFilter} onChange={setStateFilter} options={STATE_OPTIONS} />
+        }
+        filtersActive={Boolean(stateFilter)}
+        onClearFilters={() => setStateFilter("")}
+        primaryAction={canCreate ? { label: "Nueva característica", icon: Plus, onClick: handleCreate } : null}
+        rowActions={canUpdate || canDelete ? () => [
+          { label: "Editar", icon: Pencil, onClick: handleEdit, hidden: !canUpdate },
+          { label: "Eliminar", icon: Trash2, onClick: del.request, tone: "danger", hidden: !canDelete },
+        ] : undefined}
+        defaultSort={{ key: "feaName", dir: "asc" }}
+        emptyState={{
+          title: "Todavía no hay características",
+          description: "Crea la primera para poder marcarla en los alojamientos.",
+        }}
+      />
 
-      {/* Listado de características */}
-      {!loading && !error && (
-        <>
-          {features.length === 0 ? (
-            <div className={styles["cn-empty"]}>No hay características registradas.</div>
-          ) : (
-            <div className={styles["features-grid"]}>
-              {features.map((feature, idx) => {
-                const key = feature.id ?? feature.feaSec ?? idx;
-                return (
-                  <FeatureCard
-                    key={key}
-                    feature={feature}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
+      <ConfirmDialog
+        {...del.dialogProps}
+        title={`¿Eliminar «${del.target ? nameOf(del.target) : ""}»?`}
+        description="La característica deja de estar disponible. Esta acción no se puede deshacer."
+        confirmLabel="Eliminar característica"
+      />
     </div>
   );
 };

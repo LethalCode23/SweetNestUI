@@ -1,5 +1,6 @@
 import {
     Building2,
+    Shapes,
     Earth,
     Map,
     MapPin,
@@ -24,6 +25,7 @@ const normalizeKey = (name = "") =>
  */
 const ICONS_BY_MODULE = {
     [normalizeKey(MODULES.HOTELS)]: Building2,
+    [normalizeKey(MODULES.HOTEL_TYPES)]: Shapes,
     [normalizeKey(MODULES.COUNTRIES)]: Earth,
     [normalizeKey(MODULES.DEPARTMENTS)]: Map,
     [normalizeKey(MODULES.CITIES)]: MapPin,

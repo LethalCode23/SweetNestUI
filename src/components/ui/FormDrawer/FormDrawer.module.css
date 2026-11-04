@@ -1,0 +1,190 @@
+/* FormDrawer — panel lateral claro para crear/editar. Ver DESIGN.md (Forms). */
+
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(440px, 100vw);
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-left: 1px solid var(--sn-border);
+  background: var(--sn-surface);
+  color: var(--sn-text);
+  font-family: var(--sn-font);
+  text-align: left;
+  box-shadow: var(--sn-shadow-lg);
+  overflow: hidden;
+}
+
+.md {
+  width: min(600px, 100vw);
+}
+
+.drawer[open] {
+  animation: drawerIn var(--sn-slow) var(--sn-ease);
+}
+
+.drawer.closing {
+  animation: drawerOut var(--sn-slow) var(--sn-ease) forwards;
+}
+
+.drawer::backdrop {
+  background: rgba(15, 31, 53, 0.4);
+  animation: fadeIn var(--sn-slow) var(--sn-ease);
+}
+
+.drawer.closing::backdrop {
+  animation: fadeOut var(--sn-slow) var(--sn-ease) forwards;
+}
+
+@keyframes drawerIn {
+  from { transform: translateX(32px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+@keyframes drawerOut {
+  from { transform: none; opacity: 1; }
+  to   { transform: translateX(32px); opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sn-space-4);
+  padding: var(--sn-space-5) var(--sn-space-6);
+  border-bottom: 1px solid var(--sn-border);
+  flex-shrink: 0;
+}
+
+.headTexts {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--sn-text-lg);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--sn-ink);
+}
+
+.description {
+  font-size: var(--sn-text-sm);
+  line-height: 1.45;
+  color: var(--sn-text-soft);
+}
+
+.close {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  margin: -4px -8px 0 0;
+  border: none;
+  border-radius: var(--sn-radius-sm);
+  background: transparent;
+  color: var(--sn-text-soft);
+  cursor: pointer;
+  transition: background var(--sn-fast) var(--sn-ease), color var(--sn-fast) var(--sn-ease);
+}
+
+.close:hover:not(:disabled) {
+  background: var(--sn-neutral-bg);
+  color: var(--sn-ink);
+}
+
+.close:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-space-5);
+  padding: var(--sn-space-6);
+}
+
+.error {
+  padding: var(--sn-space-3) var(--sn-space-4);
+  border-radius: var(--sn-radius-md);
+  background: var(--sn-danger-bg);
+  color: var(--sn-danger);
+  font-size: var(--sn-text-sm);
+  font-weight: 500;
+  line-height: 1.45;
+  animation: fadeIn var(--sn-fast) var(--sn-ease);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sn-space-2);
+  padding: var(--sn-space-4) var(--sn-space-6);
+  padding-bottom: max(var(--sn-space-4), env(safe-area-inset-bottom));
+  background: var(--sn-surface-sunken);
+  border-top: 1px solid var(--sn-border);
+  flex-shrink: 0;
+}
+
+/* ── Móvil: pantalla completa, botones a todo el ancho ── */
+@media (max-width: 599px) {
+  .drawer,
+  .md {
+    width: 100vw;
+    border-left: none;
+  }
+
+  @keyframes drawerIn {
+    from { transform: translateY(24px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  @keyframes drawerOut {
+    from { transform: none; opacity: 1; }
+    to   { transform: translateY(24px); opacity: 0; }
+  }
+
+  .header,
+  .body {
+    padding-left: var(--sn-space-4);
+    padding-right: var(--sn-space-4);
+  }
+
+  .footer {
+    padding-left: var(--sn-space-4);
+    padding-right: var(--sn-space-4);
+  }
+
+  .footer > * {
+    flex: 1;
+  }
+}

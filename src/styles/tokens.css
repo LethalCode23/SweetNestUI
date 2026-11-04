@@ -1,0 +1,96 @@
+/* SweetNest — tokens del sistema de diseño del panel admin.
+   Fuente de verdad: DESIGN.md. Prefijo --sn-* para no chocar con los
+   tokens viejos de App.css (sitio público y páginas sin migrar). */
+:root {
+  /* Superficies */
+  --sn-canvas: #f4f6fb;
+  --sn-surface: #ffffff;
+  --sn-surface-sunken: #f8fafc;
+  --sn-border: #dce3ef;
+  --sn-border-strong: #c5d0e0;
+
+  /* Texto */
+  --sn-ink: #0f1f35;
+  --sn-text: #3d5166;
+  --sn-text-soft: #7a8aa0;
+  --sn-text-muted: #b0bece;
+
+  /* Sidebar (navy de marca) */
+  --sn-side-bg: #0f1f35;
+  --sn-side-raised: #1a3356;
+  --sn-side-hover: rgba(255, 255, 255, 0.04);
+  --sn-side-line: rgba(255, 255, 255, 0.07);
+  --sn-side-text: #b0bece;
+  --sn-side-strong: #ffffff;
+  --sn-side-accent: #6b9fff;
+
+  /* Acción */
+  --sn-primary: #2b67f6;
+  --sn-primary-hover: #1d55d8;
+  --sn-primary-soft: #eaf0fe;
+  --sn-ring: rgba(43, 103, 246, 0.12);
+  --sn-focus: 0 0 0 3px var(--sn-ring), 0 0 0 1px var(--sn-primary);
+
+  /* Estados (fg / bg) */
+  --sn-success: #15803d;
+  --sn-success-bg: #e8f6ee;
+  --sn-warning: #b45309;
+  --sn-warning-bg: #fdf3e2;
+  --sn-danger: #e24b4b;
+  --sn-danger-bg: #fdecec;
+  --sn-info: #1d55d8;
+  --sn-info-bg: #eaf0fe;
+  --sn-neutral: #3d5166;
+  --sn-neutral-bg: #eef1f6;
+
+  /* Tipografía */
+  --sn-font: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --sn-text-xs: 12px;
+  --sn-text-sm: 13px;
+  --sn-text-base: 14px;
+  --sn-text-md: 16px;
+  --sn-text-lg: 20px;
+  --sn-text-xl: 24px;
+  --sn-text-2xl: 30px;
+
+  /* Espaciado (base 4) */
+  --sn-space-1: 4px;
+  --sn-space-2: 8px;
+  --sn-space-3: 12px;
+  --sn-space-4: 16px;
+  --sn-space-5: 20px;
+  --sn-space-6: 24px;
+  --sn-space-7: 32px;
+  --sn-space-8: 40px;
+  --sn-space-9: 48px;
+  --sn-space-10: 64px;
+
+  /* Radios */
+  --sn-radius-sm: 6px;
+  --sn-radius-md: 10px;
+  --sn-radius-lg: 14px;
+  --sn-radius-sheet: 20px;
+  --sn-radius-pill: 999px;
+
+  /* Sombras (tinte navy) */
+  --sn-shadow-xs: 0 1px 2px rgba(15, 31, 53, 0.06);
+  --sn-shadow-sm: 0 2px 8px rgba(15, 31, 53, 0.06);
+  --sn-shadow-lg: 0 12px 32px rgba(15, 31, 53, 0.14);
+
+  /* Motion */
+  --sn-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --sn-fast: 150ms;
+  --sn-slow: 240ms;
+
+  /* Layout del shell */
+  --sn-sidebar-w: 248px;
+  --sn-sidebar-w-collapsed: 72px;
+  --sn-header-h: 64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --sn-fast: 0ms;
+    --sn-slow: 0ms;
+  }
+}

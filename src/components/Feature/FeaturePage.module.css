@@ -1,47 +1,17 @@
-.features-page {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-}
+/* Características — solo lo propio del módulo; el layout sale de ui/catalog.module.css */
 
-/* Header */
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.page-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--shell-text);
-  letter-spacing: -0.02em;
-  margin: 0;
-  text-align: left;
-}
-
-.page-subtitle {
-  font-size: 13px;
-  color: #475569;
-  margin-top: 2px;
-}
-
-.features-grid {
+.icon {
+  width: 32px;
+  height: 32px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
-  padding: 1rem 0;
+  place-items: center;
+  border-radius: var(--sn-radius-sm);
+  background: var(--sn-neutral-bg);
+  color: var(--sn-text-soft);
 }
 
-.cn-loading,
-.cn-error,
-.cn-empty {
-  padding: 2rem;
-  text-align: center;
-  color: #888;
-}
-
-.cn-error {
-  color: #dc2626;
+.icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }

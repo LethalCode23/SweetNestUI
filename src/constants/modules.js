@@ -1,6 +1,7 @@
 
 export const MODULES = {
     HOTELS: "Hoteles",
+    HOTEL_TYPES: "Tipos", // tipos de alojamiento
     COUNTRIES: "Países",
     DEPARTMENTS: "Departamentos",
     CITIES: "Ciudades",

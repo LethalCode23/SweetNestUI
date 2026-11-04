@@ -1,39 +1,51 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { Field, Switch } from "../ui/Form/Form";
 
-export const CategoryForm = ({ initial = {}, onCancel, onSubmit }) => {
-  const [form, setForm] = useState({ catName: "", catEst: "A", catSec: null });
+/** Crear/editar categoría. onSubmit(payload) guarda y lanza si falla. */
+export const CategoryForm = ({ initial, onClose, onSubmit }) => {
+  const [form, setForm] = useState(() => ({
+    catName: initial?.catName ?? "",
+    catEst: initial?.catEst ?? "A",
+    catSec: initial?.catSec ?? null,
+  }));
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (initial) setForm({ catName: initial.catName || "", catEst: initial.catEst || "A", catSec: initial.catSec || null });
-  }, [initial]);
+  const set = (name, value) => {
+    setForm((s) => ({ ...s, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: null }));
+  };
 
-  const handleChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
-
-  const submit = (e) => {
-    e.preventDefault();
-    if (!form.catName.trim()) return alert("Nombre requerido");
-    onSubmit(form);
+  const submit = async () => {
+    const catName = form.catName.trim();
+    if (!catName) {
+      setErrors({ catName: "Escribe el nombre de la categoría." });
+      return false;
+    }
+    await onSubmit({ ...form, catName });
   };
 
   return (
-    <form className="country-form" onSubmit={submit}>
-      <div className="form-row">
-        <label>Nombre</label>
-        <input name="catName" value={form.catName} onChange={handleChange} />
-      </div>
+    <FormDrawer
+      title={initial ? `Editar «${initial.catName}»` : "Nueva categoría"}
+      description="Las categorías agrupan los alojamientos en la búsqueda."
+      submitLabel={initial ? "Guardar cambios" : "Crear categoría"}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <Field label="Nombre" required error={errors.catName}>
+        {(p) => (
+          <input {...p} className="sn-input" value={form.catName} maxLength={60}
+            placeholder="Ej. Playa" onChange={(e) => set("catName", e.target.value)} />
+        )}
+      </Field>
 
-      <div className="form-row">
-        <label>Estado</label>
-        <select name="catEst" value={form.catEst} onChange={handleChange}>
-          <option value="A">Activo</option>
-          <option value="I">Inactivo</option>
-        </select>
-      </div>
-
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary">Guardar</button>
-        <button type="button" className="btn" onClick={onCancel}>Cancelar</button>
-      </div>
-    </form>
+      <Switch
+        label="Activa"
+        description={form.catEst === "A" ? "Se puede asignar a los hoteles." : "No aparece al editar hoteles."}
+        checked={form.catEst === "A"}
+        onChange={(on) => set("catEst", on ? "A" : "I")}
+      />
+    </FormDrawer>
   );
 };

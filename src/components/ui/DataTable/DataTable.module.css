@@ -1,0 +1,394 @@
+/* DataTable — ver DESIGN.md (Componentes). Solo var(--sn-*). */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-space-4);
+  font-family: var(--sn-font);
+  color: var(--sn-text);
+  text-align: left;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sn-space-3);
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 320px;
+  min-width: 220px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: var(--sn-space-3);
+  color: var(--sn-text-soft);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--sn-space-8) 0 36px;
+  border: 1px solid var(--sn-border);
+  border-radius: var(--sn-radius-md);
+  background: var(--sn-surface);
+  color: var(--sn-ink);
+  font-family: inherit;
+  font-size: var(--sn-text-base);
+  box-shadow: var(--sn-shadow-xs);
+  transition: border-color var(--sn-fast) var(--sn-ease), box-shadow var(--sn-fast) var(--sn-ease);
+}
+
+.searchInput::placeholder {
+  color: var(--sn-text-muted);
+}
+
+.searchInput:hover {
+  border-color: var(--sn-border-strong);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--sn-primary);
+  box-shadow: 0 0 0 3px var(--sn-ring);
+}
+
+/* Sin la X nativa de type=search: usamos la nuestra */
+.searchInput::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.searchClear {
+  position: absolute;
+  right: var(--sn-space-2);
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--sn-radius-sm);
+  background: transparent;
+  color: var(--sn-text-soft);
+  cursor: pointer;
+}
+
+.searchClear:hover {
+  background: var(--sn-neutral-bg);
+  color: var(--sn-ink);
+}
+
+.searchClear:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sn-space-2);
+}
+
+.toolbarEnd {
+  margin-left: auto;
+}
+
+/* ── Card + tabla ── */
+.card {
+  background: var(--sn-surface);
+  border: 1px solid var(--sn-border);
+  border-radius: var(--sn-radius-lg);
+  overflow: hidden;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--sn-text-base);
+}
+
+.table th {
+  height: 40px;
+  padding: 0 var(--sn-space-4);
+  background: var(--sn-surface-sunken);
+  border-bottom: 1px solid var(--sn-border);
+  color: var(--sn-text-soft);
+  font-size: var(--sn-text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table td {
+  height: 52px;
+  padding: 0 var(--sn-space-4);
+  border-bottom: 1px solid var(--sn-border);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* El hover pinta las celdas (no la fila) para que la columna fija de acciones también cambie */
+.row > td {
+  background: var(--sn-surface);
+  transition: background var(--sn-fast) var(--sn-ease);
+}
+
+.row:hover > td {
+  background: var(--sn-canvas);
+}
+
+/* Columna de acciones fija a la derecha: siempre visible aunque la tabla haga scroll */
+.stickyEnd {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+}
+
+.table th.stickyEnd {
+  background: var(--sn-surface-sunken);
+}
+
+/* Acciones discretas: se encienden al pasar por la fila o al llegar con teclado (solo con mouse) */
+@media (hover: hover) {
+  .row .actions {
+    opacity: 0.55;
+    transition: opacity var(--sn-fast) var(--sn-ease);
+  }
+
+  .row:hover .actions,
+  .row:focus-within .actions {
+    opacity: 1;
+  }
+}
+
+.align-left { text-align: left; }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sn-space-1);
+  padding: 2px 4px;
+  margin: 0 -4px;
+  border: none;
+  border-radius: var(--sn-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.sortBtn:hover,
+.sortActive {
+  color: var(--sn-ink);
+}
+
+.sortBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sn-space-1);
+}
+
+/* ── Skeleton ── */
+.skeleton {
+  display: block;
+  height: 10px;
+  border-radius: var(--sn-radius-pill);
+  background: linear-gradient(
+    90deg,
+    var(--sn-neutral-bg) 0%,
+    var(--sn-surface-sunken) 50%,
+    var(--sn-neutral-bg) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to   { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}
+
+/* ── Estados vacíos / error ── */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sn-space-2);
+  padding: var(--sn-space-9) var(--sn-space-4);
+  text-align: center;
+  white-space: normal;
+}
+
+.stateTitle {
+  font-size: var(--sn-text-md);
+  font-weight: 600;
+  color: var(--sn-ink);
+}
+
+.stateText {
+  max-width: 44ch;
+  margin-bottom: var(--sn-space-2);
+  font-size: var(--sn-text-sm);
+  color: var(--sn-text-soft);
+}
+
+/* Las celdas de estado no llevan alto fijo */
+.table td:has(.state) {
+  height: auto;
+}
+
+/* ── Paginación ── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sn-space-3);
+  padding: var(--sn-space-3) var(--sn-space-4);
+  border-top: 1px solid var(--sn-border);
+}
+
+.count {
+  font-size: var(--sn-text-sm);
+  color: var(--sn-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pageBtn,
+.pageNav {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sn-space-1);
+  border: none;
+  border-radius: var(--sn-radius-sm);
+  background: transparent;
+  color: var(--sn-text);
+  font-family: inherit;
+  font-size: var(--sn-text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.pageBtn {
+  min-width: 32px;
+  padding: 0 var(--sn-space-2);
+}
+
+.pageNav {
+  padding: 0 var(--sn-space-2);
+}
+
+.pageBtn:hover,
+.pageNav:hover:not(:disabled) {
+  background: var(--sn-neutral-bg);
+  color: var(--sn-ink);
+}
+
+.pageCurrent,
+.pageCurrent:hover {
+  background: var(--sn-primary-soft);
+  color: var(--sn-primary);
+  font-weight: 700;
+}
+
+.pageNav:disabled {
+  color: var(--sn-text-muted);
+  cursor: not-allowed;
+}
+
+.pageBtn:focus-visible,
+.pageNav:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.pageGap {
+  min-width: 24px;
+  text-align: center;
+  color: var(--sn-text-soft);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Móvil ── */
+@media (max-width: 599px) {
+  .search {
+    flex: 1 1 100%;
+  }
+
+  .filters {
+    flex: 1 1 100%;
+  }
+
+  .filters > * {
+    flex: 1 1 calc(50% - var(--sn-space-2));
+    min-width: 0;
+  }
+
+  .toolbarEnd,
+  .toolbarEnd > * {
+    width: 100%;
+  }
+
+  /* Sombra que indica que hay contenido debajo de la columna fija */
+  .stickyEnd {
+    box-shadow: -8px 0 8px -8px rgba(15, 31, 53, 0.18);
+  }
+
+  .toolbarEnd {
+    margin-left: 0;
+  }
+
+  .footer {
+    justify-content: center;
+  }
+
+  .count {
+    width: 100%;
+    text-align: center;
+  }
+}
