@@ -150,6 +150,13 @@
   border-color: rgba(0, 0, 0, 0.15);
 }
 
+.actionBtnActive,
+.actionBtnActive:hover {
+  color: #E11D48;
+  border-color: rgba(225, 29, 72, 0.35);
+  background: rgba(225, 29, 72, 0.06);
+}
+
 .actionBtn:active {
   transform: scale(0.97);
 }

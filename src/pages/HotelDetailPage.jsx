@@ -6,11 +6,13 @@ import { findDetailById } from "../services/hotelServices/hotelService";
 import { PhotoGallery } from "../components/HotelDetail/PhotoGallery";
 import { BookingCard } from "../components/HotelDetail/BookingCard";
 import { ListingContent } from "../components/HotelDetail/ListingContent";
+import { useFavoriteToggle } from "../hooks/useFavoriteToggle";
 import styles from "./HotelDetailPage.module.css";
 
 const HotelDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const fav = useFavoriteToggle(id);
 
   const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,9 +88,15 @@ const HotelDetailPage = () => {
               <Share2 size={16} />
               <span>Compartir</span>
             </button>
-            <button className={styles.actionBtn}>
-              <Heart size={16} />
-              <span>Guardar</span>
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${fav.active ? styles.actionBtnActive : ""}`}
+              aria-pressed={fav.active}
+              aria-busy={fav.busy}
+              onClick={fav.toggle}
+            >
+              <Heart size={16} fill={fav.active ? "currentColor" : "none"} />
+              <span>{fav.active ? "Guardado" : "Guardar"}</span>
             </button>
           </div>
         </header>
@@ -102,7 +110,7 @@ const HotelDetailPage = () => {
             <ListingContent hotel={hotel} />
           </div>
           <aside className={styles.sidebar}>
-            <BookingCard hotel={hotel} />
+            <BookingCard hotel={hotel} hotSec={id} />
           </aside>
         </div>
       </div>

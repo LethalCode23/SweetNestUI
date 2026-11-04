@@ -1,12 +1,14 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export const ProtectedRoute = ({ requiredSubModule, children }) => {
 
   const { user, loadingModules, hasSubmodulePermission } = useAuth();
+  const location = useLocation();
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    // El login vuelve a esta página (state.from)
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   // Esperamos a que los módulos terminen de cargar antes de evaluar permisos

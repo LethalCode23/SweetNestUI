@@ -15,11 +15,13 @@ import CategoryPage from "./pages/CategoryPage";
 import HotelSearchPage from "./pages/HotelSearchPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import HotelDetailPage from "./pages/HotelDetailPage";
+import FavoritesPage from "./pages/FavoritesPage";
 import UsersPage from "./pages/UsersPage";
 import ProfilesPage from "../src/components/Profile/ProfilesPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import PermissionsPage from "../src/components/PermissionsPage/PermissionsPage";
 import FeaturesPage from "./pages/FeaturesPage";
+import HotelTypePage from "./pages/HotelTypePage";
 
 const Layout = () => (
   <>
@@ -42,6 +44,14 @@ const router = createBrowserRouter(
         { index: true, element: <HomePage /> },
         { path: "hoteles", element: <HotelSearchPage /> },
         { path: "hoteles/:id", element: <HotelDetailPage /> },
+        {
+          path: "favoritos",
+          element: (
+            <ProtectedRoute>
+              <FavoritesPage />
+            </ProtectedRoute>
+          ),
+        },
       ],
     },
 
@@ -64,6 +74,14 @@ const router = createBrowserRouter(
           element: (
             <ProtectedRoute requiredSubModule="Hoteles">
               <HotelsPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "type-hotels",
+          element: (
+            <ProtectedRoute requiredSubModule="Hoteles">
+              <HotelTypePage />
             </ProtectedRoute>
           ),
         },

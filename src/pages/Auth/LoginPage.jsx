@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { login as loginService } from "../../services/AuthServices/AuthServices";
 import * as yup from 'yup';
@@ -22,6 +22,7 @@ export default function LoginPage() {
 
   const { user, saveUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [tab, setTab] = useState("email");
   const [showPass, setShowPass] = useState(false);
@@ -57,6 +58,13 @@ export default function LoginPage() {
       const loggedUser = result.data;
 
       saveUser(loggedUser);
+
+      // Si llegó desde una página que pedía sesión (favoritos, ruta protegida), volver ahí
+      const from = location.state?.from;
+      if (from?.pathname && from.pathname !== "/login") {
+        navigate(`${from.pathname}${from.search ?? ""}${from.hash ?? ""}`, { replace: true });
+        return;
+      }
 
       // validar el rol del usuario para redirigir
       if (loggedUser.user.role === ROLES.ADMIN) {

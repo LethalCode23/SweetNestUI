@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 import { BASE_URL } from "../../Js/constants";
+import { useFavoriteToggle } from "../../hooks/useFavoriteToggle";
 
 export const HotelCard = ({ hotel }) => {
+  const fav = useFavoriteToggle(hotel.hotSec);
   const [isHovered, setIsHovered] = useState(false);
   const [current, setCurrent] = useState(0);
   const [imgError, setImgError] = useState(false);
@@ -43,7 +46,16 @@ export const HotelCard = ({ hotel }) => {
           onError={() => setImgError(true)}
         />
 
-        <button className="bookmark" aria-label="Guardar">🔖</button>
+        <button
+          type="button"
+          className={`bookmark${fav.active ? " is-active" : ""}`}
+          aria-label={fav.active ? "Quitar de favoritos" : "Guardar en favoritos"}
+          aria-pressed={fav.active}
+          aria-busy={fav.busy}
+          onClick={fav.toggle}
+        >
+          <Heart size={17} fill={fav.active ? "currentColor" : "none"} />
+        </button>
 
         {/* Carousel — solo si hay más de 1 imagen */}
         {images.length > 1 && (
