@@ -22,6 +22,7 @@ import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import PermissionsPage from "../src/components/PermissionsPage/PermissionsPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import HotelTypePage from "./pages/HotelTypePage";
+import { MODULES } from "./constants/modules";
 
 const Layout = () => (
   <>
@@ -47,7 +48,7 @@ const router = createBrowserRouter(
         {
           path: "favoritos",
           element: (
-            <ProtectedRoute>
+            <ProtectedRoute requiredSubModule={MODULES.FAVORITES}>
               <FavoritesPage />
             </ProtectedRoute>
           ),
@@ -138,6 +139,14 @@ const router = createBrowserRouter(
           element: (
             <ProtectedRoute>
               <UserProfilePage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "favorites",
+          element: (
+            <ProtectedRoute requiredSubModule={MODULES.FAVORITES}>
+              <FavoritesPage inPanel />
             </ProtectedRoute>
           ),
         },

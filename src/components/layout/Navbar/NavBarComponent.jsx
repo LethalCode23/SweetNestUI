@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../../context/AuthContext"; // ajusta la ruta según tu estructura real
 import "../Navbar/NavBarComponent.css";
 import { ROLES } from "../../../js/roles";
+import { MODULES } from "../../../constants/modules";
+import { Heart } from "lucide-react";
 
 export const NavBarComponent = () => {
   const [isDark, setIsDark] = useState(() => {
@@ -18,7 +20,8 @@ export const NavBarComponent = () => {
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
-  const { user, logout } = useAuth();
+  const { user, logout, hasSubmodulePermission } = useAuth();
+  const canSeeFavorites = hasSubmodulePermission(MODULES.FAVORITES);
 
   // Cierra el popover si se hace click fuera
   useEffect(() => {
@@ -107,9 +110,12 @@ export const NavBarComponent = () => {
                     <button className="profile-menu-item" onClick={() => goTo("/dashboard/userProfile")}>
                       <span>Mi Perfil</span>
                     </button>
-                    <button className="profile-menu-item" onClick={() => goTo("/favoritos")}>
-                      <span>Mis favoritos</span>
-                    </button>
+                    {canSeeFavorites && (
+                      <button className="profile-menu-item" onClick={() => goTo("/favoritos")}>
+                        <Heart size={16} aria-hidden="true" />
+                        <span>Mis favoritos</span>
+                      </button>
+                    )}
                   </nav>
 
                   <div className="profile-divider" />
@@ -166,6 +172,30 @@ export const NavBarComponent = () => {
                 <span className="profile-role-badge">{roleLabel}</span>
               </div>
             </div>
+            <ul className="navbar-nav mobile-profile-links">
+              <li>
+                <NavLink to="/dashboard" end className="nav-link" onClick={() => setMenuOpen(false)}>
+                  Ir al Dashboard
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/userProfile" className="nav-link" onClick={() => setMenuOpen(false)}>
+                  Mi Perfil
+                </NavLink>
+              </li>
+              {canSeeFavorites && (
+                <li>
+                  <NavLink
+                    to="/favoritos"
+                    className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Heart size={16} aria-hidden="true" />
+                    Mis favoritos
+                  </NavLink>
+                </li>
+              )}
+            </ul>
             <button className="logout-btn" onClick={() => { logout(); setMenuOpen(false); }}>
               Cerrar sesión
             </button>

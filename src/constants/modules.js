@@ -9,6 +9,8 @@ export const MODULES = {
     USERS: "Usuarios",
     PROFILE: "Perfiles",
     FEATURES: "Características",
+    MY_PROFILE: "Mi Perfil",
+    FAVORITES: "Mis favoritos",
 };
 
 export const ACTIONS = {

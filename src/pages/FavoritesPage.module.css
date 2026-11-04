@@ -3,6 +3,11 @@
   padding-bottom: 48px;
 }
 
+/* Dentro del panel: el layout del dashboard ya da el padding */
+.panel {
+  padding: 0;
+}
+
 .header {
   margin-bottom: 24px;
 }
@@ -19,26 +24,72 @@
   color: var(--muted, #6B7280);
 }
 
-.error {
-  font-size: 14px;
-  color: #B42318;
-}
-
-.empty {
+/* Estado vacío / error: tarjeta suave con el mismo borde y radio que .hotel-card */
+.stateCard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 48px 16px;
+  gap: 10px;
+  max-width: 460px;
+  margin: 24px auto;
+  padding: 40px 24px;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  background: #fff;
   text-align: center;
+}
+
+.stateIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #F3F4F6;
   color: var(--muted, #6B7280);
 }
 
-.emptyLink {
+.stateTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+}
+
+.stateText {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--muted, #6B7280);
+}
+
+.stateBtn {
   padding: 10px 18px;
+  border: 0;
   border-radius: 10px;
   background: var(--text, #0B3B59);
   color: #fff;
+  font: inherit;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.stateBtn:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-top: 20px;
+    padding-bottom: 32px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .stateCard {
+    padding: 32px 16px;
+  }
 }

@@ -8,6 +8,8 @@ import {
     Sparkles,
     Users,
     ShieldCheck,
+    UserRound,
+    Heart,
     Circle,
 } from "lucide-react";
 import { MODULES } from "./modules";
@@ -33,6 +35,8 @@ const ICONS_BY_MODULE = {
     [normalizeKey(MODULES.FEATURES)]: Sparkles,
     [normalizeKey(MODULES.USERS)]: Users,
     [normalizeKey(MODULES.PROFILE)]: ShieldCheck,
+    [normalizeKey(MODULES.MY_PROFILE)]: UserRound,
+    [normalizeKey(MODULES.FAVORITES)]: Heart,
     // Alias en ingles que tambien puede devolver el backend
     features: Sparkles,
 };
