@@ -1,260 +1,140 @@
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+/* HotelForm — solo lo propio (imágenes). Campos y drawer salen de ui/Form y ui/FormDrawer. */
 
-.label {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #94a3b8;
-}
-
-.input,
-.textarea,
-.select {
-  width: 100%;
-  background: #0a1020;
-  border: 1px solid #1e2d45;
-  border-radius: 8px;
-  color: #e2e8f0;
-  font-size: 13.5px;
-  padding: 9px 12px;
-  font-family: inherit;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.input::placeholder,
-.textarea::placeholder { color: #475569; }
-
-.input:focus,
-.textarea:focus,
-.select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-  outline: none;
-}
-
-.textarea {
-  resize: vertical;
-  line-height: 1.6;
-  min-height: 80px;
-}
-
-.select {
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
-}
-
-.select option { background: #0a1020; }
-
-.row2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-/* Toggle switch */
-.toggleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 16px;
-  background: #0a1020;
-  border: 1px solid #1e2d45;
-  border-radius: 10px;
-}
-
-.toggleTitle {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #e2e8f0;
-}
-
-.toggleDesc {
-  font-size: 12px;
-  color: #475569;
-  margin-top: 2px;
-}
-
-.toggle { position: relative; flex-shrink: 0; }
-
-.toggle input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggleTrack {
-  display: block;
-  width: 44px;
-  height: 24px;
-  background: #0f1623;
-  border: 1px solid #1e2d45;
-  border-radius: 99px;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
+.dropzone {
   position: relative;
-}
-
-.toggle input:checked ~ .toggleTrack {
-  background: #2563eb;
-  border-color: #2563eb;
-}
-
-.toggleThumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 16px;
-  height: 16px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-}
-
-.toggle input:checked ~ .toggleTrack .toggleThumb {
-  transform: translateX(20px);
-}
-
-/* Category chips */
-.catGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.catChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 13px;
-  border-radius: 99px;
-  border: 1px solid #1e2d45;
-  background: #0a1020;
-  color: #94a3b8;
-  font-size: 13px;
-  font-weight: 450;
-  font-family: inherit;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  cursor: pointer;
-}
-
-.catChip:hover {
-  border-color: #2563eb;
-  color: #e2e8f0;
-}
-
-.catChipActive {
-  background: #1e3a5f;
-  border-color: #2563eb33;
-  color: #60a5fa;
-  font-weight: 500;
-}
-
-.catCheck { font-size: 11px; font-weight: 700; }
-
-.loadingText { font-size: 13px; color: #475569; }
-
-/* Upload zone */
-.uploadZone {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 24px 16px;
-  border: 1.5px dashed #1e2d45;
-  border-radius: 10px;
-  background: #0a1020;
+  gap: var(--sn-space-1);
+  padding: var(--sn-space-6) var(--sn-space-4);
+  border: 1.5px dashed var(--sn-border-strong);
+  border-radius: var(--sn-radius-lg);
+  background: var(--sn-surface-sunken);
+  color: var(--sn-text-soft);
+  text-align: center;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  position: relative;
+  transition: border-color var(--sn-fast) var(--sn-ease), background var(--sn-fast) var(--sn-ease),
+              color var(--sn-fast) var(--sn-ease);
 }
 
-.uploadZone:hover {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.04);
+.dropzone:hover,
+.dropzone:focus-within {
+  border-color: var(--sn-primary);
+  background: var(--sn-primary-soft);
+  color: var(--sn-primary);
 }
 
-.uploadIcon { color: #475569; margin-bottom: 2px; }
-
-.uploadTitle {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #94a3b8;
+.dropzone:focus-within {
+  box-shadow: 0 0 0 3px var(--sn-ring);
 }
 
-.uploadHint { font-size: 12px; color: #475569; }
+.dropTitle {
+  font-size: var(--sn-text-sm);
+  font-weight: 600;
+  color: var(--sn-ink);
+}
 
+.dropHint {
+  font-size: var(--sn-text-xs);
+}
+
+/* El input cubre toda la zona: así funciona clic y arrastrar-soltar */
 .fileInput {
   position: absolute;
   inset: 0;
   opacity: 0;
   cursor: pointer;
-  width: 100%;
-  height: 100%;
 }
 
-/* Image previews */
 .previews {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: var(--sn-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.previewItem {
+.preview {
   position: relative;
-  width: 80px;
-  height: 80px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--sn-border);
+  border-radius: var(--sn-radius-md);
+  background: var(--sn-neutral-bg);
 }
 
-.previewItem img {
+.isNew {
+  animation: previewIn var(--sn-slow) var(--sn-ease);
+}
+
+@keyframes previewIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+.preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 6px;
-  border: 1px solid #1e2d45;
+  transition: transform var(--sn-slow) var(--sn-ease);
 }
 
-.removeBtn {
+.preview:hover img {
+  transform: scale(1.03);
+}
+
+.order {
   position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 18px;
-  height: 18px;
-  background: #ef4444;
-  color: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  left: 6px;
+  bottom: 6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--sn-radius-pill);
+  background: rgba(15, 31, 53, 0.72);
+  color: var(--sn-surface);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
   border: none;
-  transition: opacity 0.15s;
+  border-radius: 50%;
+  background: rgba(15, 31, 53, 0.72);
+  color: var(--sn-surface);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--sn-fast) var(--sn-ease), background var(--sn-fast) var(--sn-ease);
 }
 
-.removeBtn:hover { opacity: 0.85; }
-
-.priority {
-  position: absolute;
-  bottom: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #0a1020;
-  border: 1px solid #1e2d45;
-  color: #475569;
-  font-size: 10px;
-  padding: 1px 5px;
-  border-radius: 99px;
-  white-space: nowrap;
+.preview:hover .remove,
+.remove:focus-visible {
+  opacity: 1;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+.remove:hover {
+  background: var(--sn-danger);
+}
+
+.remove:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+/* En táctil no hay hover: el botón de quitar queda siempre visible */
+@media (hover: none) {
+  .remove {
+    opacity: 1;
+  }
+}

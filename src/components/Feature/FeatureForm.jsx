@@ -1,106 +1,76 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { MODULES, ACTIONS } from "../../constants/modules";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { Field, Switch } from "../ui/Form/Form";
 
-export const FeatureForm = ({ initial = null, onCancel, onSubmit }) => {
+// La API usa feaSec/feaName/feaEst/feaIconUrl; id/name/state quedan por compatibilidad
+const idOf = (f) => f?.feaSec ?? f?.id ?? null;
+
+/** Crear/editar característica. onSubmit(payload) guarda y lanza si falla. */
+export const FeatureForm = ({ initial = null, onClose, onSubmit }) => {
   const { hasActionPermission } = useAuth();
+  const isEditing = Boolean(idOf(initial));
 
-  const [form, setForm] = useState({
-    name: "",
-    state: "A",
-    icon: ""
-  });
+  const [form, setForm] = useState(() => ({
+    name: initial?.feaName ?? initial?.name ?? "",
+    // El backend lee y devuelve feaEst (antes se leía feaState, que no existe)
+    state: initial?.feaEst ?? initial?.feaState ?? initial?.state ?? "A",
+  }));
+  const [errors, setErrors] = useState({});
 
-  const isEditing = Boolean(initial && (initial.id || initial.feaSec));
-
-  useEffect(() => {
-    if (initial) {
-      setForm({
-        name: initial.name || initial.feaName || "",
-        state: initial.state || initial.feaState || "A",
-        icon: initial.icon || initial.feaIcon || ""
-      });
-    } else {
-      setForm({ name: "", state: "A", icon: "" });
-    }
-  }, [initial]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const set = (name, value) => {
+    setForm((s) => ({ ...s, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: null }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.name.trim()) {
-      alert("El nombre de la característica es requerido.");
-      return;
+  const can = (action) =>
+    hasActionPermission(MODULES.FEATURES, action) || hasActionPermission("Features", action);
+  const canSave = isEditing ? can(ACTIONS.UPDATE) : can(ACTIONS.CREATE);
+
+  const submit = async () => {
+    const name = form.name.trim();
+    if (!name) {
+      setErrors({ name: "Escribe el nombre de la característica." });
+      return false;
     }
 
-    const payload = {
-      ...(isEditing ? { id: initial.id || initial.feaSec, feaSec: initial.feaSec || initial.id } : {}),
-      name: form.name.trim(),
-      feaName: form.name.trim(),
+    const id = idOf(initial);
+    await onSubmit({
+      ...(isEditing ? { id, feaSec: id } : {}),
+      name,
+      feaName: name,
+      // feaEst es el campo que guarda el backend; state/feaState quedan por compatibilidad
+      feaEst: form.state,
       state: form.state,
       feaState: form.state,
-      icon: form.icon.trim(),
-      feaIcon: form.icon.trim()
-    };
-
-    onSubmit(payload);
+      // Conserva el ícono existente (el form no lo edita)
+      feaIconUrl: initial?.feaIconUrl ?? null,
+    });
   };
 
-  // Check permissions
-  const canCreate = hasActionPermission(MODULES.FEATURES, ACTIONS.CREATE) || hasActionPermission("Features", ACTIONS.CREATE);
-  const canUpdate = hasActionPermission(MODULES.FEATURES, ACTIONS.UPDATE) || hasActionPermission("Features", ACTIONS.UPDATE);
-
-  if (isEditing && !canUpdate) return null;
-  if (!isEditing && !canCreate) return null;
-
   return (
-    <form className="feature-form" onSubmit={handleSubmit}>
-      <div className="feature-form-header">
-        <h4>{isEditing ? "Editar Característica" : "Nueva Característica"}</h4>
-      </div>
-
-      <div className="feature-form-grid">
-        <div className="form-group">
-          <label htmlFor="featureName">Nombre de la Característica</label>
-          <input
-            id="featureName"
-            type="text"
-            name="name"
-            placeholder="Ej. Piscina, Wi-Fi, Estacionamiento..."
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="featureState">Estado</label>
-          <select
-            id="featureState"
-            name="state"
-            value={form.state}
-            onChange={handleChange}
-          >
-            <option value="A">Activo</option>
-            <option value="I">Inactivo</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="feature-form-actions">
-        <button type="submit" className="btn btn-primary">
-          {isEditing ? "Guardar Cambios" : "Agregar Característica"}
-        </button>
-        {onCancel && (
-          <button type="button" className="btn btn-secondary" onClick={onCancel}>
-            Cancelar
-          </button>
+    <FormDrawer
+      title={isEditing ? `Editar «${initial.feaName ?? initial.name}»` : "Nueva característica"}
+      description="Servicios y comodidades que se marcan en cada alojamiento."
+      submitLabel={isEditing ? "Guardar cambios" : "Crear característica"}
+      canSubmit={canSave}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <Field label="Nombre" required error={errors.name}>
+        {(p) => (
+          <input {...p} className="sn-input" value={form.name} maxLength={60}
+            placeholder="Ej. Piscina, Wi-Fi, Parqueadero" onChange={(e) => set("name", e.target.value)} />
         )}
-      </div>
-    </form>
+      </Field>
+
+      <Switch
+        label="Activa"
+        description={form.state === "A" ? "Se puede marcar en los hoteles." : "No aparece al editar hoteles."}
+        checked={form.state === "A"}
+        onChange={(on) => set("state", on ? "A" : "I")}
+      />
+    </FormDrawer>
   );
 };

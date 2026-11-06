@@ -1,98 +1,107 @@
 import { useEffect, useState } from "react";
 import { createCity, updateCity } from "../../services/cityServices/cityService";
 import { getAll } from "../../services/departmentServices/departmentService";
-import styles from "./CityForm.module.css";
 import { useAuth } from "../../context/AuthContext";
 import { MODULES, ACTIONS } from "../../constants/modules";
+import { unwrapList } from "../../Utils/apiError";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { Field, Switch } from "../ui/Form/Form";
 
+/**
+ * Crear/editar ciudad. Guarda por su cuenta (PUT/POST) y avisa con onSuccess (recargar la lista).
+ * Si el guardado falla, el drawer muestra el error (antes era una promesa rechazada sin aviso).
+ */
 const CityForm = ({ editingCity, onSuccess, onClose }) => {
 
   const { hasActionPermission } = useAuth();
+  const isEditing = Boolean(editingCity);
 
   const [form, setForm] = useState(() => ({
     citName: editingCity?.citName || "",
-    department: editingCity?.department?.depSec || "",
-    citState: editingCity?.citState === "A" || editingCity?.citState === true ? "A" : "I",
+    department: editingCity?.department?.depSec ?? editingCity?.citDepSec ?? "",
+    citState: editingCity?.citState === "A" || editingCity?.citState === true || !editingCity ? "A" : "I",
   }));
-
-  const [departments, setDepartments] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [departments, setDepartments] = useState(null);
 
   useEffect(() => {
     let active = true;
     getAll()
-      .then((res) => { if (active) setDepartments(res); })
+      .then((res) => { if (active) setDepartments(unwrapList(res)); })
       .catch(() => { if (active) setDepartments([]); });
     return () => { active = false; };
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const set = (name, value) => {
+    setForm((s) => ({ ...s, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: null }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const submit = async () => {
+    const citName = form.citName.trim();
+    const next = {};
+    if (!citName) next.citName = "Escribe el nombre de la ciudad.";
+    if (!form.department) next.department = "Elige el departamento al que pertenece.";
+    if (Object.keys(next).length) {
+      setErrors(next);
+      return false;
+    }
 
     const payload = {
-      citName: form.citName,
+      citName,
       citState: form.citState,
       citDepSec: form.department,
     };
 
-    if (editingCity) {
+    if (isEditing) {
       await updateCity(editingCity.citSec, payload);
     } else {
       await createCity(payload);
     }
-
     await onSuccess();
-    onClose();
   };
 
-  const isEditing = Boolean(editingCity);
   const canSave = isEditing
     ? hasActionPermission(MODULES.CITIES, ACTIONS.UPDATE)
     : hasActionPermission(MODULES.CITIES, ACTIONS.CREATE);
 
   return (
-    <form className={styles["city-form"]} onSubmit={handleSubmit}>
-      <div className={styles["form-row"]}>
-        <label htmlFor="citName">Nombre de la ciudad</label>
-        <input
-          id="citName"
-          type="text"
-          name="citName"
-          value={form.citName}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className={styles["form-row"]}>
-        <label htmlFor="department">Departamento</label>
-        <select id="department" name="department" value={form.department} onChange={handleChange} required>
-          <option value="">Selecciona un departamento</option>
-          {departments.map((dep) => (
-            <option key={dep.depSec} value={dep.depSec}>{dep.depName}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles["form-row"]}>
-        <label htmlFor="citState">Estado</label>
-        <select id="citState" name="citState" value={form.citState} onChange={handleChange}>
-          <option value="A">Activo</option>
-          <option value="I">Inactivo</option>
-        </select>
-      </div>
-
-      <div className={styles["form-actions"]}>
-        {canSave && (
-          <button type="submit" className={`${styles.btn} ${styles["btn-primary"]}`}>Guardar</button>
+    <FormDrawer
+      title={isEditing ? `Editar «${editingCity.citName}»` : "Nueva ciudad"}
+      description="Las ciudades se asignan a los hoteles y aparecen en la búsqueda."
+      submitLabel={isEditing ? "Guardar cambios" : "Crear ciudad"}
+      canSubmit={canSave}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <Field label="Nombre" required error={errors.citName}>
+        {(p) => (
+          <input {...p} className="sn-input" value={form.citName} maxLength={60}
+            placeholder="Ej. Medellín" onChange={(e) => set("citName", e.target.value)} />
         )}
-        <button type="button" className={`${styles.btn} ${styles["btn-cancel"]}`} onClick={onClose}>Cancelar</button>
-      </div>
-    </form>
+      </Field>
+
+      <Field label="Departamento" required error={errors.department}>
+        {(p) => (
+          <select {...p} className="sn-select sn-select--block" value={form.department}
+            onChange={(e) => set("department", e.target.value)} disabled={departments === null}>
+            <option value="">{departments === null ? "Cargando departamentos…" : "Elige un departamento"}</option>
+            {(departments ?? []).map((dep) => (
+              <option key={dep.depSec} value={dep.depSec}>
+                {dep.depName}{dep.countryResponseDto?.paiName ? ` · ${dep.countryResponseDto.paiName}` : ""}
+              </option>
+            ))}
+          </select>
+        )}
+      </Field>
+
+      <Switch
+        label="Activa"
+        description={form.citState === "A" ? "Se puede asignar a los hoteles." : "No aparece al crear hoteles."}
+        checked={form.citState === "A"}
+        onChange={(on) => set("citState", on ? "A" : "I")}
+      />
+    </FormDrawer>
   );
 };
 

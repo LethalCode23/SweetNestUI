@@ -1,72 +1,85 @@
 import { useState, useEffect } from "react";
-import styles from "./DepartmentForm.module.css";
 import { getAll as getCountries } from "../../services/countryServices/countryService";
+import { unwrapList } from "../../Utils/apiError";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { Field, Switch } from "../ui/Form/Form";
 
-export const DepartmentForm = ({ initial = {}, onCancel, onSubmit }) => {
+/** Crear/editar departamento. onSubmit(payload) guarda y lanza si falla. */
+export const DepartmentForm = ({ initial, onClose, onSubmit }) => {
   const [form, setForm] = useState(() => ({
-    depName: initial.depName || "",
-    depState: initial.depState || "A",
-    depSec: initial.depSec ?? null,
-    depPaiSec: initial.pais?.paiSec || initial.depPaiSec || null,
+    depName: initial?.depName ?? "",
+    depState: initial?.depState ?? "A",
+    depSec: initial?.depSec ?? null,
+    depPaiSec: initial?.countryResponseDto?.paiSec ?? initial?.pais?.paiSec ?? initial?.depPaiSec ?? "",
   }));
-  const [countries, setCountries] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [countries, setCountries] = useState(null);
 
   useEffect(() => {
     let active = true;
     getCountries()
-      .then((res) => { if (active) setCountries(res); })
+      .then((res) => { if (active) setCountries(unwrapList(res)); })
       .catch(() => { if (active) setCountries([]); });
     return () => { active = false; };
   }, []);
 
-  const handleChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
+  const set = (name, value) => {
+    setForm((s) => ({ ...s, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: null }));
+  };
 
-  const submit = (e) => {
-    e.preventDefault();
-    if (!form.depName.trim()) return alert("Nombre requerido");
+  const submit = async () => {
+    const depName = form.depName.trim();
+    const next = {};
+    if (!depName) next.depName = "Escribe el nombre del departamento.";
+    // Antes un país sin elegir se enviaba como Number(null) = 0
+    if (!form.depPaiSec) next.depPaiSec = "Elige el país al que pertenece.";
+    if (Object.keys(next).length) {
+      setErrors(next);
+      return false;
+    }
 
-    const payload = {
+    await onSubmit({
       depSec: form.depSec,
-      depName: form.depName,
+      depName,
       depState: form.depState,
-      countryResponseDto: {
-        paiSec: Number(form.depPaiSec),
-        paiName: "" // si el backend no lo usa para guardar, puedes mandarlo vacío
-      }
-    };
-
-    onSubmit(payload);
+      countryResponseDto: { paiSec: Number(form.depPaiSec), paiName: "" },
+    });
   };
 
   return (
-    <form className={styles["department-form"]} onSubmit={submit}>
-      <div className={styles["form-row"]}>
-        <label>Nombre</label>
-        <input name="depName" value={form.depName} onChange={handleChange} />
-      </div>
+    <FormDrawer
+      title={initial ? `Editar «${initial.depName}»` : "Nuevo departamento"}
+      description="Cada departamento pertenece a un país y agrupa sus ciudades."
+      submitLabel={initial ? "Guardar cambios" : "Crear departamento"}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <Field label="Nombre" required error={errors.depName}>
+        {(p) => (
+          <input {...p} className="sn-input" value={form.depName} maxLength={60}
+            placeholder="Ej. Antioquia" onChange={(e) => set("depName", e.target.value)} />
+        )}
+      </Field>
 
-      <div className={styles["form-row"]}>
-        <label>País</label>
-        <select name="depPaiSec" value={form.depPaiSec || ""} onChange={handleChange}>
-          <option value="">-- seleccionar --</option>
-          {countries.map((c) => (
-            <option key={c.paiSec} value={c.paiSec}>{c.paiName}</option>
-          ))}
-        </select>
-      </div>
+      <Field label="País" required error={errors.depPaiSec}>
+        {(p) => (
+          <select {...p} className="sn-select sn-select--block" value={form.depPaiSec}
+            onChange={(e) => set("depPaiSec", e.target.value)} disabled={countries === null}>
+            <option value="">{countries === null ? "Cargando países…" : "Elige un país"}</option>
+            {(countries ?? []).map((c) => (
+              <option key={c.paiSec} value={c.paiSec}>{c.paiName}</option>
+            ))}
+          </select>
+        )}
+      </Field>
 
-      <div className={styles["form-row"]}>
-        <label>Estado</label>
-        <select name="depState" value={form.depState} onChange={handleChange}>
-          <option value="A">Activo</option>
-          <option value="I">Inactivo</option>
-        </select>
-      </div>
-
-      <div className={styles["form-actions"]}>
-        <button type="submit" className={`${styles.btn} ${styles["btn-primary"]}`}>Guardar</button>
-        <button type="button" className={`${styles.btn} ${styles["btn-cancel"]}`} onClick={onCancel}>Cancelar</button>
-      </div>
-    </form>
+      <Switch
+        label="Activo"
+        description={form.depState === "A" ? "Disponible para crear ciudades." : "No aparece en los formularios."}
+        checked={form.depState === "A"}
+        onChange={(on) => set("depState", on ? "A" : "I")}
+      />
+    </FormDrawer>
   );
 };

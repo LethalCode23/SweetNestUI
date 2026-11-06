@@ -1,44 +1,55 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { Field, Switch } from "../ui/Form/Form";
 
-export const CountryForm = ({ initial = {}, onCancel, onSubmit }) => {
-  const [form, setForm] = useState({ paiName: "", paiState: "A", paiSec: null });
+/**
+ * Crear/editar país en el panel lateral. El padre lo monta con key por registro:
+ *   {showForm && <CountryForm key={editing?.paiSec ?? "new"} initial={editing} onClose onSubmit />}
+ * onSubmit(payload) guarda y lanza si falla (el drawer muestra el error).
+ */
+export const CountryForm = ({ initial, onClose, onSubmit }) => {
+  const [form, setForm] = useState(() => ({
+    paiName: initial?.paiName ?? "",
+    paiState: initial?.paiState ?? "A",
+    paiSec: initial?.paiSec ?? null,
+  }));
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (initial) setForm({ paiName: initial.paiName || "", paiState: initial.paiState || "A", paiSec: initial.paiSec || null });
-  }, [initial]);
+  const set = (name, value) => {
+    setForm((s) => ({ ...s, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: null }));
+  };
 
-  const handleChange = (e) => setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
-
-  const submit = (e) => {
-    e.preventDefault();
-    // Basic validation
-    if (!form.paiName.trim()) return alert("Nombre requerido");
-    onSubmit(form);
+  const submit = async () => {
+    const paiName = form.paiName.trim();
+    if (!paiName) {
+      setErrors({ paiName: "Escribe el nombre del país." });
+      return false;
+    }
+    await onSubmit({ ...form, paiName });
   };
 
   return (
-    <form className="country-form" onSubmit={submit}>
-      <div className="form-row">
-        <label>Nombre</label>
-        <input name="paiName" value={form.paiName} onChange={handleChange} />
-      </div>
+    <FormDrawer
+      title={initial ? `Editar «${initial.paiName}»` : "Nuevo país"}
+      description="Los países agrupan departamentos y ciudades."
+      submitLabel={initial ? "Guardar cambios" : "Crear país"}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <Field label="Nombre" required error={errors.paiName}>
+        {(p) => (
+          <input {...p} className="sn-input" value={form.paiName} maxLength={60}
+            placeholder="Ej. Colombia" onChange={(e) => set("paiName", e.target.value)} />
+        )}
+      </Field>
 
-      <div className="form-row">
-        <label>Estado</label>
-        <select name="paiState" value={form.paiState} onChange={handleChange}>
-          <option value="A">Activo</option>
-          <option value="I">Inactivo</option>
-        </select>
-      </div>
-
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary">
-          Guardar
-        </button>
-        <button type="button" className="btn" onClick={onCancel}>
-          Cancelar
-        </button>
-      </div>
-    </form>
+      <Switch
+        label="Activo"
+        description={form.paiState === "A" ? "Disponible para crear departamentos." : "No aparece en los formularios."}
+        checked={form.paiState === "A"}
+        onChange={(on) => set("paiState", on ? "A" : "I")}
+      />
+    </FormDrawer>
   );
 };

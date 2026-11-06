@@ -1,5 +1,6 @@
 import {
     Building2,
+    Shapes,
     Earth,
     Map,
     MapPin,
@@ -7,6 +8,8 @@ import {
     Sparkles,
     Users,
     ShieldCheck,
+    UserRound,
+    Heart,
     Circle,
 } from "lucide-react";
 import { MODULES } from "./modules";
@@ -24,6 +27,7 @@ const normalizeKey = (name = "") =>
  */
 const ICONS_BY_MODULE = {
     [normalizeKey(MODULES.HOTELS)]: Building2,
+    [normalizeKey(MODULES.HOTEL_TYPES)]: Shapes,
     [normalizeKey(MODULES.COUNTRIES)]: Earth,
     [normalizeKey(MODULES.DEPARTMENTS)]: Map,
     [normalizeKey(MODULES.CITIES)]: MapPin,
@@ -31,6 +35,8 @@ const ICONS_BY_MODULE = {
     [normalizeKey(MODULES.FEATURES)]: Sparkles,
     [normalizeKey(MODULES.USERS)]: Users,
     [normalizeKey(MODULES.PROFILE)]: ShieldCheck,
+    [normalizeKey(MODULES.MY_PROFILE)]: UserRound,
+    [normalizeKey(MODULES.FAVORITES)]: Heart,
     // Alias en ingles que tambien puede devolver el backend
     features: Sparkles,
 };

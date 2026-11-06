@@ -1,16 +1,26 @@
 import { useState, useEffect } from "react";
 import { getAll as getAllCategories } from "../../services/categoryServices/categoryService";
 import styles from "./HotelFilters.module.css";
+import { DestinationAutocomplete } from "./DestinationAutocomplete/DestinationAutocomplete";
 
 const MAX_PRICE = 1000000;
 
-export const HotelFilters = ({ onSearch }) => {
-    const [citName, setCitName] = useState("");
+const TODAY = new Date().toISOString().slice(0, 10);
+
+export const HotelFilters = ({
+    onSearch,
+    initialCitName = "",
+    initialStartDate = "",
+    initialEndDate = "",
+}) => {
+    const [citName, setCitName] = useState(initialCitName);
     const [minCost, setMinCost] = useState(0);
     const [maxCost, setMaxCost] = useState(MAX_PRICE);
     const [categories, setCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
+    const [startDate, setStartDate] = useState(initialStartDate);
+    const [endDate, setEndDate] = useState(initialEndDate);
 
     useEffect(() => {
         loadCategories();
@@ -42,8 +52,26 @@ export const HotelFilters = ({ onSearch }) => {
         setMaxCost(Math.max(Number(e.target.value), minCost + 10000));
     };
 
+    const handleStartChange = (e) => {
+        const value = e.target.value;
+        setStartDate(value);
+        // Si la salida elegida queda anterior a la nueva llegada, se limpia
+        if (endDate && value && endDate < value) setEndDate("");
+    };
+
+    const handleEndChange = (e) => {
+        setEndDate(e.target.value);
+    };
+
     const handleSubmit = () => {
-        onSearch({ citName, minCost, maxCost, categoryIds: selectedCategories });
+        onSearch({
+            citName,
+            minCost,
+            maxCost,
+            categoryIds: selectedCategories,
+            startDate,
+            endDate,
+        });
     };
 
     const formatPrice = (value) =>
@@ -61,12 +89,13 @@ export const HotelFilters = ({ onSearch }) => {
             <div className={styles["hf-fields"]}>
                 <div className={`${styles["hf-field"]} ${styles["hf-destination"]}`}>
                     <span className={styles["hf-label"]}>Destino</span>
-                    <input
-                        className={styles["hf-input"]}
-                        type="text"
-                        placeholder="¿A dónde vas?"
+                    <DestinationAutocomplete
                         value={citName}
-                        onChange={(e) => setCitName(e.target.value)}
+                        onChange={setCitName}
+                        onSubmit={handleSubmit}
+                        inputClassName={styles["hf-input"]}
+                        placeholder="¿A dónde vas?"
+                        ariaLabel="Destino: ciudad u hotel"
                     />
                 </div>
 
@@ -109,6 +138,36 @@ export const HotelFilters = ({ onSearch }) => {
 
                 <div className={styles["hf-divider"]} />
 
+                <div className={`${styles["hf-field"]} ${styles["hf-dates"]}`}>
+                    <div className={styles["hf-dates-row"]}>
+                        <label className={`${styles["hf-field"]} ${styles["hf-date"]}`}>
+                            <span className={styles["hf-label"]}>Llegada</span>
+                            <input
+                                type="date"
+                                className={styles["hf-input"]}
+                                value={startDate}
+                                min={TODAY}
+                                onChange={handleStartChange}
+                                aria-label="Fecha de llegada"
+                            />
+                        </label>
+                        <span className={styles["hf-dates-sep"]}>→</span>
+                        <label className={`${styles["hf-field"]} ${styles["hf-date"]}`}>
+                            <span className={styles["hf-label"]}>Salida</span>
+                            <input
+                                type="date"
+                                className={styles["hf-input"]}
+                                value={endDate}
+                                min={startDate || TODAY}
+                                onChange={handleEndChange}
+                                aria-label="Fecha de salida"
+                            />
+                        </label>
+                    </div>
+                </div>
+
+                <div className={styles["hf-divider"]} />
+
                 <button className={styles["hf-search-btn"]} onClick={handleSubmit}>
                     Buscar <span className={styles["hf-arrow"]}>→</span>
                 </button>
@@ -124,9 +183,8 @@ export const HotelFilters = ({ onSearch }) => {
                             <button
                                 key={cat.catSec}
                                 type="button"
-                                className={`${styles["hf-tag"]}${
-                                    selectedCategories.includes(cat.catSec) ? ` ${styles["is-active"]}` : ""
-                                }`}
+                                className={`${styles["hf-tag"]}${selectedCategories.includes(cat.catSec) ? ` ${styles["is-active"]}` : ""
+                                    }`}
                                 onClick={() => toggleCategory(cat.catSec)}
                             >
                                 {cat.catName}

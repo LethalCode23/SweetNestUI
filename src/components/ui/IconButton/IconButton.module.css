@@ -1,0 +1,82 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: var(--sn-radius-sm);
+  background: transparent;
+  color: var(--sn-text-soft);
+  cursor: pointer;
+  transition: background var(--sn-fast) var(--sn-ease), color var(--sn-fast) var(--sn-ease);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--sn-neutral-bg);
+  color: var(--sn-ink);
+}
+
+.danger:hover:not(:disabled) {
+  background: var(--sn-danger-bg);
+  color: var(--sn-danger);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translate(-50%, 2px);
+  padding: 4px 8px;
+  border-radius: var(--sn-radius-sm);
+  background: var(--sn-ink);
+  color: var(--sn-surface);
+  font-family: var(--sn-font);
+  font-size: var(--sn-text-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--sn-fast) var(--sn-ease), transform var(--sn-fast) var(--sn-ease);
+  z-index: 20;
+}
+
+.wrap:hover .tip,
+.btn:focus-visible + .tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition-delay: 300ms;
+}
+
+.btn:focus-visible + .tip {
+  transition-delay: 0ms;
+}
+
+/* Alineado al borde derecho del botón (última columna de una tabla) */
+.tipEnd {
+  left: auto;
+  right: 0;
+  transform: translate(0, 2px);
+}
+
+.wrap:hover .tipEnd,
+.btn:focus-visible + .tipEnd {
+  transform: translate(0, 0);
+}

@@ -1,0 +1,96 @@
+.dialog {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--sn-border);
+  border-radius: var(--sn-radius-lg);
+  background: var(--sn-surface);
+  color: var(--sn-text);
+  font-family: var(--sn-font);
+  text-align: left;
+  box-shadow: var(--sn-shadow-lg);
+}
+
+.dialog[open] {
+  animation: dialogIn var(--sn-slow) var(--sn-ease);
+}
+
+.dialog::backdrop {
+  background: rgba(15, 31, 53, 0.45);
+}
+
+@keyframes dialogIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.body {
+  display: flex;
+  gap: var(--sn-space-4);
+  padding: var(--sn-space-6) var(--sn-space-6) var(--sn-space-5);
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sn-info-bg);
+  color: var(--sn-info);
+}
+
+.iconDanger {
+  background: var(--sn-danger-bg);
+  color: var(--sn-danger);
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-space-1);
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--sn-text-md);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--sn-ink);
+}
+
+.description {
+  font-size: var(--sn-text-base);
+  line-height: 1.5;
+  color: var(--sn-text);
+}
+
+.error {
+  margin-top: var(--sn-space-2);
+  padding: var(--sn-space-2) var(--sn-space-3);
+  border-radius: var(--sn-radius-sm);
+  background: var(--sn-danger-bg);
+  color: var(--sn-danger);
+  font-size: var(--sn-text-sm);
+  font-weight: 500;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sn-space-2);
+  padding: var(--sn-space-4) var(--sn-space-6);
+  background: var(--sn-surface-sunken);
+  border-top: 1px solid var(--sn-border);
+}
+
+/* Botón destructivo relleno (en el modal la acción ya fue elegida) */
+.confirmDanger {
+  background: var(--sn-danger);
+  color: var(--sn-surface);
+}
+
+.confirmDanger:hover:not(:disabled) {
+  filter: brightness(0.92);
+}

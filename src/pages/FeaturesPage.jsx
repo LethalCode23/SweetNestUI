@@ -1,11 +1,5 @@
 import { FeatureComponent } from "../components/Feature/FeatureComponent";
 
-const FeaturesPage = () => {
-  return (
-    <div>
-      <FeatureComponent />
-    </div>
-  );
-};
+const FeaturesPage = () => <FeatureComponent />;
 
 export default FeaturesPage;

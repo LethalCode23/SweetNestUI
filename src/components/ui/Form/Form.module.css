@@ -1,0 +1,262 @@
+/* Primitivos de formulario — ver DESIGN.md (Forms). Solo var(--sn-*). */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--sn-text-sm);
+  font-weight: 600;
+  color: var(--sn-ink);
+}
+
+.required {
+  color: var(--sn-danger);
+}
+
+.hint {
+  font-size: var(--sn-text-xs);
+  line-height: 1.45;
+  color: var(--sn-text-soft);
+}
+
+.error {
+  font-size: var(--sn-text-xs);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--sn-danger);
+  animation: errorIn var(--sn-fast) var(--sn-ease);
+}
+
+@keyframes errorIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Los inputs (sn-input, sn-select, sn-textarea) llevan aria-invalid; el borde rojo sale de admin-kit.css */
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sn-space-4);
+}
+
+/* ── Sección ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-space-4);
+  padding-top: var(--sn-space-5);
+  border-top: 1px solid var(--sn-border);
+}
+
+.section:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--sn-text-base);
+  font-weight: 700;
+  color: var(--sn-ink);
+}
+
+.sectionDesc {
+  font-size: var(--sn-text-xs);
+  color: var(--sn-text-soft);
+}
+
+/* ── Switch ── */
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sn-space-4);
+  padding: var(--sn-space-3) var(--sn-space-4);
+  border: 1px solid var(--sn-border);
+  border-radius: var(--sn-radius-md);
+  background: var(--sn-surface-sunken);
+}
+
+.switchTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.switchLabel {
+  font-size: var(--sn-text-sm);
+  font-weight: 600;
+  color: var(--sn-ink);
+  cursor: pointer;
+}
+
+.switchDesc {
+  font-size: var(--sn-text-xs);
+  line-height: 1.45;
+  color: var(--sn-text-soft);
+}
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--sn-radius-pill);
+  background: var(--sn-border-strong);
+  cursor: pointer;
+  transition: background var(--sn-fast) var(--sn-ease);
+}
+
+.switch:hover:not(:disabled) {
+  background: var(--sn-text-muted);
+}
+
+.switchOn,
+.switchOn:hover:not(:disabled) {
+  background: var(--sn-primary);
+}
+
+.switch:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.switchThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--sn-surface);
+  box-shadow: var(--sn-shadow-xs);
+  transition: transform var(--sn-slow) var(--sn-ease);
+}
+
+.switchOn .switchThumb {
+  transform: translateX(16px);
+}
+
+/* ── Segmented ── */
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--sn-radius-md);
+  background: var(--sn-neutral-bg);
+}
+
+.segment {
+  flex: 1;
+  height: 32px;
+  padding: 0 var(--sn-space-4);
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--sn-text);
+  font-family: inherit;
+  font-size: var(--sn-text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--sn-fast) var(--sn-ease), color var(--sn-fast) var(--sn-ease),
+              box-shadow var(--sn-fast) var(--sn-ease);
+}
+
+.segment:hover {
+  color: var(--sn-ink);
+}
+
+.segmentOn,
+.segmentOn:hover {
+  background: var(--sn-surface);
+  color: var(--sn-ink);
+  box-shadow: var(--sn-shadow-xs);
+}
+
+.segment:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+/* ── Chips ── */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 32px;
+  padding: 0 var(--sn-space-3);
+  border: 1px solid var(--sn-border);
+  border-radius: var(--sn-radius-pill);
+  background: var(--sn-surface);
+  color: var(--sn-text);
+  font-family: inherit;
+  font-size: var(--sn-text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--sn-fast) var(--sn-ease), border-color var(--sn-fast) var(--sn-ease),
+              color var(--sn-fast) var(--sn-ease), gap var(--sn-fast) var(--sn-ease);
+}
+
+.chip:hover {
+  border-color: var(--sn-border-strong);
+  color: var(--sn-ink);
+}
+
+.chipOn,
+.chipOn:hover {
+  gap: 6px;
+  border-color: var(--sn-primary);
+  background: var(--sn-primary-soft);
+  color: var(--sn-primary-hover);
+}
+
+.chip:focus-visible {
+  outline: none;
+  box-shadow: var(--sn-focus);
+}
+
+.chipCheck {
+  display: inline-grid;
+  place-items: center;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: width var(--sn-fast) var(--sn-ease), opacity var(--sn-fast) var(--sn-ease);
+}
+
+.chipOn .chipCheck {
+  width: 12px;
+  opacity: 1;
+}
+
+@media (max-width: 599px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

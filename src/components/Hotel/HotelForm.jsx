@@ -1,92 +1,62 @@
 import { useEffect, useState } from "react";
-import { X, Upload, Loader2 } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import { updateHotel, createHotel, uploadHotelImage } from "../../services/hotelServices/hotelService";
+import { getActives as getActiveTypes } from "../../services/hotelServices/typeHotelService";
 import { getCities } from "../../services/cityServices/cityService";
 import { getAll as getCategories } from "../../services/categoryServices/categoryService";
 import { getAllFeatures } from "../../services/featureServices/featureService";
 import { BASE_URL } from "../../Js/constants";
+import { unwrapList } from "../../Utils/apiError";
+import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
+import { ChipGroup, Field, FieldRow, FormSection, Switch } from "../ui/Form/Form";
 import styles from "./HotelForm.module.css";
 
-const INITIAL = {
-  hotName: "",
-  hotDescription: "",
-  hotAddress: "",
-  hotCost: "",
-  city: "",
-  hotState: true,
-};
+const fromEditing = (h) => ({
+  hotName: h?.hotName ?? "",
+  hotDescription: h?.hotDescription ?? "",
+  hotAddress: h?.hotAddress ?? "",
+  hotCost: h?.hotCost ?? "",
+  city: h?.city?.citSec ?? h?.hotCitSec ?? "",
+  typeId: h?.typeId ?? "",
+  hotState: h ? h.hotState === "A" || h.hotState === true : true,
+});
 
+/**
+ * Crear/editar hotel en el panel lateral. Guarda por su cuenta (hotel + imágenes) y avisa con onSuccess.
+ * El backend exige typeId al crear (404/1008): antes el form no lo enviaba y crear siempre fallaba.
+ */
 export default function HotelForm({ editingHotel, onSuccess, onClose }) {
 
-  const [form, setForm] = useState(INITIAL);
-  const [selectedCatIds, setSelectedCatIds] = useState([]);
-  const [selectedFeaIds, setSelectedFeaIds] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [features, setFeatures] = useState([]);
+  const isEditing = Boolean(editingHotel);
+  const [form, setForm] = useState(() => fromEditing(editingHotel));
+  const [errors, setErrors] = useState({});
+  const [selectedCatIds, setSelectedCatIds] = useState(() => editingHotel?.categories?.map((c) => c.catSec) ?? []);
+  const [selectedFeaIds, setSelectedFeaIds] = useState(() => editingHotel?.features?.map((f) => f.feaSec) ?? []);
+  const [existingImages, setExistingImages] = useState(() => editingHotel?.hotelImagesUrl ?? []);
   const [imageFiles, setImageFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
-  const [saving, setSaving] = useState(false);
-  const [existingImages, setExistingImages] = useState([]);
-  const [removedExistingImages, setRemovedExistingImages] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [types, setTypes] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [features, setFeatures] = useState([]);
 
   useEffect(() => {
-    getCities().then(setCities);
-    getCategories().then(setCategories);
-    getAllFeatures().then(setFeatures);
+    getCities().then((r) => setCities(unwrapList(r))).catch(() => setCities([]));
+    getActiveTypes().then((r) => setTypes(unwrapList(r))).catch(() => setTypes([]));
+    getCategories().then((r) => setCategories(unwrapList(r))).catch(() => setCategories([]));
+    getAllFeatures().then((r) => setFeatures(unwrapList(r))).catch(() => setFeatures([]));
   }, []);
 
-  useEffect(() => {
-
-    if (editingHotel) {
-
-      console.log("Editing hotel:", editingHotel);
-      setForm({
-        hotName: editingHotel.hotName ?? "",
-        hotDescription: editingHotel.hotDescription ?? "",
-        hotAddress: editingHotel.hotAddress ?? "",
-        hotCost: editingHotel.hotCost ?? "",
-        city: editingHotel.city?.citSec ?? editingHotel.hotCitSec ?? "",
-        hotState: editingHotel.hotState === "A" || editingHotel.hotState === true,
-      });
-      setSelectedCatIds(editingHotel.categories?.map((c) => c.catSec) ?? []);
-      setSelectedFeaIds(editingHotel.features?.map((f) => f.feaSec) ?? []);
-      setExistingImages(editingHotel.hotelImagesUrl ?? []);
-      setRemovedExistingImages([]);
-      setImageFiles([]);
-      setPreviews([]);
-    } else {
-
-      setForm(INITIAL);
-      setSelectedCatIds([]);
-      setSelectedFeaIds([]);
-      setExistingImages([]);
-      setRemovedExistingImages([]);
-      setImageFiles([]);
-      setPreviews([]);
-    }
-
-  }, [editingHotel]);
-
-  const handle = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm((p) => ({ ...p, [name]: type === "checkbox" ? checked : value }));
+  const set = (name, value) => {
+    setForm((p) => ({ ...p, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: null }));
   };
 
-  const toggleCat = (catSec) => {
-    setSelectedCatIds((prev) =>
-      prev.includes(catSec) ? prev.filter((id) => id !== catSec) : [...prev, catSec]
-    );
-  };
-
-  const toggleFea = (feaSec) => {
-    setSelectedFeaIds((prev) =>
-      prev.includes(feaSec) ? prev.filter((id) => id !== feaSec) : [...prev, feaSec]
-    );
-  };
+  const toggle = (setter) => (id) =>
+    setter((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
 
   const handleImages = (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files ?? []).filter((f) => f.type.startsWith("image/"));
     if (!files.length) return;
     setImageFiles((p) => [...p, ...files]);
     setPreviews((p) => [...p, ...files.map((f) => URL.createObjectURL(f))]);
@@ -94,302 +64,197 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
   };
 
   const removeImage = (i) => {
+    URL.revokeObjectURL(previews[i]);
     setImageFiles((p) => p.filter((_, idx) => idx !== i));
     setPreviews((p) => p.filter((_, idx) => idx !== i));
   };
 
+  // Nota: quitar una imagen ya guardada solo la oculta acá; el backend todavía no expone el borrado
   const removeExistingImage = (hotImgSec) => {
     setExistingImages((p) => p.filter((img) => img.hotImgSec !== hotImgSec));
-    setRemovedExistingImages((p) => [...p, hotImgSec]);
   };
 
-  const handleSubmit = async (e) => {
+  const validate = () => {
+    const next = {};
+    if (!form.hotName.trim()) next.hotName = "Escribe el nombre del hotel.";
+    if (!form.hotDescription.trim()) next.hotDescription = "Escribe una descripción.";
+    if (!form.hotAddress.trim()) next.hotAddress = "Escribe la dirección.";
+    if (!form.city) next.city = "Elige la ciudad.";
+    if (!form.typeId) next.typeId = "Elige el tipo de alojamiento.";
+    if (form.hotCost === "" || Number(form.hotCost) < 0) next.hotCost = "Escribe un costo válido.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
 
-    e.preventDefault();
-    setSaving(true);
+  const submit = async () => {
+    if (!validate()) return false;
 
-    try {
+    const payload = {
+      ...form,
+      hotName: form.hotName.trim(),
+      hotDescription: form.hotDescription.trim(),
+      hotAddress: form.hotAddress.trim(),
+      hotCost: Number(form.hotCost),
+      hotState: form.hotState ? "A" : "I",
+      hotCitSec: Number(form.city),
+      typeId: Number(form.typeId),
+      categoryIds: selectedCatIds,
+      featureIds: selectedFeaIds,
+      // Se conservan los datos que este form no edita (null en hostId = no cambia)
+      hotConfirmReq: editingHotel?.hotConfirmReq,
+      hostId: editingHotel?.hostId ?? null,
+    };
 
-      const payload = {
-        ...form,
-        hotState: form.hotState ? "A" : "I",
-        hotCitSec: Number(form.city),
-        categoryIds: selectedCatIds,
-        featureIds: selectedFeaIds
-      };
-
-      if (editingHotel) {
-
-        await updateHotel(editingHotel.hotSec, payload);
-
-        for (let i = 0; i < imageFiles.length; i++) {
-          await uploadHotelImage(editingHotel.hotSec, i + 1, imageFiles[i]);
-        }
-      } else {
-
-        const created = await createHotel(payload);
-
-        for (let i = 0; i < imageFiles.length; i++) {
-          await uploadHotelImage(created.hotSec, i + 1, imageFiles[i]);
-        }
+    let hotSec;
+    if (isEditing) {
+      await updateHotel(editingHotel.hotSec, payload);
+      hotSec = editingHotel.hotSec;
+    } else {
+      // TEMPORAL (bug del backend): POST /hotel/save responde 500 si trae featureIds, porque
+      // HotelService.save() arma las Feature como entidades nuevas (featureMapper::toEntity).
+      // El update sí funciona. Se crea sin características y se aplican con un update.
+      // Quitar cuando el backend use featureRepository.findAllById en save().
+      const created = await createHotel({ ...payload, featureIds: [] });
+      hotSec = created.hotSec;
+      if (selectedFeaIds.length) {
+        await updateHotel(hotSec, { ...payload, hotConfirmReq: created.hotConfirmReq });
       }
-
-      onSuccess();
-      onClose();
-
-    } finally {
-      setSaving(false);
     }
+
+    for (let i = 0; i < imageFiles.length; i++) {
+      await uploadHotelImage(hotSec, i + 1, imageFiles[i]);
+    }
+
+    previews.forEach((src) => URL.revokeObjectURL(src));
+    await onSuccess();
   };
+
+  const toOptions = (list, value, label) => list.map((x) => ({ value: x[value], label: x[label] }));
 
   return (
-    <>
-      <div className="drawer-overlay" onClick={onClose} />
-      <div className="drawer-panel">
-        <div className="drawer-header">
-          <h2 className="drawer-title">
-            {editingHotel ? "Editar hotel" : "Registrar hotel"}
-          </h2>
-          <button className="drawer-close" onClick={onClose}>
-            <X size={18} />
-          </button>
-        </div>
+    <FormDrawer
+      size="md"
+      title={isEditing ? `Editar «${editingHotel.hotName}»` : "Nuevo hotel"}
+      description="Los cambios se ven en la búsqueda pública apenas los guardas."
+      submitLabel={isEditing ? "Guardar cambios" : "Crear hotel"}
+      onClose={onClose}
+      onSubmit={submit}
+    >
+      <FormSection title="Información general">
+        <Field label="Nombre" required error={errors.hotName}>
+          {(p) => (
+            <input {...p} className="sn-input" value={form.hotName} placeholder="Ej. Hotel Poblado Suite"
+              onChange={(e) => set("hotName", e.target.value)} />
+          )}
+        </Field>
+        <Field label="Descripción" required error={errors.hotDescription}>
+          {(p) => (
+            <textarea {...p} className="sn-textarea" rows={3} value={form.hotDescription}
+              placeholder="Qué lo hace especial, a quién está dirigido…"
+              onChange={(e) => set("hotDescription", e.target.value)} />
+          )}
+        </Field>
+        <Field label="Tipo de alojamiento" required error={errors.typeId}
+          hint="Define si se reserva completo o por unidades.">
+          {(p) => (
+            <select {...p} className="sn-select sn-select--block" value={form.typeId}
+              onChange={(e) => set("typeId", e.target.value)}>
+              <option value="">Elige un tipo</option>
+              {types.map((t) => (
+                <option key={t.typSec} value={t.typSec}>{t.typName}</option>
+              ))}
+            </select>
+          )}
+        </Field>
+      </FormSection>
 
-        <form onSubmit={handleSubmit} style={{ display: "contents" }}>
-          <div className="drawer-body">
+      <FormSection title="Ubicación y precio">
+        <Field label="Dirección" required error={errors.hotAddress}>
+          {(p) => (
+            <input {...p} className="sn-input" value={form.hotAddress} placeholder="Cra 43A #9-12"
+              onChange={(e) => set("hotAddress", e.target.value)} />
+          )}
+        </Field>
+        <FieldRow>
+          <Field label="Ciudad" required error={errors.city}>
+            {(p) => (
+              <select {...p} className="sn-select sn-select--block" value={form.city}
+                onChange={(e) => set("city", e.target.value)}>
+                <option value="">Elige una ciudad</option>
+                {cities.map((c) => (
+                  <option key={c.citSec} value={c.citSec}>{c.citName}</option>
+                ))}
+              </select>
+            )}
+          </Field>
+          <Field label="Costo por noche (COP)" required error={errors.hotCost}>
+            {(p) => (
+              <input {...p} type="number" inputMode="numeric" min={0} step={1000} className="sn-input"
+                value={form.hotCost} placeholder="0" onChange={(e) => set("hotCost", e.target.value)} />
+            )}
+          </Field>
+        </FieldRow>
+      </FormSection>
 
-            {/* Información general */}
-            <div className="form-section">
-              <p className="form-section-label">Información general</p>
+      <FormSection title="Publicación">
+        <Switch
+          label="Hotel activo"
+          description={form.hotState ? "Aparece en la búsqueda y se puede reservar." : "Queda oculto en la plataforma."}
+          checked={form.hotState}
+          onChange={(on) => set("hotState", on)}
+        />
+      </FormSection>
 
-              <div className={styles.field}>
-                <label className={styles.label}>Nombre del hotel</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  name="hotName"
-                  placeholder="Ej. Grand Palace Bogotá"
-                  value={form.hotName}
-                  onChange={handle}
-                  required
-                />
-              </div>
+      <FormSection title="Categorías y características">
+        <ChipGroup
+          label="Categorías"
+          options={toOptions(categories, "catSec", "catName")}
+          selected={selectedCatIds}
+          onToggle={toggle(setSelectedCatIds)}
+          emptyText="Todavía no hay categorías creadas."
+        />
+        <ChipGroup
+          label="Características"
+          options={toOptions(features, "feaSec", "feaName")}
+          selected={selectedFeaIds}
+          onToggle={toggle(setSelectedFeaIds)}
+          emptyText="Todavía no hay características creadas."
+        />
+      </FormSection>
 
-              <div className={styles.field}>
-                <label className={styles.label}>Descripción</label>
-                <textarea
-                  className={styles.textarea}
-                  name="hotDescription"
-                  placeholder="Describe las características del hotel..."
-                  value={form.hotDescription}
-                  onChange={handle}
-                  required
-                  rows={3}
-                />
-              </div>
-            </div>
+      <FormSection title="Imágenes" description="La primera es la que se muestra en las tarjetas.">
+        <label className={styles.dropzone}>
+          <ImagePlus size={22} strokeWidth={1.75} aria-hidden="true" />
+          <span className={styles.dropTitle}>Arrastra imágenes o haz clic para elegirlas</span>
+          <span className={styles.dropHint}>PNG, JPG o WEBP. Puedes subir varias.</span>
+          <input type="file" accept="image/*" multiple onChange={handleImages} className={styles.fileInput} />
+        </label>
 
-            {/* Ubicación y precio */}
-            <div className="form-section">
-              <p className="form-section-label">Ubicación y precio</p>
-
-              <div className={styles.field}>
-                <label className={styles.label}>Dirección</label>
-                <input
-                  className={styles.input}
-                  type="text"
-                  name="hotAddress"
-                  placeholder="Calle 123 #45-67"
-                  value={form.hotAddress}
-                  onChange={handle}
-                  required
-                />
-              </div>
-
-              <div className={styles.row2}>
-                <div className={styles.field}>
-                  <label className={styles.label}>Ciudad</label>
-                  <select
-                    className={styles.select}
-                    name="city"
-                    value={form.city}
-                    onChange={handle}
-                    required
-                  >
-                    <option value="">Seleccionar...</option>
-                    {cities.map((c) => (
-                      <option key={c.citSec} value={c.citSec}>{c.citName}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label}>Costo por noche (COP)</label>
-                  <input
-                    className={styles.input}
-                    type="number"
-                    name="hotCost"
-                    placeholder="0"
-                    value={form.hotCost}
-                    onChange={handle}
-                    required
-                    min={0}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Estado */}
-            <div className="form-section">
-              <p className="form-section-label">Estado</p>
-              <div className={styles.toggleRow}>
-                <div>
-                  <p className={styles.toggleTitle}>Hotel activo</p>
-                  <p className={styles.toggleDesc}>
-                    {form.hotState
-                      ? "El hotel está disponible para reservas"
-                      : "El hotel no aparecerá en la plataforma"}
-                  </p>
-                </div>
-                <label className={styles.toggle}>
-                  <input
-                    type="checkbox"
-                    name="hotState"
-                    checked={form.hotState}
-                    onChange={handle}
-                  />
-                  <span className={styles.toggleTrack}>
-                    <span className={styles.toggleThumb} />
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* Categorías */}
-            <div className="form-section">
-              <p className="form-section-label">Categorías</p>
-              {categories.length === 0 ? (
-                <p className={styles.loadingText}>Cargando categorías...</p>
-              ) : (
-                <div className={styles.catGrid}>
-                  {categories.map((cat) => {
-                    const active = selectedCatIds.includes(cat.catSec);
-                    return (
-                      <button
-                        key={cat.catSec}
-                        type="button"
-                        className={`${styles.catChip} ${active ? styles.catChipActive : ""}`}
-                        onClick={() => toggleCat(cat.catSec)}
-                      >
-                        {active && <span className={styles.catCheck}>✓</span>}
-                        {cat.catName}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Features */}
-            <div className="form-section">
-              <p className="form-section-label">Características</p>
-              {features.length === 0 ? (
-                <p className={styles.loadingText}>Cargando características...</p>
-              ) : (
-                <div className={styles.catGrid}>
-
-                  {features.map((feature) => {
-
-                    const active = selectedFeaIds.includes(feature.feaSec);
-
-                    return (
-                      <button
-                        key={feature.feaSec}
-                        type="button"
-                        className={`${styles.catChip} ${active ? styles.catChipActive : ""}`}
-                        onClick={() => toggleFea(feature.feaSec)}
-                      >
-                        {active && <span className={styles.catCheck}>✓</span>}
-                        {feature.feaName}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Imágenes */}
-            <div className="form-section">
-              <p className="form-section-label">Imágenes</p>
-
-              <label className={styles.uploadZone}>
-                <Upload size={20} className={styles.uploadIcon} />
-                <p className={styles.uploadTitle}>Selecciona o arrastra imágenes</p>
-                <p className={styles.uploadHint}>PNG, JPG, WEBP — múltiples permitidas</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImages}
-                  className={styles.fileInput}
-                />
-              </label>
-
-              {(existingImages.length > 0 || previews.length > 0) && (
-                <div className={styles.previews}>
-                  {/* Imágenes ya guardadas en el servidor */}
-                  {existingImages.map((img, i) => (
-                    <div key={`existing-${img.hotImgSec}`} className={styles.previewItem}>
-                      <img src={`${BASE_URL}${img.hotImgUrl}`} alt="" />
-                      <button
-                        type="button"
-                        className={styles.removeBtn}
-                        onClick={() => removeExistingImage(img.hotImgSec)}
-                      >
-                        <X size={11} />
-                      </button>
-                      <span className={styles.priority}>#{i + 1}</span>
-                    </div>
-                  ))}
-
-                  {/* Imágenes nuevas seleccionadas ahora */}
-                  {previews.map((src, i) => (
-                    <div key={`new-${i}`} className={styles.previewItem}>
-                      <img src={src} alt="" />
-                      <button
-                        type="button"
-                        className={styles.removeBtn}
-                        onClick={() => removeImage(i)}
-                      >
-                        <X size={11} />
-                      </button>
-                      <span className={styles.priority}>#{existingImages.length + i + 1}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="drawer-footer">
-            <button type="button" className="btn-ghost" onClick={onClose}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn-primary" disabled={saving}>
-              {saving ? (
-                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} />
-                  Guardando...
-                </span>
-              ) : editingHotel ? (
-                "Actualizar hotel"
-              ) : (
-                "Registrar hotel"
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+        {(existingImages.length > 0 || previews.length > 0) && (
+          <ul className={styles.previews}>
+            {existingImages.map((img, i) => (
+              <li key={`existing-${img.hotImgSec}`} className={styles.preview}>
+                <img src={`${BASE_URL}${img.hotImgUrl}`} alt="" />
+                <span className={styles.order}>{i + 1}</span>
+                <button type="button" className={styles.remove} onClick={() => removeExistingImage(img.hotImgSec)}
+                  aria-label={`Quitar imagen ${i + 1}`}>
+                  <X size={12} aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+            {previews.map((src, i) => (
+              <li key={src} className={`${styles.preview} ${styles.isNew}`}>
+                <img src={src} alt="" />
+                <span className={styles.order}>{existingImages.length + i + 1}</span>
+                <button type="button" className={styles.remove} onClick={() => removeImage(i)}
+                  aria-label={`Quitar imagen nueva ${i + 1}`}>
+                  <X size={12} aria-hidden="true" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </FormSection>
+    </FormDrawer>
   );
 }

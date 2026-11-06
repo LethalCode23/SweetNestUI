@@ -1,4 +1,5 @@
 import { Environment } from "../../Environments/Environment";
+import axios from "axios";
 import api from "../api";
 
 const BASE = Environment.API_URL + '/hotel';
@@ -15,7 +16,7 @@ export const getAll = async (page, size, citName) => {
 
 export const findByHotel = async (page, size, filters = {}) => { // 👈 este es el nuevo método que acepta filtros, mirar getAll to this
 
-  const { citName, minCost, maxCost, categoryIds } = filters;
+  const { citName, minCost, maxCost, categoryIds, startDate, endDate } = filters;
 
   const params = new URLSearchParams();
   params.append('page', page);
@@ -24,6 +25,9 @@ export const findByHotel = async (page, size, filters = {}) => { // 👈 este es
   if (citName) params.append('citName', citName);
   if (minCost != null) params.append('minCost', minCost);
   if (maxCost != null) params.append('maxCost', maxCost);
+  if (startDate) params.append('checkIn', startDate);
+  if (endDate) params.append('checkOut', endDate);
+
   if (categoryIds?.length) {
     categoryIds.forEach(id => params.append('categoryIds', id));
   }
@@ -38,9 +42,30 @@ export const findDetailById = async (hotSec) => { // metodo ayuda a consumir el 
   return res.data;
 }
 
-export const getHotels = async () => { /* este lo uso para crud */
+// Autocompletado del buscador (público). Devuelve [{ type: "CITY" | "HOTEL", id, name }] crudo,
+// sin ApiResponse (contrato de SearchSuggestionDto). `signal` permite cancelar con AbortController.
+export const getSearchSuggestions = async (q, { signal } = {}) => {
+  const res = await api.get(`${BASE}/suggestions`, { params: { q }, signal });
+  return Array.isArray(res.data) ? res.data : [];
+};
 
-  const res = await api.get(`${BASE}/all`);
+// Fechas sin ninguna unidad libre (público, viene en ApiResponse). Ver docs/calendario-fechas-ocupadas.md.
+// Usa axios directo y no `api`: el interceptor mandaría un token vencido del localStorage y el
+// backend respondería error aunque el endpoint sea público (DT-036).
+// Devuelve { hotSec, from, to, totalUnits, unavailableDates: ["YYYY-MM-DD", ...] }.
+export const getUnavailableDates = async (hotSec, { from, to, signal } = {}) => {
+  const res = await axios.get(`${BASE}/${hotSec}/unavailable-dates`, {
+    params: { from, to }, // undefined se omite
+    signal,
+  });
+  return res.data.data;
+};
+
+// CRUD del panel. /hotel/all pagina en el servidor (por defecto 10): el admin pide
+// un size grande para listar todo y buscar/filtrar en el cliente.
+export const getHotels = async (page = 0, size = 10) => {
+
+  const res = await api.get(`${BASE}/all`, { params: { page, size } });
   return res.data;
 }
 

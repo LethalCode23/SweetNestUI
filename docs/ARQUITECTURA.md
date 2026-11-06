@@ -36,6 +36,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 | `/` | `HomePage` | — |
 | `/hoteles` | `HotelSearchPage` | — |
 | `/hoteles/:id` | `HotelDetailPage` | — |
+| `/favoritos` | `FavoritesPage` | `ProtectedRoute requiredSubModule="Mis favoritos"` |
 | `*` | `NotFoundPage` | — |
 
 ### Autenticación (sin layout público)
@@ -51,6 +52,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 | :--- | :--- | :--- |
 | `/dashboard` | `Dashboard` (Outlet) | sesión válida |
 | `/dashboard/hotels` | `HotelsPage` | `Hoteles` |
+| `/dashboard/type-hotels` | `HotelTypePage` | `Hoteles` (las acciones usan `Tipos`, pendiente de unificar) |
 | `/dashboard/countries` | `CountriesPage` | `Países` |
 | `/dashboard/departments` | `DepartmentsPage` | `Departamentos` |
 | `/dashboard/cities` | `CitiesPage` | `Ciudades` |
@@ -60,8 +62,9 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 | `/dashboard/profiles` | `ProfilesPage` | `Perfiles` |
 | `/dashboard/profiles/:profileId/permissions` | `PermissionsPage` | sesión válida |
 | `/dashboard/userProfile` | `UserProfilePage` | sesión válida |
+| `/dashboard/favorites` | `FavoritesPage` (`inPanel`) | `Mis favoritos` |
 
-> **Pendiente conocido:** `/dashboard` no tiene ruta `index`; entrar a esa URL pinta el shell con el `<Outlet />` vacío. Ver [ui-palette.md — Pendientes](./ui-palette.md#pendientes).
+> **Pendiente conocido:** `/dashboard` no tiene ruta `index`; entrar a esa URL pinta el shell con el `<Outlet />` vacío. Ver [DT-011](./DEUDA_TECNICA.md#abiertas).
 
 ## Autenticación (JWT)
 
@@ -73,7 +76,8 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
    - `token` — JWT usado por el interceptor de `api.js`.
    - `user` — objeto del usuario.
    - `modules` — módulos del perfil, cargados vía `GET /api/profiles/{proId}/modules`.
-4. `hasSubmodulePermission(nombre)` evalúa si algún módulo tiene `entryAllowed` y un submódulo con ese nombre.
+4. Si se llegó al login desde una página que pedía sesión (`ProtectedRoute` o el corazón de favoritos), viene `location.state.from` y se vuelve ahí; si no, `/` (o `/admin` para admin, ver DT-038).
+5. `hasSubmodulePermission(nombre)` evalúa si algún módulo tiene `entryAllowed` y un submódulo con ese nombre.
 
 ### Cierre de sesión
 
@@ -93,7 +97,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 
 | Constante | Valores |
 | :--- | :--- |
-| `MODULES` | `Hoteles`, `Países`, `Departamentos`, `Ciudades`, `Categorías`, `Usuarios`, `Perfiles`, `Características` |
+| `MODULES` | `Hoteles`, `Países`, `Departamentos`, `Ciudades`, `Categorías`, `Usuarios`, `Perfiles`, `Características`, `Mi Perfil`, `Mis favoritos` |
 | `ACTIONS` | `LIST: "R"`, `CREATE: "C"`, `UPDATE: "U"`, `DELETE: "D"` |
 
 ### Guard — `src/guards/ProtectedRoute.jsx`
@@ -127,7 +131,8 @@ Cada módulo tiene su archivo bajo `src/services/`. La base es `Environment.API_
 | Módulo | Archivo | Endpoints que consume (resumen) |
 | :--- | :--- | :--- |
 | Auth | `AuthServices/AuthServices.jsx` | `POST /auth/login`, `POST /auth/register` |
-| Hoteles | `hotelServices/hotelService.js` | `GET /hotel/findByHotel`, `GET /hotel/findDetailById/{id}`, `GET /hotel/all`, `POST /hotel/save`, `PUT /hotel/update/{id}`, `DELETE /hotel/delete/{id}`, `POST /hotel-images/save` |
+| Hoteles | `hotelServices/hotelService.js` | `GET /hotel/findByHotel`, `GET /hotel/findDetailById/{id}`, `GET /hotel/all`, `POST /hotel/save`, `PUT /hotel/update/{id}`, `DELETE /hotel/delete/{id}`, `POST /hotel-images/save`, `GET /hotel/suggestions?q=` (público, autocompletado), `GET /hotel/{id}/unavailable-dates?from=&to=` (público, `ApiResponse`; usa `axios` directo sin token, ver DT-036) |
+| Tipos de alojamiento | `hotelServices/typeHotelService.js` | `GET /hotel-types`, `GET /hotel-types/actives`, `GET /hotel-types/{id}`, `POST /hotel-types`, `PUT /hotel-types/{id}`, `DELETE /hotel-types/{id}` (respuestas en `ApiResponse`) |
 | Categorías | `categoryServices/categoryService.js` | `GET /category/all`, `POST /category/save`, `DELETE /category/delete/{id}` |
 | Ciudades | `cityServices/cityService.js` | `GET /city/all`, `POST /city/save`, `PUT /city/update/{id}`, `DELETE /city/delete/{id}` |
 | Países | `countryServices/countryService.js` | `GET /country/all`, `POST /country/save`, `DELETE /country/delete/{id}` |
@@ -156,4 +161,4 @@ El tema oscuro del panel admin y los tokens de color están documentados en [ui-
 | :--- | :--- |
 | Documentos | Español, tablas Markdown, checklists con `- [ ]`. |
 | Nombre de archivo CSS Module | PascalCase, coincidente con el componente. |
-| Verificación | `npm run build` + `npm run lint`. Baseline de lint: 19 problemas preexistentes. |
+| Verificación | `npm run build` + `npm run lint`. Baseline de lint: 13 problemas preexistentes (2026-10-31). |

@@ -91,18 +91,21 @@
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  container-type: inline-size;
 }
 
+/* minmax(0, 1fr): sin esto el input de MUI no se encoge y "Llegada" empuja a "Salida" fuera de la card */
 .dateRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .dateField {
   display: flex;
   flex-direction: column;
-  padding: 10px 14px;
+  min-width: 0;
+  padding: 10px 12px;
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -123,15 +126,59 @@
   color: var(--text, #0B3B59);
 }
 
-.dateInput {
+/* DatePicker de MUI dentro de la celda: sin subrayado, mismo tamaño que el texto de la card */
+.dateField :global(.MuiPickersInputBase-root) {
   margin-top: 4px;
-  background: transparent;
-  border: none;
   font-size: 14px;
-  color: var(--text, #0B3B59);
   font-family: inherit;
-  outline: none;
-  cursor: pointer;
+  color: var(--text, #0B3B59);
+}
+
+.dateField :global(.MuiPickersInputBase-root::before),
+.dateField :global(.MuiPickersInputBase-root::after) {
+  display: none;
+}
+
+.dateField :global(.MuiPickersTextField-root),
+.dateField :global(.MuiPickersInputBase-root) {
+  min-width: 0;
+  width: 100%;
+}
+
+.dateField :global(.MuiPickersSectionList-root) {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Botón del calendario más compacto para que quepa la fecha completa */
+.dateField :global(.MuiInputAdornment-root) {
+  margin-left: 4px;
+}
+
+.dateField :global(.MuiInputAdornment-root .MuiIconButton-root) {
+  padding: 4px;
+}
+
+.dateField :global(.MuiInputAdornment-root svg) {
+  font-size: 18px;
+}
+
+/* Card muy angosta: un campo debajo del otro */
+@container (max-width: 300px) {
+  .dateRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dateField:first-child {
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+}
+
+.notice {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #B42318;
 }
 
 .guestRow {
@@ -187,6 +234,13 @@
 
 .reserveBtn:active {
   transform: translateY(0) scale(0.98);
+}
+
+.reserveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .noCharge {
@@ -261,4 +315,172 @@
   text-align: center;
   font-size: 12px;
   color: var(--muted, #6B7280);
+}
+
+/* ============================
+   Calendario (popover de los DatePicker)
+   Clases MUI v9: MuiPickerDay-root/-today, Mui-selected, Mui-disabled
+   ============================ */
+
+.pickerPaper {
+  border-radius: 16px !important;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 32px rgba(11, 59, 89, 0.16) !important;
+  overflow: hidden;
+}
+
+.pickerPaper :global(.MuiPickersCalendarHeader-label) {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text, #0B3B59);
+  text-transform: capitalize;
+}
+
+.pickerPaper :global(.MuiDayCalendar-weekDayLabel) {
+  font-weight: 600;
+  color: var(--muted, #6B7280);
+}
+
+.pickerPaper :global(.MuiPickerDay-root) {
+  width: 36px;
+  height: 36px;
+  margin: 0 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #0B3B59);
+}
+
+.pickerPaper :global(.MuiPickerDay-root.Mui-disabled):not(:global(.Mui-selected)):not(.dayBooked) {
+  color: #C4CAD3;
+}
+
+.pickerPaper :global(.MuiPickerDay-root.MuiPickerDay-today:not(.Mui-selected)) {
+  border: 1px solid var(--text, #0B3B59);
+}
+
+.pickerPaper :global(.MuiPickerDay-root.Mui-selected),
+.pickerPaper :global(.MuiPickerDay-root.Mui-selected:hover),
+.pickerPaper :global(.MuiPickerDay-root.Mui-selected:focus) {
+  background: var(--text, #0B3B59);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Rango elegido: píldora gris entre la llegada y la salida */
+.pickerPaper .dayInRange {
+  margin: 0;
+  width: 40px;
+  border-radius: 0;
+  background: #EEF1F5;
+}
+
+.pickerPaper .dayRangeStart:not(:global(.Mui-selected)),
+.pickerPaper .dayRangeEnd:not(:global(.Mui-selected)) {
+  background: #DCE3EC;
+  font-weight: 700;
+}
+
+/* Fechas con reservas: tachadas sobre rojo suave (igual habilitadas o no) */
+.pickerPaper .dayBooked:not(:global(.Mui-selected)) {
+  background: #FDECEC;
+  color: #B42318;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  opacity: 1;
+}
+
+.pickerPaper .dayBooked:not(:global(.Mui-disabled)):not(:global(.Mui-selected)):hover {
+  background: #F9D5D5;
+}
+
+/* Leyenda + acciones abajo del calendario (slot actionBar) */
+.legendBar {
+  grid-column: 1 / 4;
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.legendItems {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted, #6B7280);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendSwatch {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.legendBooked {
+  background: #FDECEC;
+  color: #B42318;
+  text-decoration: line-through;
+}
+
+.legendSelected {
+  background: var(--text, #0B3B59);
+  color: #fff;
+}
+
+.legendActions {
+  display: flex;
+  gap: 8px;
+}
+
+.legendClear,
+.legendAccept {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.legendClear {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #fff;
+  color: var(--text, #0B3B59);
+}
+
+.legendAccept {
+  border: none;
+  background: var(--text, #0B3B59);
+  color: #fff;
+}
+
+/* Pista fija debajo de los campos */
+.bookedHint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted, #6B7280);
+}
+
+.bookedHintSwatch {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #FDECEC;
+  border: 1px solid #B42318;
 }

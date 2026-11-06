@@ -1,0 +1,47 @@
+/* Layout común de las páginas de catálogo del panel (DESIGN.md). Solo var(--sn-*). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-space-5);
+  font-family: var(--sn-font);
+  text-align: left;
+}
+
+.intro {
+  max-width: 72ch;
+  font-size: var(--sn-text-sm);
+  line-height: 1.5;
+  color: var(--sn-text-soft);
+}
+
+/* Celda principal de la fila */
+.name {
+  font-weight: 600;
+  color: var(--sn-ink);
+}
+
+/* Texto secundario (IDs, relaciones) */
+.muted {
+  color: var(--sn-text-soft);
+}
+
+/* Celda con texto principal + línea secundaria debajo */
+.stack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.stackSub {
+  font-size: var(--sn-text-xs);
+  color: var(--sn-text-soft);
+  max-width: 36ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  color: var(--sn-text-muted);
+}

@@ -6,15 +6,19 @@ import { findDetailById } from "../services/hotelServices/hotelService";
 import { PhotoGallery } from "../components/HotelDetail/PhotoGallery";
 import { BookingCard } from "../components/HotelDetail/BookingCard";
 import { ListingContent } from "../components/HotelDetail/ListingContent";
+import { ShareModal } from "../components/HotelDetail/ShareModal";
+import { useFavoriteToggle } from "../hooks/useFavoriteToggle";
 import styles from "./HotelDetailPage.module.css";
 
 const HotelDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const fav = useFavoriteToggle(id);
 
   const [hotel, setHotel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -82,13 +86,19 @@ const HotelDetailPage = () => {
             </div>
           </div>
           <div className={styles.actions}>
-            <button className={styles.actionBtn}>
+            <button type="button" className={styles.actionBtn} onClick={() => setShareOpen(true)}>
               <Share2 size={16} />
               <span>Compartir</span>
             </button>
-            <button className={styles.actionBtn}>
-              <Heart size={16} />
-              <span>Guardar</span>
+            <button
+              type="button"
+              className={`${styles.actionBtn} ${fav.active ? styles.actionBtnActive : ""}`}
+              aria-pressed={fav.active}
+              aria-busy={fav.busy}
+              onClick={fav.toggle}
+            >
+              <Heart size={16} fill={fav.active ? "currentColor" : "none"} />
+              <span>{fav.active ? "Guardado" : "Guardar"}</span>
             </button>
           </div>
         </header>
@@ -102,10 +112,19 @@ const HotelDetailPage = () => {
             <ListingContent hotel={hotel} />
           </div>
           <aside className={styles.sidebar}>
-            <BookingCard hotel={hotel} />
+            <BookingCard hotel={hotel} hotSec={id} />
           </aside>
         </div>
       </div>
+
+      {/* key: si cambia el hotel, el mensaje por defecto se rearma */}
+      <ShareModal
+        key={id}
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        hotel={hotel}
+        url={`${window.location.origin}/hoteles/${id}`}
+      />
     </div>
   );
 };

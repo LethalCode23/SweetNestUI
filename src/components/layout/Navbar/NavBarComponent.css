@@ -516,6 +516,15 @@ body.dark .logout-btn:hover {
   margin-bottom: 12px;
 }
 
+/* Accesos de la cuenta en el menú mobile (mismos que el popover del avatar) */
+.navbar-collapse .mobile-profile-links {
+  margin-bottom: 12px;
+}
+
+.mobile-profile-links .nav-link {
+  gap: 8px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .navbar {

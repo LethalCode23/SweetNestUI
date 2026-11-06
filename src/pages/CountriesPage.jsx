@@ -1,11 +1,5 @@
 import { CountryComponent } from "../components/Country/CountryComponent";
 
-const CountriesPage = () => {
-  return (
-    <div style={{padding:'1rem'}}>
-      <CountryComponent />
-    </div>
-  )
-}
+const CountriesPage = () => <CountryComponent />;
 
 export default CountriesPage;

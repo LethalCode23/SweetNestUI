@@ -1,5 +1,11 @@
 # Estándar visual — Tema oscuro del panel admin
 
+> **Reemplazado (2026-10-31).** Para todo trabajo nuevo, la fuente de verdad es
+> [`DESIGN.md`](../DESIGN.md) (panel claro con sidebar navy, tokens `--sn-*`). Este documento
+> solo sirve para entender las páginas que todavía no se migraron, y se retira al terminar la
+> Fase 3 de `planes/en-curso/rediseno-panel-admin.md`. Ojo: la sección "Trampa 1" ya no aplica
+> al shell, porque `Dashboard.jsx` dejó de usar la clase `dark`.
+
 Tokens consolidados el 2026-10-04. El objetivo es que Perfiles, Usuarios, Hoteles y Mi
 Perfil compartan una sola identidad de color dentro del panel `/dashboard`.
 
