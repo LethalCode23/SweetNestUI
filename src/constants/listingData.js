@@ -10,17 +10,7 @@ export const listing = {
     { src: "/images/loft-bathroom.jpg", alt: "Baño privado con ducha" },
   ],
   totalPhotos: 28,
-  price: {
-    original: 361921,
-    nightly: 264917,
-    discountPercent: 27,
-  },
-  breakdown: {
-    nights: 2,
-    cleaning: 45000,
-    service: 32000,
-    earlyBirdDiscount: 40000,
-  },
+  // price/breakdown se quitaron (2026-11-16): el BookingCard usa el precio real de la unidad.
   amenities: [
     "Wi-Fi de fibra óptica ultra rápido (300 Mbps)",
     "Cocina gourmet equipada con cafetera espresso",

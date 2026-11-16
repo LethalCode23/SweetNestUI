@@ -135,7 +135,7 @@ const HotelDetailPage = () => {
             <ListingContent hotel={hotel} />
           </div>
           <aside className={styles.sidebar}>
-            <BookingCard hotel={hotel} hotSec={id} rating={rating} />
+            <BookingCard key={id} hotSec={id} rating={rating} />
           </aside>
         </div>
 

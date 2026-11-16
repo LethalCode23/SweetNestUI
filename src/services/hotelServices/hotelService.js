@@ -61,6 +61,23 @@ export const getUnavailableDates = async (hotSec, { from, to, signal } = {}) => 
   return res.data.data;
 };
 
+// Unidades activas de un hotel (público, axios directo por DT-036).
+// Devuelve [{ uniSec, hotSec, uniName, uniCapacity, uniPrice, uniState }].
+export const getUnits = async (hotSec, { signal } = {}) => {
+  const res = await axios.get(`${Environment.API_URL}/hotel-unit/hotel/${hotSec}`, { signal });
+  return res.data.data ?? [];
+};
+
+// Unidades libres en [checkIn, checkOut) (ISO "YYYY-MM-DD"; el día de salida queda libre).
+// 400/1014 rango inválido · 400/1015 entrada en el pasado.
+export const getAvailableUnits = async (hotSec, checkIn, checkOut, { signal } = {}) => {
+  const res = await axios.get(`${Environment.API_URL}/hotel-unit/hotel/${hotSec}/available`, {
+    params: { checkIn, checkOut },
+    signal,
+  });
+  return res.data.data ?? [];
+};
+
 // CRUD del panel. /hotel/all pagina en el servidor (por defecto 10): el admin pide
 // un size grande para listar todo y buscar/filtrar en el cliente.
 export const getHotels = async (page = 0, size = 10) => {

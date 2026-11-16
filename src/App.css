@@ -3,10 +3,6 @@
   --bg: #F0F2F2;
   --surface: #FFFFFF;
   --surface-alt: #F8FAFB;
-  /* Canvas del admin (/dashboard): siempre oscuro, independiente del tema
-     del sitio publico. No usar var(--bg) aqui, ese es claro. */
-  --shell-bg: #0F1623;
-  --shell-text: #E2E8F0;
   --primary: #115D8C;
   --primary-700: #0B3B59;
   --accent: #05DBF2;
@@ -29,34 +25,6 @@
   --nav-border: #115D8C33;
   --shadow: 0 8px 20px rgba(11,59,89,0.06);
   --transition: 200ms;
-}
-
-/* Dark theme — scoped to any subtree, so a component can opt in
-   by adding the `dark` class to its root (eg. the admin shell) */
-.dark {
-  --bg: #0F1623;
-  --surface: #0A1020;
-  --surface-alt: #111827;
-  --primary: #05DBF2;
-  --primary-700: #0B3B59;
-  --accent: #9498F2;
-  --text: #E2E8F0;
-  --text-strong: #F1F5F9;
-  --muted: #94A3B8;
-  --muted-strong: #64748B;
-  --border: #1E2D45;
-  --ring: #2563EB33;
-  --success: #4ADE80;
-  --success-soft: #0F3D2E;
-  --danger: #F87171;
-  --danger-soft: #3D1515;
-  --grad-brand: linear-gradient(135deg, #2563EB, #1D4ED8);
-  --grad-avatar: linear-gradient(135deg, #2563EB, #7C3AED);
-  --nav-hover-bg: #111F35;
-  --nav-active-bg: #1E3A5F;
-  --nav-active-fg: #60A5FA;
-  --nav-border: #2563EB33;
-  --shadow: 0 8px 32px rgba(0,0,0,0.38);
 }
 
 /* Global base styles */

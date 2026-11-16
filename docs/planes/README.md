@@ -16,8 +16,8 @@ Al terminar un plan: `git mv` a `completados/`, actualizar esta tabla y anotar e
 ### En curso
 | Plan | Qué falta |
 |---|---|
-| [`reservas-frontend.md`](en-curso/reservas-frontend.md) | Bloques A y B a medias; C, D y E esperan al backend (fases 2B, 4 y 5) |
-| [`rediseno-panel-admin.md`](en-curso/rediseno-panel-admin.md) | Fase 5: Perfiles, Permisos, Mi perfil; retirar el tema oscuro viejo |
+| [`reservas-frontend.md`](en-curso/reservas-frontend.md) | **D ✅ (reservar desde el detalle, 2026-11-16; falta revisión visual).** A y B a medias; E se puede hacer ya; C espera la Fase 4 del backend |
+| [`rediseno-panel-admin.md`](en-curso/rediseno-panel-admin.md) | Fase 5 ✅ (2026-11-16). Falta la Fase 6: revisión visual de todo el panel |
 | [`politicas-producto.md`](en-curso/politicas-producto.md) | HU #26: revisión visual + commit |
 | [`resenas.md`](en-curso/resenas.md) | HU #28: revisión visual + commit |
 | [`compartir-redes.md`](en-curso/compartir-redes.md) | Req. #27: revisión visual |

@@ -5,7 +5,7 @@ Documentación del frontend de SweetNest. El README principal está en la [raíz
 | Documento | Contenido |
 | :--- | :--- |
 | [ARQUITECTURA.md](./ARQUITECTURA.md) | Capas, mapa de rutas, autenticación JWT, RBAC y capa de services. |
-| [ui-palette.md](./ui-palette.md) | Estándar visual (tokens de color) del panel administrativo oscuro. |
+| [../DESIGN.md](../DESIGN.md) | Sistema de diseño del panel admin (tokens, botones, badges, componentes `ui/`). |
 | [BITACORA.md](./BITACORA.md) | Registro cronológico: una entrada por sesión/fase. |
 | [planes/](./planes/) | Planes por estado: `pendientes/`, `en-curso/`, `completados/`. |
 | [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) | Bugs, atajos y pendientes: abiertos y resueltos (`DT-xxx`). |

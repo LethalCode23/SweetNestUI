@@ -1,89 +1,62 @@
+import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { MODULES } from "../constants/modules";
+import { StatusBadge } from "../components/ui/StatusBadge/StatusBadge";
+import ui from "../components/ui/catalog.module.css";
 import styles from "./UserProfilePage.module.css";
 
+/** Mi perfil: datos de la cuenta logueada (solo lectura). */
 export default function UserProfilePage() {
+  const { user, hasSubmodulePermission } = useAuth();
 
-  const { user } = useAuth();
+  const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Sin nombre";
+  const initials = `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}`.toUpperCase() || "?";
+  const profileName = user?.profile?.proName;
+  const canSeeFavorites = hasSubmodulePermission(MODULES.FAVORITES);
 
-  // Iniciales para el avatar
-  const initials = user
-    ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
-    : "?";
+  const rows = [
+    { label: "Nombre", value: user?.firstName },
+    { label: "Apellido", value: user?.lastName },
+    { label: "Correo electrónico", value: user?.email },
+    { label: "Perfil", value: profileName },
+  ];
 
   return (
-    <div className={styles.page}>
+    <div className={ui.page}>
+      <p className={ui.intro}>Los datos de tu cuenta en SweetNest. Si algo está mal, pídele a un administrador que lo corrija.</p>
 
-      {/* Header de la página */}
-      <div className={styles.pageHeader}>
-        <div>
-          <h1 className={styles.pageTitle}>Mi Cuenta</h1>
-          <p className={styles.pageSubtitle}>Consulta tu información personal.</p>
-        </div>
-      </div>
-
-      <div className={styles.card}>
-
-        {/* ─── Sección: Foto de Perfil ─── */}
-        <section className={styles.section}>
-          <div className={styles.avatarRow}>
-            <div className={styles.avatarWrap}>
-              <div className={styles.avatarFallback}>{initials}</div>
-            </div>
-
-            <div className={styles.avatarInfo}>
-              <span className={styles.avatarTitle}>Foto de Perfil</span>
+      <section className={styles.card} aria-labelledby="account-name">
+        <header className={styles.identity}>
+          <span className={styles.avatar} aria-hidden="true">{initials}</span>
+          <div className={styles.identityText}>
+            <h2 id="account-name" className={styles.name}>{fullName}</h2>
+            {user?.email && <p className={styles.email}>{user.email}</p>}
+            <div className={styles.badges}>
+              {profileName && <StatusBadge tone="neutral">{profileName}</StatusBadge>}
+              {user?.host === "S" && <StatusBadge tone="info">Anfitrión</StatusBadge>}
             </div>
           </div>
-        </section>
+        </header>
 
-        <div className={styles.divider} />
-
-        {/* ─── Sección: Información Personal ─── */}
-        <section className={styles.section}>
-          <div className={styles.sectionHead}>
-            <span className={styles.sectionTitle}>Información Personal</span>
-            <span className={styles.sectionSubtitle}>Tus datos registrados.</span>
-          </div>
-
-          <div className={styles.fieldsGrid}>
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="firstName">Nombre</label>
-              <input
-                id="firstName"
-                className={styles.input}
-                type="text"
-                value={user?.firstName ?? ""}
-                readOnly
-                autoComplete="given-name"
-              />
+        <dl className={styles.details}>
+          {rows.map((r) => (
+            <div key={r.label} className={styles.detailRow}>
+              <dt className={styles.term}>{r.label}</dt>
+              <dd className={styles.value}>{r.value || <span className={ui.empty}>—</span>}</dd>
             </div>
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="lastName">Apellido</label>
-              <input
-                id="lastName"
-                className={styles.input}
-                type="text"
-                value={user?.lastName ?? ""}
-                readOnly
-                autoComplete="family-name"
-              />
-            </div>
-          </div>
+          ))}
+        </dl>
 
-          <div className={styles.fieldGroup}>
-            <label className={styles.label} htmlFor="email">Correo Electrónico</label>
-            <input
-              id="email"
-              className={styles.input}
-              type="email"
-              value={user?.email ?? ""}
-              readOnly
-              autoComplete="email"
-              placeholder="correo@ejemplo.com"
-            />
-          </div>
-        </section>
-      </div>
+        {canSeeFavorites && (
+          <footer className={styles.footer}>
+            <Link to="/dashboard/favorites" className="sn-btn sn-btn--secondary">
+              <Heart size={16} aria-hidden="true" />
+              Mis favoritos
+            </Link>
+          </footer>
+        )}
+      </section>
     </div>
   );
 }

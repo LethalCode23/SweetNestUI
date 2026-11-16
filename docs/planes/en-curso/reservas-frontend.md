@@ -11,7 +11,7 @@ Las reglas de negocio no se repiten acá: están en `CLAUDE.md` (de este repo y 
 | A | ⏳ en curso | CRUD de tipos de alojamiento + filtro de fechas en la búsqueda | Fase 1 ✅ |
 | B | ⏳ | Formulario de hotel con `typeId` ✅, `hotConfirmReq` y `hostId` | Fase 1 ✅ · Fase 2A ✅ |
 | C | ⬜ | Bloque de búsqueda del home | Fase 4 ⬜ |
-| D | ⬜ | Detalle con unidades + reservar | Fase 2B ⬜ · Fase 5 ⬜ |
+| D | ✅ 2026-11-16 (falta revisión visual) | Reservar desde el `BookingCard`: unidades libres, huéspedes, precio real, login y regreso, confirmación | Fase 2B ✅ · Fase 5 (unidades libres) ✅ |
 | E | ⬜ | Mis reservas, bandeja del anfitrión, confirmar / cancelar | Fase 1 ✅ · Fase 2A ✅ |
 
 Detalle de lo hecho en cada bloque → `docs/BITACORA.md`.
@@ -51,11 +51,13 @@ Detalle de lo hecho en cada bloque → `docs/BITACORA.md`.
 
 - [x] Calendario del detalle bloquea fechas ocupadas (`GET /hotel/{id}/unavailable-dates`, 2026-11-01; límites en DT-037)
 - [x] Fechas ocupadas distinguibles en el calendario: tachadas en rojo + leyenda (2026-11-01)
-- [ ] Detalle lista unidades (todas sin fechas; libres si hay rango)
-- [ ] Selección de unidad + huéspedes (no superar capacidad → `400/1013`)
-- [ ] Pantalla de confirmar reserva (noches, precio, total que devuelve el backend)
-- [ ] Sin sesión → login y regreso a la unidad elegida
-- [ ] Mensajes para `1011` (no disponible), `1014` (rango inválido), `1015` (fecha pasada)
+- [x] Unidades: todas al cargar ("desde $X"); con rango, solo las libres (`GET /hotel-unit/hotel/{id}/available`) (2026-11-16)
+- [x] Selección de unidad (radios si hay más de una libre; si hay una, se elige sola) + stepper de huéspedes hasta la capacidad
+- [x] Confirmación en el card con unidad, fechas, noches y el total que devuelve el backend (CONFIRMED / PENDING)
+- [x] Sin sesión → borrador en `sessionStorage` (`sn.pendingBooking.{hotSec}`), login y regreso con todo elegido
+- [x] Mensajes para `1011` (recarga la disponibilidad), `1013`, `1014`, `1015`
+- [x] Precio real (`uniPrice` × noches); se quitaron los valores falsos de `listingData` (descuento, limpieza, servicio)
+- [ ] Revisión visual en el navegador (ver BITACORA 2026-11-16)
 
 ## Bloque E — Gestión de reservas
 

@@ -311,6 +311,7 @@ Botón primario con verbo + objeto: "Crear país", "Guardar cambios".
   Características, Usuarios y Hoteles.
 - ✅ Forms de crear/editar de los 8 catálogos en `FormDrawer`. Se borraron los CSS viejos de forms y las clases
   `drawer-*`, `form-section*` y `.btn-*` de `globals.css`.
-- ⬜ Perfiles, Permisos y Mi perfil siguen con el **tema oscuro viejo** (`docs/ui-palette.md`, `.dark`, `--shell-*`).
-- ⬜ `globals.css` (drawer, `.btn-primary`, `.btn-ghost`, `.btn-icon`) sigue oscuro; se reemplaza
-  por `sn-btn*` y un drawer claro en la última fase. Después se retiran `.dark`, `--shell-*` y `ui-palette.md`.
+- ✅ Perfiles (`DataTable` + `ProfileForm`), Permisos (card "Agregar acceso" + tabla por módulo con interruptor
+  compacto) y Mi perfil (card de solo lectura) — 2026-11-16.
+- ✅ Retirado el tema oscuro viejo: `.dark`, `--shell-*` y `docs/ui-palette.md`. `globals.css` ya no tiene kit propio.
+  **Todo el panel usa este sistema.**
