@@ -9,6 +9,7 @@ Documentación del frontend de SweetNest. El README principal está en la [raíz
 | [BITACORA.md](./BITACORA.md) | Registro cronológico: una entrada por sesión/fase. |
 | [planes/](./planes/) | Planes por estado: `pendientes/`, `en-curso/`, `completados/`. |
 | [DEUDA_TECNICA.md](./DEUDA_TECNICA.md) | Bugs, atajos y pendientes: abiertos y resueltos (`DT-xxx`). |
+| [calendario-fechas-ocupadas.md](./calendario-fechas-ocupadas.md) | Referencia del endpoint público de fechas ocupadas (lo cita `hotelService.js`). |
 | [session-2026-10-04.md](./session-2026-10-04.md) | Histórico: detalle de la sesión de unificación de paleta (resumida en la bitácora). |
 
 Las reglas estables del proyecto y el flujo de planes están en [`CLAUDE.md`](../CLAUDE.md).

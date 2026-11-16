@@ -97,7 +97,7 @@ Definidas en `src/App.jsx`. La fuente de verdad es ese archivo; si agregas una r
 
 | Constante | Valores |
 | :--- | :--- |
-| `MODULES` | `Hoteles`, `Países`, `Departamentos`, `Ciudades`, `Categorías`, `Usuarios`, `Perfiles`, `Características`, `Mi Perfil`, `Mis favoritos` |
+| `MODULES` | `Hoteles`, `Tipos`, `Países`, `Departamentos`, `Ciudades`, `Categorías`, `Usuarios`, `Perfiles`, `Características`, `Mi Perfil`, `Mis favoritos` |
 | `ACTIONS` | `LIST: "R"`, `CREATE: "C"`, `UPDATE: "U"`, `DELETE: "D"` |
 
 ### Guard — `src/guards/ProtectedRoute.jsx`
@@ -131,7 +131,7 @@ Cada módulo tiene su archivo bajo `src/services/`. La base es `Environment.API_
 | Módulo | Archivo | Endpoints que consume (resumen) |
 | :--- | :--- | :--- |
 | Auth | `AuthServices/AuthServices.jsx` | `POST /auth/login`, `POST /auth/register` |
-| Hoteles | `hotelServices/hotelService.js` | `GET /hotel/findByHotel`, `GET /hotel/findDetailById/{id}`, `GET /hotel/all`, `POST /hotel/save`, `PUT /hotel/update/{id}`, `DELETE /hotel/delete/{id}`, `POST /hotel-images/save`, `GET /hotel/suggestions?q=` (público, autocompletado), `GET /hotel/{id}/unavailable-dates?from=&to=` (público, `ApiResponse`; usa `axios` directo sin token, ver DT-036) |
+| Hoteles | `hotelServices/hotelService.js` | `GET /hotel/findByHotel`, `GET /hotel/findDetailById/{id}`, `GET /hotel/all`, `POST /hotel/save`, `PUT /hotel/update/{id}`, `DELETE /hotel/delete/{id}`, `POST /hotel-images/save`, `GET /hotel/suggestions?q=` (público, autocompletado), `GET /hotel/{id}/unavailable-dates?from=&to=`, `GET /hotel-unit/hotel/{id}` (`getUnits`), `GET /hotel-unit/hotel/{id}/available?checkIn=&checkOut=` (`getAvailableUnits`). Estos tres últimos son públicos, vienen en `ApiResponse` y usan `axios` directo sin token (ver DT-036) |
 | Tipos de alojamiento | `hotelServices/typeHotelService.js` | `GET /hotel-types`, `GET /hotel-types/actives`, `GET /hotel-types/{id}`, `POST /hotel-types`, `PUT /hotel-types/{id}`, `DELETE /hotel-types/{id}` (respuestas en `ApiResponse`) |
 | Categorías | `categoryServices/categoryService.js` | `GET /category/all`, `POST /category/save`, `DELETE /category/delete/{id}` |
 | Ciudades | `cityServices/cityService.js` | `GET /city/all`, `POST /city/save`, `PUT /city/update/{id}`, `DELETE /city/delete/{id}` |
@@ -139,8 +139,11 @@ Cada módulo tiene su archivo bajo `src/services/`. La base es `Environment.API_
 | Departamentos | `departmentServices/departmentService.js` | `GET /department/all`, `POST /department/save`, `DELETE /department/delete/{id}` |
 | Features | `featureServices/featureService.js` | `GET /feature/all`, `GET /feature/{id}`, `POST /feature`, `PUT /feature/{id}`, `DELETE /feature/{id}` |
 | Usuarios | `userServices/userService.js` | `GET /users/all`, `GET /profile/all`, `POST /auth/register`, `PUT /users/{id}`, `DELETE /users/{id}` |
-| Perfiles | `profileServices/ProfileServices.js` | `GET /profiles/{id}/modules`, `GET /profile/all`, `PATCH .../entry-allowed`, `PATCH .../actions/{code}`, `POST/DELETE /PermissionProMod/...` |
+| Perfiles | `profileServices/ProfileServices.js` | `GET /profiles/{id}/modules`, `GET /profile/all`, `POST /profile/save`, `PUT /profile/{id}`, `PATCH .../entry-allowed`, `PATCH .../actions/{code}`, `POST/DELETE /PermissionProMod/...` |
 | Permisos | `permissionsPage/permissionsPageService.js` | `GET /profiles/{id}/modules`, `PATCH /PermissionProModPer/.../actions/{code}` |
+| Favoritos | `favoriteServices/favoriteService.js` | `GET /favorites?page=&size=`, `GET /favorites/ids`, `PUT /favorites/{hotSec}`, `DELETE /favorites/{hotSec}` (requieren sesión) |
+| Reservas | `reservationServices/reservationService.js` | `POST /reservations` (`{ unitId, checkIn, checkOut, guests }`; el usuario sale del token) |
+| Reseñas | `reviewServices/reviewService.js` | `GET /reviews/hotel/{hotSec}?page=&size=`, `GET /reviews/hotel/{hotSec}/mine`, `PUT /reviews/hotel/{hotSec}` (`{ stars, comment }`) |
 
 > El detalle completo (método, path, body y respuesta) de cada endpoint está en [API.md](https://github.com/LethalCode23/SweetNestApp/blob/main/API.md) del backend. Este documento solo mapea qué service consume qué.
 
@@ -163,4 +166,4 @@ El tema oscuro viejo (`ui-palette.md`, `.dark`, `--shell-*`) se retiró el 2026-
 | :--- | :--- |
 | Documentos | Español, tablas Markdown, checklists con `- [ ]`. |
 | Nombre de archivo CSS Module | PascalCase, coincidente con el componente. |
-| Verificación | `npm run build` + `npm run lint`. Baseline de lint: 13 problemas preexistentes (2026-10-31). |
+| Verificación | `npm run build` + `npm run lint`. Baseline de lint: 10 problemas preexistentes (2026-11-16; ver DT-014). |

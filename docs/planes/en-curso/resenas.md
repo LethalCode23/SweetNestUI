@@ -7,7 +7,7 @@ Plan madre del backend: `../../SweetNestApp/docs/planes/en-curso/resenas.md`.
 | Bloque | Estado | Contenido | Depende del backend |
 |---|---|---|---|
 | A | ✅ 2026-11-12 | Servicio, estrellas, sección `#resenas`, promedio real en encabezado, cards y BookingCard | Fase 1 ✅ |
-| B | ⏳ | Revisión visual en el navegador + commit | — |
+| B | ⏳ | Revisión visual en el navegador (commit ya hecho: `f86ec80`) | — |
 
 Detalle de lo hecho → `docs/BITACORA.md` (2026-11-12).
 
