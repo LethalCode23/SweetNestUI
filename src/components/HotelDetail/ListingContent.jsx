@@ -1,4 +1,4 @@
-import { BadgeCheck, BedDouble, Clock, Check } from "lucide-react";
+import { BadgeCheck, BedDouble, Check } from "lucide-react";
 import { listing } from "../../constants/listingData";
 import styles from "./ListingContent.module.css";
 
@@ -89,19 +89,6 @@ export const ListingContent = ({ hotel }) => {
             hipoalergénico.
           </p>
         </div>
-      </section>
-
-      {/* Rules */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Normas y Políticas del Hotel</h2>
-        <ul className={styles.rulesList}>
-          {listing.rules.map((r) => (
-            <li key={r} className={styles.ruleItem}>
-              <Clock size={16} className={styles.ruleIcon} />
-              {r}
-            </li>
-          ))}
-        </ul>
       </section>
     </div>
   );

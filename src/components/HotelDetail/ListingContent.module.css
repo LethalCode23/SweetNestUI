@@ -147,29 +147,6 @@
   line-height: 1.5;
 }
 
-/* Rules */
-.rulesList {
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-  list-style: none;
-  padding: 0;
-}
-
-.ruleItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
-  color: var(--text, #0B3B59);
-}
-
-.ruleIcon {
-  color: var(--muted, #6B7280);
-  flex-shrink: 0;
-}
-
 /* ============================
    Responsive — sm+
    ============================ */
@@ -180,10 +157,6 @@
   }
 
   .amenitiesList {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .rulesList {
     grid-template-columns: 1fr 1fr;
   }
 }

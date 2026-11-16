@@ -21,7 +21,7 @@ npm run build
 npm run lint
 ```
 Verificación de cualquier cambio = `npm run build` + `npm run lint`.
-Baseline de lint: **13 problemas preexistentes** (2026-10-31); no subir ese número.
+Baseline de lint: **10 problemas preexistentes** (2026-11-16; antes 13); no subir ese número.
 Catálogos del panel: seguir la "Receta de una página de catálogo" de `DESIGN.md` (`DataTable` + `useConfirmDelete`
 + `FormDrawer` para crear/editar).
 
@@ -47,7 +47,7 @@ Detalle (mapa de rutas, tabla de services, RBAC) en `docs/ARQUITECTURA.md`; acá
 - **Estilos:** CSS Modules con nombre **PascalCase igual al componente**.
   Panel admin → **[`DESIGN.md`](DESIGN.md)** es la fuente de verdad: tokens `var(--sn-*)` (`src/styles/tokens.css`),
   botones `sn-btn*` y badges `sn-badge*` (`src/styles/admin-kit.css`), Manrope. Leerlo antes de tocar UI del panel.
-  `docs/ui-palette.md` + `.dark`/`--shell-*` = tema oscuro **viejo**, solo para Perfiles, Permisos y Mi perfil.
+  Todo el panel usa ese sistema; el tema oscuro viejo se retiró (2026-11-16). No volver a usar hex sueltos ni otras fuentes.
 - **Formularios:** react-hook-form + yup (`@hookform/resolvers`).
 
 ## Reglas ya decididas (no volver a preguntar)
@@ -86,11 +86,12 @@ docs/planes/
   Cuando se resuelve, la fila pasa a "Resueltas" con fecha y referencia; nunca se borra. Un workaround en el código cita
   su ID. La bitácora cuenta la historia; la deuda dice el estado.
 
-**Planes activos:** `docs/planes/en-curso/reservas-frontend.md` · `docs/planes/en-curso/rediseno-panel-admin.md`.
+**Qué hay pendiente:** leer primero `docs/planes/README.md` (índice de todos los planes por estado; mantenerlo al día).
+**Plan principal:** `docs/planes/en-curso/reservas-frontend.md`.
 
 ## Docs
 
 - `DESIGN.md`: sistema de diseño del panel (paleta, tipo, espaciado, botones, badges, layout)
-- `docs/ARQUITECTURA.md`: capas, rutas, JWT, RBAC, services · `docs/ui-palette.md`: tema oscuro viejo (en retiro)
+- `docs/ARQUITECTURA.md`: capas, rutas, JWT, RBAC, services
 - `docs/BITACORA.md`: registro cronológico · `docs/planes/`: planes por estado (ver arriba)
 - `docs/DEUDA_TECNICA.md`: bugs y pendientes, abiertos y resueltos

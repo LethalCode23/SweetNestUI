@@ -1,122 +1,192 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./ProfilesPage.module.css";
+import { KeyRound, Pencil, Plus } from "lucide-react";
+import ui from "../ui/catalog.module.css";
 import { useAuth } from "../../context/AuthContext";
 import { MODULES, ACTIONS } from "../../constants/modules";
+import { DataTable } from "../ui/DataTable/DataTable";
+import { StatusBadge } from "../ui/StatusBadge/StatusBadge";
+import { FilterSelect } from "../ui/FilterSelect/FilterSelect";
+import { STATE_OPTIONS } from "../ui/FilterSelect/options";
+import { ProfileForm } from "./ProfileForm";
+import { getAllProfiles, createProfile, updateProfile } from "../../services/profileServices/ProfileServices";
+import { getUsers } from "../../services/userServices/userService";
+import { apiErrorMessage, unwrapList } from "../../Utils/apiError";
+import styles from "./ProfilesPage.module.css";
 
-// Data de ejemplo -- se reemplaza luego por getAllProfiles() del service real
-const MOCK_PROFILES = [
-    { proId: 1, proName: "Administrador", proState: "A", isDefault: "N" },
-    { proId: 2, proName: "Usuario", proState: "A", isDefault: "S" },
+const COLUMNS = [
+    {
+        key: "proName",
+        header: "Perfil",
+        sortable: true,
+        render: (p) => (
+            <span className={styles.nameCell}>
+                <span className={ui.name}>{p.proName}</span>
+                {p.isDefault === "S" && <StatusBadge tone="neutral">Por defecto</StatusBadge>}
+            </span>
+        ),
+    },
+    {
+        key: "hasControlAccess",
+        header: "Control de accesos",
+        render: (p) => (p.hasControlAccess === "S"
+            ? <StatusBadge tone="info">Administra accesos</StatusBadge>
+            : <span className={ui.empty}>—</span>),
+    },
+    {
+        key: "userCount",
+        header: "Usuarios",
+        sortable: true,
+        numeric: true,
+        align: "left",
+        width: 110,
+        render: (p) => (p.userCount
+            ? p.userCount
+            : <span className={ui.empty}>0</span>),
+    },
+    {
+        key: "proState",
+        header: "Estado",
+        sortable: true,
+        width: 120,
+        render: (p) => (p.proState === "A"
+            ? <StatusBadge tone="success" dot>Activo</StatusBadge>
+            : <StatusBadge tone="neutral" dot>Inactivo</StatusBadge>),
+    },
+    {
+        key: "proId",
+        header: "ID",
+        sortable: true,
+        numeric: true,
+        align: "left",
+        width: 80,
+        render: (p) => <span className={ui.muted}>{p.proId}</span>,
+    },
 ];
 
-const initials = (name = "") =>
-    name
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase();
-
 export default function ProfilesPage() {
+    const [profiles, setProfiles] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [stateFilter, setStateFilter] = useState("");
+    const [showForm, setShowForm] = useState(false);
+    const [editing, setEditing] = useState(null);
 
-    const [search, setSearch] = useState("");
     const navigate = useNavigate();
-    const { hasControlAccess, hasActionPermission } = useAuth();
+    const { user, hasActionPermission } = useAuth();
+    const ownProfileId = user?.profile?.proId;
 
-    const profiles = MOCK_PROFILES.filter((p) =>
-        p.proName.toLowerCase().includes(search.toLowerCase())
-    );
+    const canCreate = hasActionPermission(MODULES.PROFILE, ACTIONS.CREATE);
+    const canUpdate = hasActionPermission(MODULES.PROFILE, ACTIONS.UPDATE);
 
-    const goToPermissions = (profile) => {
+    const load = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const [profileRes, userRes] = await Promise.all([getAllProfiles(), getUsers()]);
+
+            // Cantidad de usuarios por perfil (el endpoint de perfiles no la trae)
+            const counts = new Map();
+            unwrapList(userRes).forEach((u) => {
+                const id = u.profile?.proId;
+                if (id != null) counts.set(id, (counts.get(id) ?? 0) + 1);
+            });
+
+            setProfiles(unwrapList(profileRes).map((p) => ({
+                ...p,
+                proState: p.proState ?? "A",
+                isDefault: p.isDefault ?? "N",
+                hasControlAccess: p.hasControlAccess ?? "N",
+                userCount: counts.get(p.proId) ?? 0,
+            })));
+        } catch (err) {
+            setError(apiErrorMessage(err));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        load();
+    }, []);
+
+    const openCreate = () => {
+        setEditing(null);
+        setShowForm(true);
+    };
+
+    const openEdit = (profile) => {
+        setEditing(profile);
+        setShowForm(true);
+    };
+
+    const closeForm = () => {
+        setShowForm(false);
+        setEditing(null);
+    };
+
+    // Guarda y recarga; si falla, lanza y el FormDrawer muestra el error sin cerrarse.
+    const handleSubmit = async (payload) => {
+        if (editing) {
+            await updateProfile(editing.proId, payload);
+        } else {
+            await createProfile(payload);
+        }
+        await load();
+    };
+
+    const goToAccess = (profile) => {
         navigate(`/dashboard/profiles/${profile.proId}/permissions`, {
             state: { profileName: profile.proName },
         });
     };
 
+    const rows = profiles.filter((p) => !stateFilter || p.proState === stateFilter);
+
     return (
-        <div className={styles.root}>
+        <div className={ui.page}>
 
-            {/* Header */}
-            <header className={styles.header}>
-                <div>
-                    <h1 className={styles.title}>Perfiles</h1>
-                    <p className={styles.subtitle}>
-                        Administra los perfiles del sistema y configura sus permisos de acceso por módulo.
-                    </p>
-                </div>
-                {hasActionPermission(MODULES.PROFILE, ACTIONS.CREATE) && (
-                    <button className={styles.newBtn}>
-                        <span className={styles.newBtnIcon}>+</span>
-                        Nuevo perfil
-                    </button>
-                )}
-            </header>
+            <p className={ui.intro}>
+                Cada usuario tiene un perfil, y el perfil decide qué secciones del panel ve y qué puede hacer en ellas.
+                Para cambiar eso, entra a «Accesos».
+            </p>
 
-            {/* Barra de búsqueda */}
-            <div className={styles.toolbar}>
-                <div className={styles.searchBox}>
-                    <span className={styles.searchIcon}>⌕</span>
-                    <input
-                        type="text"
-                        placeholder="Buscar perfil por nombre..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className={styles.searchInput}
-                    />
-                </div>
-                <span className={styles.countBadge}>
-                    {profiles.length} {profiles.length === 1 ? "perfil" : "perfiles"}
-                </span>
-            </div>
+            {showForm && (
+                <ProfileForm
+                    key={editing?.proId ?? "new"}
+                    initial={editing}
+                    isOwnProfile={editing != null && editing.proId === ownProfileId}
+                    onClose={closeForm}
+                    onSubmit={handleSubmit}
+                />
+            )}
 
-            {/* Lista de perfiles */}
-            <div className={styles.list}>
-                {profiles.length === 0 ? (
-                    <div className={styles.empty}>
-                        <span className={styles.emptyIcon}>◌</span>
-                        <p className={styles.emptyText}>No se encontraron perfiles con ese nombre.</p>
-                    </div>
-                ) : (
-                    profiles.map((profile) => (
-                        <article key={profile.proId} className={styles.card}>
-
-                            <div className={styles.cardLeft}>
-                                <p className={styles.profileId}>ID: {profile.proId}</p>
-                                <div className={styles.avatar}>{initials(profile.proName)}</div>
-                                <div className={styles.cardInfo}>
-                                    <div className={styles.nameRow}>
-                                        <h3 className={styles.profileName}>{profile.proName}</h3>
-                                        {profile.isDefault === "S" && (
-                                            <span className={styles.defaultBadge}>Por defecto</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className={styles.cardRight}>
-                                <span
-                                    className={`${styles.stateBadge} ${profile.proState === "A" ? styles.stateActive : styles.stateInactive
-                                        }`}
-                                >
-                                    <span className={styles.stateDot} />
-                                    {profile.proState === "A" ? "Activo" : "Inactivo"}
-                                </span>
-
-                                {hasActionPermission(MODULES.PROFILE, ACTIONS.UPDATE) && (
-                                    <button
-                                        className={styles.manageBtn}
-                                        onClick={() => goToPermissions(profile)}
-                                    >
-                                        Accesos
-                                        <span className={styles.manageBtnArrow}>→</span>
-                                    </button>
-                                )}
-                            </div>
-                        </article>
-                    ))
-                )}
-            </div>
+            <DataTable
+                ariaLabel="Perfiles"
+                columns={COLUMNS}
+                rows={rows}
+                rowKey={(p) => p.proId}
+                loading={loading}
+                error={error}
+                onRetry={load}
+                search={{ placeholder: "Buscar perfil por nombre", keys: ["proName"] }}
+                filters={
+                    <FilterSelect label="Filtrar por estado" allLabel="Todos los estados"
+                        value={stateFilter} onChange={setStateFilter} options={STATE_OPTIONS} />
+                }
+                filtersActive={Boolean(stateFilter)}
+                onClearFilters={() => setStateFilter("")}
+                primaryAction={canCreate ? { label: "Nuevo perfil", icon: Plus, onClick: openCreate } : null}
+                rowActions={(p) => [
+                    { label: `Accesos de ${p.proName}`, icon: KeyRound, onClick: goToAccess, hidden: !canUpdate },
+                    { label: "Editar", icon: Pencil, onClick: openEdit, hidden: !canUpdate },
+                ]}
+                defaultSort={{ key: "proName", dir: "asc" }}
+                emptyState={{
+                    title: "Todavía no hay perfiles",
+                    description: "Crea uno y después configura sus accesos.",
+                }}
+            />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { BASE_URL } from "../../Js/constants";
 import { useFavoriteToggle } from "../../hooks/useFavoriteToggle";
+import { formatRating, ratingCountLabel } from "../../Utils/rating";
 
 export const HotelCard = ({ hotel }) => {
   const fav = useFavoriteToggle(hotel.hotSec);
@@ -80,9 +81,15 @@ export const HotelCard = ({ hotel }) => {
         {hotDescription && <p className="hotel-desc">{hotDescription}</p>}
 
         <div className="hotel-meta">
-          <span className="rating">
-            <span className="rating-star">★</span> 4.7
-          </span>
+          {/* HU #28: promedio y cantidad reales */}
+          {hotel.ratingCount > 0 ? (
+            <span className="rating" aria-label={`${formatRating(hotel.ratingAvg)} de 5, ${ratingCountLabel(hotel.ratingCount)}`}>
+              <span className="rating-star" aria-hidden="true">★</span> {formatRating(hotel.ratingAvg)}
+              <span className="rating-count" aria-hidden="true">({hotel.ratingCount})</span>
+            </span>
+          ) : (
+            <span className="rating rating--new">Sin valoraciones</span>
+          )}
           {categories?.filter(cat => cat.catEst === "A").map(cat => (
             <span key={cat.catSec} className="tag">{cat.catName}</span>
           ))}

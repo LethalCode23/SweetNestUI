@@ -1,0 +1,364 @@
+/* ============================
+   HotelReviews — HU #28
+   Lo llamativo es una sola cosa: el promedio grande. Lo demás es callado (separadores, sin sombras).
+   ============================ */
+
+.reviews {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 32px;
+  padding: 32px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  scroll-margin-top: 80px;
+}
+
+/* Mismo lenguaje de título que el bloque de Políticas */
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+  letter-spacing: -0.01em;
+  text-decoration: underline;
+  text-decoration-color: var(--primary, #115D8C);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+
+.muted {
+  margin: 24px 0 0;
+  font-size: 15px;
+  color: var(--muted, #6B7280);
+}
+
+.layout {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+/* ── Resumen ─────────────────────────────── */
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.average {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.averageNum {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text, #0B3B59);
+  font-variant-numeric: tabular-nums;
+}
+
+.averageMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.countLabel {
+  font-size: 14px;
+  color: var(--muted, #6B7280);
+}
+
+.distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.distRow {
+  display: grid;
+  grid-template-columns: 14px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text, #0B3B59);
+}
+
+.distStars {
+  font-weight: 600;
+  text-align: right;
+}
+
+.distTrack {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(11, 59, 89, 0.08);
+  overflow: hidden;
+}
+
+/* Las barras son dato (cómo se reparten las notas): van en navy; el ámbar queda solo para las estrellas */
+.distFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--text, #0B3B59);
+  transition: width 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.distCount {
+  color: var(--muted, #6B7280);
+}
+
+.noRatings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Formulario / estado del usuario ─────── */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+}
+
+.panelText {
+  margin: -8px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted, #6B7280);
+}
+
+.noRatings .panelText {
+  margin: 0;
+}
+
+.commentField {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.commentLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text, #0B3B59);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted, #6B7280);
+}
+
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 104px;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  color: var(--text, #0B3B59);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary, #115D8C);
+  box-shadow: 0 0 0 3px rgba(17, 93, 140, 0.15);
+}
+
+.counter {
+  align-self: flex-end;
+  font-size: 12px;
+  color: var(--muted, #6B7280);
+  font-variant-numeric: tabular-nums;
+}
+
+.formError {
+  margin: 0;
+  font-size: 13px;
+  color: #B42318;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary, #115D8C);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background: var(--text, #0B3B59);
+}
+
+.primaryBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.primaryBtn:focus-visible,
+.moreBtn:focus-visible {
+  outline: 2px solid var(--primary, #115D8C);
+  outline-offset: 2px;
+}
+
+.notice {
+  min-height: 0;
+  margin: 12px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #15803D;
+}
+
+.notice:empty {
+  margin: 0;
+}
+
+/* ── Lista de reseñas ─────────────────────── */
+
+.list {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+/* La reseña recién guardada se marca un momento: única animación, responde a la acción del usuario */
+.itemHighlight {
+  animation: justSaved 1.8s ease-out;
+  border-radius: 12px;
+}
+
+@keyframes justSaved {
+  0%, 30% { background: rgba(17, 93, 140, 0.08); box-shadow: 0 0 0 12px rgba(17, 93, 140, 0.08); }
+  100% { background: transparent; box-shadow: 0 0 0 12px transparent; }
+}
+
+.itemHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.itemName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #0B3B59);
+}
+
+.itemDate {
+  font-size: 13px;
+  color: var(--muted, #6B7280);
+}
+
+.itemComment {
+  margin: 10px 0 0;
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text, #0B3B59);
+  white-space: pre-line;
+}
+
+.moreBtn {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text, #0B3B59);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.moreBtn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* ── Escritorio: resumen a la izquierda, conversación a la derecha ── */
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 280px 1fr;
+    gap: 56px;
+  }
+
+  .summary {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .itemHighlight {
+    animation: none;
+  }
+
+  .distFill,
+  .primaryBtn {
+    transition: none;
+  }
+}

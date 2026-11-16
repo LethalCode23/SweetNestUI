@@ -153,7 +153,9 @@ Cada módulo tiene su archivo bajo `src/services/`. La base es `Environment.API_
 
 ## Estilos
 
-El tema oscuro del panel admin y los tokens de color están documentados en [ui-palette.md](./ui-palette.md). El kit compartido (`drawer`, `btn-primary`, `btn-ghost`, etc.) vive en `src/styles/globals.css`.
+El sistema de diseño del panel admin está en [`DESIGN.md`](../DESIGN.md): tokens `--sn-*` en `src/styles/tokens.css`,
+botones/badges/campos (`sn-btn*`, `sn-badge*`, `sn-input`, `sn-select`) en `src/styles/admin-kit.css` y primitivos en `src/components/ui/`.
+El tema oscuro viejo (`ui-palette.md`, `.dark`, `--shell-*`) se retiró el 2026-11-16.
 
 ## Convenciones del repositorio
 

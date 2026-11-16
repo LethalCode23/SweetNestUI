@@ -380,3 +380,96 @@ Plan: [`planes/en-curso/compartir-redes.md`](./planes/en-curso/compartir-redes.m
 - Instagram no tiene URL para compartir desde la web: se copia el mensaje y se abre instagram.com. Facebook solo toma la URL.
 - Nueva deuda: DT-040 (sin Open Graph, las redes no muestran vista previa).
 - `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-12 — HU #26: Bloque de políticas del producto
+
+- Nuevo `components/HotelDetail/HotelPolicies.jsx` (+ `HotelPolicies.module.css`), montado en `HotelDetailPage`
+  **debajo** del layout de dos columnas para ocupar el 100% del contenedor.
+- Título "Políticas del alojamiento" subrayado (`text-decoration` con color `--primary`); políticas en grilla
+  1 / 2 / 3 columnas (móvil / ≥640px / ≥1024px), cada una con título + descripción.
+- Datos de `hotel.policies` (backend, `findDetailById`); si vienen vacías usa el fallback `listing.policies` de `listingData.js`.
+- Se quitó la sección vieja "Normas y Políticas del Hotel" de `ListingContent` y `listing.rules`.
+- `npm run build` OK · `npm run lint` = 13 (baseline). **Pendiente:** revisión visual en el navegador.
+
+### Edición desde el panel (mismo día)
+
+- Nueva sección **Políticas** en `HotelForm` (entre "Categorías y características" e "Imágenes") con
+  `components/Hotel/PolicyEditor.jsx` (+ `.module.css`) y helpers en `policyItems.js`.
+- Cada política es una card (DESIGN.md: borde + radio lg, sin sombra) con número de orden, título, descripción con contador
+  y acciones subir / bajar / quitar. "Agregar política" lleva el foco al título nuevo.
+- Vacío: zona punteada (mismo lenguaje que imágenes) con "Usar políticas sugeridas" (carga `listing.policies`) o "Escribir una desde cero".
+- Se guarda con el hotel: el payload siempre manda `policies` completo (el backend reemplaza en ese orden; `[]` = sin políticas).
+  Errores por política ("Escribe el título de la política.") se muestran en su card.
+- `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-12 — HU #28: Puntuar producto
+
+- `services/reviewServices/reviewService.js` + `Utils/rating.js` (formato "4,6", "12 valoraciones", fecha, etiquetas de estrellas).
+- `components/HotelDetail/Reviews/`: `StarRating` (lectura, relleno parcial), `StarInput` (radiogroup con flechas,
+  vista previa al pasar el mouse) y `HotelReviews` (sección `#resenas`, entre el layout y Políticas).
+- Diseño: lo único llamativo es el promedio grande (56px/800); barras de distribución en navy (son dato), ámbar solo
+  para estrellas, reseñas separadas por líneas (sin cards con sombra). En escritorio el resumen queda fijo a la izquierda.
+- Estados del formulario: sin sesión → "Iniciar sesión" (vuelve al hotel); sin estadía terminada → "Podrás valorar…
+  cuando termine tu estadía"; con estadía → publicar / actualizar (precargado). Al guardar se actualizan resumen, lista,
+  encabezado y BookingCard con la respuesta del backend, y la reseña propia se resalta un momento.
+- `HotelCard` y `BookingCard` dejan de mostrar valores fijos (4.7 / 4.89 · 119); se quitaron `rating`/`reviews` de `listingData`.
+- `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-16 — Rediseño del panel · Fase 5 (Perfiles, Permisos, Mi perfil y retiro del tema viejo)
+
+- **Perfiles** (`components/Profile/`): mostraba datos falsos (`MOCK_PROFILES`). Ahora usa `GET /profile/all` + `GET /users/all`
+  para contar los usuarios de cada perfil. Es un `DataTable` con las columnas Perfil (+ "Por defecto"), Control de accesos, Usuarios, Estado e ID,
+  un filtro por estado y las acciones "Accesos" y "Editar".
+  - **Nuevo `ProfileForm`** en `FormDrawer`: nombre, Activo, "Puede administrar accesos" y "Perfil por defecto".
+  - En el perfil propio no se puede inactivar ni quitar el control de accesos (autobloqueo, solo en el front: DT-042).
+  - El perfil por defecto actual no se puede desmarcar; para cambiarlo hay que marcar otro.
+  - No hay botón de eliminar: se inactiva (DT-043).
+  - Nuevos `createProfile` / `updateProfile` en `ProfileServices.js`.
+- **Backend** (ver su BITACORA): crear un perfil daba **500** (`ProfileDto.proId` era `long`), `update` ignoraba
+  `isDefault`/`hasControlAccess` y `save` no guardaba `isDefault`. Corregido, con la regla de un solo perfil por defecto → DT-044.
+- **Permisos** (`components/PermissionsPage/`): misma lógica, nuevo diseño.
+  - "Volver a perfiles" como `sn-btn--ghost` y una línea intro con el nombre del perfil.
+  - Card "Agregar acceso" con `Field` + `sn-select`, como único botón primario. Si falla, muestra el error en la card.
+  - Buscador sin tildes + `FilterSelect` de módulo. Una card por módulo con su tabla, un interruptor compacto por acción y estado en `StatusBadge`.
+  - "Quitar" pasa a ser un `IconButton` que pide confirmación (`ConfirmDialog`); antes borraba sin preguntar.
+  - Si un toggle falla, el switch no cambia y aparece el error en la fila (antes solo hacía `console.error`).
+  - Estados de carga (skeleton), error con "Reintentar" y vacío.
+- **Mi perfil** (`pages/UserProfilePage`): card de solo lectura con avatar, nombre, correo, badges de perfil y anfitrión,
+  una lista `<dl>` con los datos y el enlace "Mis favoritos" si tiene el permiso.
+- **Retiro del tema viejo:**
+  - borrados `.dark` y `--shell-*` de `App.css` y `docs/ui-palette.md`;
+  - `globals.css` ya no tenía kit propio;
+  - borrado el código muerto `HotelAdminCard.jsx`/`.css` y `HotelsCrudList.css` (DT-012 y DT-013 resueltas);
+  - actualizados `ARQUITECTURA.md`, `docs/README.md`, `DESIGN.md` y `CLAUDE.md`.
+- Nueva deuda DT-041: el `isDark` del navbar público no se aplica.
+- `npm run build` OK · `npm run lint` = **10** (baseline bajó de 13 a 10). **Pendiente:** revisión visual (Fase 6).
+
+---
+
+## 2026-11-16 — Reservas · Bloque D: reservar desde el detalle
+
+- **Bug reportado:** "Reservar ahora" no hacía nada. El botón nunca tuvo `onClick` y no existía un servicio de reservas.
+- Nuevo `services/reservationServices/reservationService.js` (`createReservation`). En `hotelService.js` se agregan `getUnits` y
+  `getAvailableUnits`; son públicos y usan `axios` directo, igual que `getUnavailableDates` (DT-036).
+- **`BookingCard`:**
+  - Al montar carga las unidades del hotel, para mostrar "Desde $X". Con un rango válido pide las **unidades libres** (endpoint nuevo
+    del backend) y cancela la petición anterior si el rango cambia.
+  - Si hay más de una unidad libre, se elige con radios (nombre, capacidad y precio). Si hay una sola, se elige sola. Si no hay ninguna, aparece un aviso.
+  - **Huéspedes:** stepper −/+ de 1 a la capacidad de la unidad. Reemplaza el texto fijo "1 adulto (capacidad máx. 2)".
+  - **Precio real:** `uniPrice` × noches, lo mismo que guarda el backend. Se quitaron el precio tachado, el "27% de descuento",
+    la limpieza, la tarifa de servicio y el descuento anticipado, y también `price`/`breakdown` de `listingData`.
+  - **Sin sesión:** guarda el borrador en `sessionStorage` (`sn.pendingBooking.{hotSec}`) y va a `/login` con `state.from`.
+    Al volver, el card restaura las fechas, la unidad y los huéspedes. Si la llegada ya pasó, descarta el borrador.
+  - **Con sesión:** `POST /reservations`. La confirmación reemplaza al formulario:
+    - "¡Reserva confirmada!" o "Reserva enviada, el anfitrión debe confirmarla", con la unidad, las fechas, los huéspedes y el total del backend;
+    - un botón "Hacer otra reserva".
+  - **Errores:** `1011` muestra un mensaje y recarga las fechas ocupadas y las unidades libres; `1013`, `1014` y `1015` tienen mensajes propios.
+- `HotelDetailPage` le pasa `key={id}` al card, para que se reinicie al cambiar de hotel. Ya no le pasa `hotel`.
+- DT-037 queda resuelta: ahora el backend valida el cruce y el front solo ofrece unidades libres.
+- `npm run build` OK · `npm run lint` = 10. **Pendiente:** revisión visual en el navegador, con el backend reiniciado.

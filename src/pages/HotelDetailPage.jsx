@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Star, Share2, Heart, ChevronLeft } from "lucide-react";
-import { listing } from "../constants/listingData";
+import { formatRating, ratingCountLabel } from "../Utils/rating";
 import { findDetailById } from "../services/hotelServices/hotelService";
 import { PhotoGallery } from "../components/HotelDetail/PhotoGallery";
 import { BookingCard } from "../components/HotelDetail/BookingCard";
 import { ListingContent } from "../components/HotelDetail/ListingContent";
 import { ShareModal } from "../components/HotelDetail/ShareModal";
+import { HotelPolicies } from "../components/HotelDetail/HotelPolicies";
+import { HotelReviews } from "../components/HotelDetail/Reviews/HotelReviews";
 import { useFavoriteToggle } from "../hooks/useFavoriteToggle";
 import styles from "./HotelDetailPage.module.css";
 
@@ -19,6 +21,16 @@ const HotelDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [shareOpen, setShareOpen] = useState(false);
+  // Se llena cuando el usuario guarda una reseña: el promedio nuevo se ve al instante en el encabezado y el BookingCard
+  const [ratingOverride, setRatingOverride] = useState(null);
+  const rating = ratingOverride?.id === id
+    ? ratingOverride
+    : { ratingAvg: hotel?.ratingAvg ?? 0, ratingCount: hotel?.ratingCount ?? 0 };
+
+  const goToReviews = () => {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById("resenas")?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -73,11 +85,22 @@ const HotelDetailPage = () => {
           <div>
             <h1 className={styles.title}>{hotel.name}</h1>
             <div className={styles.meta}>
+              {/* HU #28: promedio real; lleva a la sección de valoraciones */}
               <div className={styles.ratingWrap}>
                 <Star size={15} className={styles.starIcon} />
-                <span className={styles.ratingNum}>{listing.rating}</span>
-                <span className={styles.ratingDot}>·</span>
-                <span className={styles.reviewLink}>{listing.reviews} reseñas</span>
+                {rating.ratingCount > 0 ? (
+                  <>
+                    <span className={styles.ratingNum}>{formatRating(rating.ratingAvg)}</span>
+                    <span className={styles.ratingDot}>·</span>
+                    <button type="button" className={styles.reviewLink} onClick={goToReviews}>
+                      {ratingCountLabel(rating.ratingCount)}
+                    </button>
+                  </>
+                ) : (
+                  <button type="button" className={styles.reviewLink} onClick={goToReviews}>
+                    Sin valoraciones
+                  </button>
+                )}
               </div>
               <span className={styles.metaDot}>·</span>
               <span className={styles.location}>
@@ -112,9 +135,15 @@ const HotelDetailPage = () => {
             <ListingContent hotel={hotel} />
           </div>
           <aside className={styles.sidebar}>
-            <BookingCard hotel={hotel} hotSec={id} />
+            <BookingCard key={id} hotSec={id} rating={rating} />
           </aside>
         </div>
+
+        {/* Valoraciones (HU #28): justo después del contenido principal, antes de las políticas */}
+        <HotelReviews key={id} hotSec={id} onSummaryChange={(s) => setRatingOverride({ ...s, id })} />
+
+        {/* Políticas (HU #26): ancho completo, debajo del layout de dos columnas */}
+        <HotelPolicies policies={hotel.policies} />
       </div>
 
       {/* key: si cambia el hotel, el mensaje por defecto se rearma */}

@@ -11,7 +11,8 @@ sidebar navy, hoja clara, color solo para estados y para la acción principal.
 | 2 | ✅ 2026-10-31 | Componentes `ui/` (DataTable, IconButton, ConfirmDialog, StatusBadge) + Tipos de alojamiento |
 | 3 | ✅ 2026-10-31 | `DataTable` en Países, Departamentos, Ciudades, Categorías, Características, Usuarios y Hoteles (+ `useConfirmDelete`, `FilterSelect`) |
 | 4 | ✅ 2026-10-31 | Pulido: `FormDrawer` + primitivos de form en los 8 catálogos, responsive, hover y animaciones; limpieza de CSS viejo |
-| 5 | ⬜ | Perfiles, Permisos, Mi perfil; retirar `.dark`, `--shell-*` y `docs/ui-palette.md` |
+| 5 | ✅ 2026-11-16 | Perfiles (datos reales + crear/editar), Permisos, Mi perfil; retirados `.dark`, `--shell-*`, `ui-palette.md` y código muerto |
+| 6 | ⏳ | Revisión visual de todo el panel en el navegador; después el plan pasa a `completados/` |
 
 Detalle de cada fase → `docs/BITACORA.md`.
 
@@ -65,7 +66,16 @@ características; workaround activo), DT-003 (borrar imágenes guardadas), DT-00
 
 ## Fase 5 — Páginas restantes y retiro del tema viejo
 
-- [ ] Perfiles · Permisos · Mi perfil
-- [ ] Borrar `.dark` y `--shell-*` de `App.css`; archivar `docs/ui-palette.md`
-- [ ] Código muerto: `Hotel/HotelAdminCard.jsx` (+ `.css`), `HotelsCrudList.css` (DT-013)
+- [x] Perfiles: datos reales (`GET /profile/all`, antes `MOCK_PROFILES`), `DataTable` + `ProfileForm` en `FormDrawer`
+  (crear/editar; sin eliminar, se inactiva), cantidad de usuarios por perfil, protección contra autobloqueo en el form
+- [x] Backend (`SweetNestApp`): `ProfileDto.proId` → `Long`, `save`/`update` con los 4 campos, un solo perfil por defecto, `ProfilesTests`
+- [x] Permisos: card "Agregar acceso", tabla por módulo con tokens, `ConfirmDialog` al quitar, errores por fila
+- [x] Mi perfil: card de solo lectura (avatar, badges, `<dl>`, enlace a Mis favoritos)
+- [x] Borrados `.dark` y `--shell-*` de `App.css` y `docs/ui-palette.md` (`globals.css` ya estaba limpio)
+- [x] Código muerto: `Hotel/HotelAdminCard.jsx` (+ `.css`), `HotelsCrudList.css` (DT-013)
+- [x] `npm run build` OK · `npm run lint` = 10 (baseline bajó de 13)
+
+## Fase 6 — Revisión visual de todo el panel
+
+- [ ] Recorrer las 11 páginas a 375 / 768 / 1280 px (pendiente desde la Fase 1)
 - [ ] Mover este plan a `completados/`

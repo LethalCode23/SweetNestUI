@@ -45,3 +45,16 @@ export const getAllProfiles = async () => {
   const res = await api.get(`/profile/all`);
   return res.data?.data ?? res.data;
 };
+
+// Controlador: ProfileController (DTO crudo, sin ApiResponse)
+// payload: { proName, proState: 'A'|'I', isDefault: 'S'|'N', hasControlAccess: 'S'|'N' }
+export const createProfile = async (payload) => {
+  const res = await api.post(`/profile/save`, payload);
+  return res.data;
+};
+
+// Controlador: ProfileController. 400 (1001) si se desmarca el único perfil por defecto.
+export const updateProfile = async (proId, payload) => {
+  const res = await api.put(`/profile/${proId}`, payload);
+  return res.data;
+};
