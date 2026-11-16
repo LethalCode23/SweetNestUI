@@ -86,7 +86,8 @@ docs/planes/
   Cuando se resuelve, la fila pasa a "Resueltas" con fecha y referencia; nunca se borra. Un workaround en el código cita
   su ID. La bitácora cuenta la historia; la deuda dice el estado.
 
-**Planes activos:** `docs/planes/en-curso/reservas-frontend.md` · `docs/planes/en-curso/rediseno-panel-admin.md`.
+**Qué hay pendiente:** leer primero `docs/planes/README.md` (índice de todos los planes por estado; mantenerlo al día).
+**Planes principales:** `docs/planes/en-curso/reservas-frontend.md` · `docs/planes/en-curso/rediseno-panel-admin.md`.
 
 ## Docs
 

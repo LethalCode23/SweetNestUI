@@ -1,0 +1,30 @@
+/* StarRating — estrellas de solo lectura con relleno parcial (HU #28) */
+
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  line-height: 0;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.empty {
+  color: var(--star-empty, #C9D3DC);
+}
+
+/* La estrella llena se recorta al porcentaje que corresponde */
+.fillClip {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+}
+
+.full {
+  color: var(--star, #E39B2D);
+  fill: var(--star, #E39B2D);
+}

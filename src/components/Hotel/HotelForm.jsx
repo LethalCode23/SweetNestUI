@@ -9,6 +9,8 @@ import { BASE_URL } from "../../Js/constants";
 import { unwrapList } from "../../Utils/apiError";
 import { FormDrawer } from "../ui/FormDrawer/FormDrawer";
 import { ChipGroup, Field, FieldRow, FormSection, Switch } from "../ui/Form/Form";
+import { PolicyEditor } from "./PolicyEditor";
+import { toPolicyItem, POLICY_DESC_MAX, POLICY_TITLE_MAX } from "./policyItems";
 import styles from "./HotelForm.module.css";
 
 const fromEditing = (h) => ({
@@ -32,6 +34,7 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
   const [errors, setErrors] = useState({});
   const [selectedCatIds, setSelectedCatIds] = useState(() => editingHotel?.categories?.map((c) => c.catSec) ?? []);
   const [selectedFeaIds, setSelectedFeaIds] = useState(() => editingHotel?.features?.map((f) => f.feaSec) ?? []);
+  const [policies, setPolicies] = useState(() => (editingHotel?.policies ?? []).map(toPolicyItem));
   const [existingImages, setExistingImages] = useState(() => editingHotel?.hotelImagesUrl ?? []);
   const [imageFiles, setImageFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -82,8 +85,27 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
     if (!form.city) next.city = "Elige la ciudad.";
     if (!form.typeId) next.typeId = "Elige el tipo de alojamiento.";
     if (form.hotCost === "" || Number(form.hotCost) < 0) next.hotCost = "Escribe un costo válido.";
+
+    const policyErrors = policies.map((p) => {
+      const e = {};
+      const title = p.polTitle.trim();
+      const desc = p.polDescription.trim();
+      if (!title) e.polTitle = "Escribe el título de la política.";
+      else if (title.length > POLICY_TITLE_MAX) e.polTitle = `Acorta el título a ${POLICY_TITLE_MAX} caracteres.`;
+      if (!desc) e.polDescription = "Escribe la descripción de la política.";
+      else if (desc.length > POLICY_DESC_MAX) e.polDescription = `Acorta la descripción a ${POLICY_DESC_MAX} caracteres.`;
+      return e;
+    });
+    if (policyErrors.some((e) => Object.keys(e).length > 0)) next.policies = policyErrors;
+
     setErrors(next);
     return Object.keys(next).length === 0;
+  };
+
+  const changePolicies = (list) => {
+    setPolicies(list);
+    // Al reordenar o quitar, los errores por índice dejan de corresponder: se limpian y se revalida al guardar
+    setErrors((e) => ({ ...e, policies: null }));
   };
 
   const submit = async () => {
@@ -100,6 +122,8 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
       typeId: Number(form.typeId),
       categoryIds: selectedCatIds,
       featureIds: selectedFeaIds,
+      // Siempre se manda la lista completa: el backend reemplaza en este orden ([] = sin políticas)
+      policies: policies.map((p) => ({ polTitle: p.polTitle.trim(), polDescription: p.polDescription.trim() })),
       // Se conservan los datos que este form no edita (null en hostId = no cambia)
       hotConfirmReq: editingHotel?.hotConfirmReq,
       hostId: editingHotel?.hostId ?? null,
@@ -220,6 +244,11 @@ export default function HotelForm({ editingHotel, onSuccess, onClose }) {
           onToggle={toggle(setSelectedFeaIds)}
           emptyText="Todavía no hay características creadas."
         />
+      </FormSection>
+
+      <FormSection title="Políticas"
+        description="Se muestran en el detalle del alojamiento, en este orden: horarios, cuidados y precauciones.">
+        <PolicyEditor value={policies} onChange={changePolicies} errors={errors.policies ?? []} />
       </FormSection>
 
       <FormSection title="Imágenes" description="La primera es la que se muestra en las tarjetas.">

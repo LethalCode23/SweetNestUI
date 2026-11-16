@@ -380,3 +380,41 @@ Plan: [`planes/en-curso/compartir-redes.md`](./planes/en-curso/compartir-redes.m
 - Instagram no tiene URL para compartir desde la web: se copia el mensaje y se abre instagram.com. Facebook solo toma la URL.
 - Nueva deuda: DT-040 (sin Open Graph, las redes no muestran vista previa).
 - `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-12 — HU #26: Bloque de políticas del producto
+
+- Nuevo `components/HotelDetail/HotelPolicies.jsx` (+ `HotelPolicies.module.css`), montado en `HotelDetailPage`
+  **debajo** del layout de dos columnas para ocupar el 100% del contenedor.
+- Título "Políticas del alojamiento" subrayado (`text-decoration` con color `--primary`); políticas en grilla
+  1 / 2 / 3 columnas (móvil / ≥640px / ≥1024px), cada una con título + descripción.
+- Datos de `hotel.policies` (backend, `findDetailById`); si vienen vacías usa el fallback `listing.policies` de `listingData.js`.
+- Se quitó la sección vieja "Normas y Políticas del Hotel" de `ListingContent` y `listing.rules`.
+- `npm run build` OK · `npm run lint` = 13 (baseline). **Pendiente:** revisión visual en el navegador.
+
+### Edición desde el panel (mismo día)
+
+- Nueva sección **Políticas** en `HotelForm` (entre "Categorías y características" e "Imágenes") con
+  `components/Hotel/PolicyEditor.jsx` (+ `.module.css`) y helpers en `policyItems.js`.
+- Cada política es una card (DESIGN.md: borde + radio lg, sin sombra) con número de orden, título, descripción con contador
+  y acciones subir / bajar / quitar. "Agregar política" lleva el foco al título nuevo.
+- Vacío: zona punteada (mismo lenguaje que imágenes) con "Usar políticas sugeridas" (carga `listing.policies`) o "Escribir una desde cero".
+- Se guarda con el hotel: el payload siempre manda `policies` completo (el backend reemplaza en ese orden; `[]` = sin políticas).
+  Errores por política ("Escribe el título de la política.") se muestran en su card.
+- `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.
+
+---
+
+## 2026-11-12 — HU #28: Puntuar producto
+
+- `services/reviewServices/reviewService.js` + `Utils/rating.js` (formato "4,6", "12 valoraciones", fecha, etiquetas de estrellas).
+- `components/HotelDetail/Reviews/`: `StarRating` (lectura, relleno parcial), `StarInput` (radiogroup con flechas,
+  vista previa al pasar el mouse) y `HotelReviews` (sección `#resenas`, entre el layout y Políticas).
+- Diseño: lo único llamativo es el promedio grande (56px/800); barras de distribución en navy (son dato), ámbar solo
+  para estrellas, reseñas separadas por líneas (sin cards con sombra). En escritorio el resumen queda fijo a la izquierda.
+- Estados del formulario: sin sesión → "Iniciar sesión" (vuelve al hotel); sin estadía terminada → "Podrás valorar…
+  cuando termine tu estadía"; con estadía → publicar / actualizar (precargado). Al guardar se actualizan resumen, lista,
+  encabezado y BookingCard con la respuesta del backend, y la reseña propia se resalta un momento.
+- `HotelCard` y `BookingCard` dejan de mostrar valores fijos (4.7 / 4.89 · 119); se quitaron `rating`/`reviews` de `listingData`.
+- `npm run build` OK · `npm run lint` = 13. **Pendiente:** revisión visual en el navegador.

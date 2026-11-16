@@ -8,6 +8,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { esES } from "@mui/x-date-pickers/locales";
 import { listing, formatCOP } from "../../constants/listingData";
 import { getUnavailableDates } from "../../services/hotelServices/hotelService";
+import { formatRating, ratingCountLabel } from "../../Utils/rating";
 import { BookingDay, CalendarLegend } from "./BookingDay";
 import styles from "./BookingCard.module.css";
 
@@ -25,7 +26,7 @@ const isRangeFree = (checkIn, checkOut, blocked) => {
 
 const pickerSlots = { day: BookingDay, actionBar: CalendarLegend };
 
-export const BookingCard = ({ hotel, hotSec }) => {
+export const BookingCard = ({ hotel, hotSec, rating }) => {
   const { price, breakdown } = listing;
 
   const [checkIn, setCheckIn] = useState(null);
@@ -119,8 +120,14 @@ export const BookingCard = ({ hotel, hotSec }) => {
         </div>
         <div className={styles.ratingMini}>
           <Star size={14} className={styles.starFilled} />
-          <span className={styles.ratingValue}>{listing.rating}</span>
-          <span className={styles.ratingCount}>· {listing.reviews} reseñas</span>
+          {rating?.ratingCount > 0 ? (
+            <>
+              <span className={styles.ratingValue}>{formatRating(rating.ratingAvg)}</span>
+              <span className={styles.ratingCount}>· {ratingCountLabel(rating.ratingCount)}</span>
+            </>
+          ) : (
+            <span className={styles.ratingCount}>Sin valoraciones</span>
+          )}
         </div>
       </div>
 

@@ -1,0 +1,90 @@
+/* StarInput — selector de 1 a 5 estrellas (HU #28) */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text, #0B3B59);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.group {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--star-empty, #C9D3DC);
+  cursor: pointer;
+  transition: color 0.12s, transform 0.12s;
+}
+
+.star svg {
+  fill: transparent;
+  transition: fill 0.12s;
+}
+
+.on {
+  color: var(--star, #E39B2D);
+}
+
+.on svg {
+  fill: var(--star, #E39B2D);
+}
+
+.star:hover {
+  transform: scale(1.08);
+}
+
+.star:active {
+  transform: scale(0.94);
+}
+
+.star:focus-visible {
+  outline: 2px solid var(--primary, #115D8C);
+  outline-offset: 2px;
+}
+
+.caption {
+  min-width: 80px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text, #0B3B59);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  color: #B42318;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star,
+  .star svg {
+    transition: none;
+  }
+
+  .star:hover,
+  .star:active {
+    transform: none;
+  }
+}
