@@ -8,7 +8,7 @@ Plan madre del backend: `../../SweetNestApp/docs/planes/en-curso/politicas-produ
 |---|---|---|---|
 | A | ✅ 2026-11-12 | Bloque "Políticas del alojamiento" en el detalle | Fase 1 ✅ |
 | B | ✅ 2026-11-12 | Editor de políticas en `HotelForm` | Fase 2 ✅ |
-| C | ⏳ | Revisión visual en el navegador + commit | — |
+| C | ⏳ | Revisión visual en el navegador (commit ya hecho: `f86ec80`) | — |
 
 Detalle de lo hecho → `docs/BITACORA.md` (2026-11-12).
 

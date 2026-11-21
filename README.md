@@ -24,7 +24,8 @@ La solución consiste en una aplicación web de arquitectura cliente-servidor. E
 | :--- | :--- | :--- |
 | Home / catálogo | `/` | Cuadrícula de hoteles destacados con navegación al detalle. |
 | Búsqueda de hoteles | `/hoteles` | Listado con filtros y paginación (ciudad, criterios de búsqueda). |
-| Detalle de hotel | `/hoteles/:id` | Información específica, descripción e imágenes del alojamiento. |
+| Detalle de hotel | `/hoteles/:id` | Información, imágenes, políticas, reseñas, compartir en redes y calendario con fechas ocupadas. Para reservar una unidad hace falta sesión. |
+| Mis favoritos | `/favoritos` | Hoteles marcados con el corazón (requiere sesión y el submódulo `Mis favoritos`). |
 | Inicio de sesión | `/login` | Autenticación con JWT; carga los módulos del perfil. |
 | Registro | `/register` | Creación de cuenta de usuario. |
 
@@ -33,6 +34,7 @@ La solución consiste en una aplicación web de arquitectura cliente-servidor. E
 | Módulo | Ruta | Submódulo RBAC |
 | :--- | :--- | :--- |
 | Hoteles | `/dashboard/hotels` | `Hoteles` |
+| Tipos de alojamiento | `/dashboard/type-hotels` | `Hoteles` (ver DT-005) |
 | Países | `/dashboard/countries` | `Países` |
 | Departamentos | `/dashboard/departments` | `Departamentos` |
 | Ciudades | `/dashboard/cities` | `Ciudades` |
@@ -42,6 +44,7 @@ La solución consiste en una aplicación web de arquitectura cliente-servidor. E
 | Perfiles (roles) | `/dashboard/profiles` | `Perfiles` |
 | Permisos del perfil | `/dashboard/profiles/:profileId/permissions` | sesión válida |
 | Mi perfil | `/dashboard/userProfile` | sesión válida |
+| Mis favoritos | `/dashboard/favorites` | `Mis favoritos` |
 
 ## Stack tecnológico
 
@@ -53,7 +56,7 @@ La solución consiste en una aplicación web de arquitectura cliente-servidor. E
 | HTTP | Axios (interceptor `Authorization: Bearer`) |
 | Formularios | React Hook Form + Yup |
 | UI | MUI 7 + Emotion, lucide-react |
-| Estilos | CSS Modules + `globals.css` |
+| Estilos | CSS Modules + tokens `--sn-*` (`src/styles/tokens.css`, `admin-kit.css`) — ver [DESIGN.md](./DESIGN.md) |
 | Lint | ESLint 9 (`eslint.config.js`) |
 | Backend | Spring Boot → [SweetNestApp](https://github.com/LethalCode23/SweetNestApp) · [API.md](https://github.com/LethalCode23/SweetNestApp/blob/main/API.md) |
 
@@ -124,8 +127,11 @@ export const Environment = {
 | Documento | Contenido |
 | :--- | :--- |
 | [docs/ARQUITECTURA.md](./docs/ARQUITECTURA.md) | Capas, mapa de rutas, guards RBAC, `AuthContext` y capa de services. |
-| [docs/ui-palette.md](./docs/ui-palette.md) | Estándar visual (tokens de color) del panel administrativo oscuro. |
-| [docs/session-2026-10-04.md](./docs/session-2026-10-04.md) | Bitácora de la sesión de unificación de paleta y limpieza. |
+| [DESIGN.md](./DESIGN.md) | Sistema de diseño del panel admin (tokens `--sn-*`, botones, badges, componentes `ui/`). |
+| [docs/BITACORA.md](./docs/BITACORA.md) | Registro cronológico de lo que se hace en cada sesión/fase. |
+| [docs/planes/](./docs/planes/README.md) | Planes por estado (pendientes, en curso, completados). |
+| [docs/DEUDA_TECNICA.md](./docs/DEUDA_TECNICA.md) | Bugs, atajos y pendientes (`DT-xxx`), abiertos y resueltos. |
+| [docs/README.md](./docs/README.md) | Índice completo de la documentación del frontend. |
 | [SweetNestApp · API.md](https://github.com/LethalCode23/SweetNestApp/blob/main/API.md) | Documentación de los 53 endpoints del backend con cURL. |
 
 ## Estructura del proyecto
@@ -165,7 +171,7 @@ Se diseñaron y ejecutaron pruebas basadas en las historias de usuario del Sprin
 ### Verificación de calidad
 
 ```bash
-npm run lint    # ESLint — baseline: 19 problemas preexistentes (16 errors, 3 warnings)
+npm run lint    # ESLint — baseline: 10 problemas preexistentes (8 errors, 2 warnings; 2026-11-16)
 npm run build   # Build de producción
 ```
 
@@ -179,4 +185,4 @@ npm run build   # Build de producción
 
 ![Paleta de Colores](https://raw.githubusercontent.com/LethalCode23/SweetNestUI/main/src/assets/PaletadeColores.png)
 
-Los tokens del tema oscuro del panel administrativo están documentados en [docs/ui-palette.md](./docs/ui-palette.md).
+El sistema de diseño del panel administrativo (tokens, tipografía, componentes) está documentado en [DESIGN.md](./DESIGN.md).

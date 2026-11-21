@@ -473,3 +473,12 @@ Plan: [`planes/en-curso/compartir-redes.md`](./planes/en-curso/compartir-redes.m
 - `HotelDetailPage` le pasa `key={id}` al card, para que se reinicie al cambiar de hotel. Ya no le pasa `hotel`.
 - DT-037 queda resuelta: ahora el backend valida el cruce y el front solo ofrece unidades libres.
 - `npm run build` OK · `npm run lint` = 10. **Pendiente:** revisión visual en el navegador, con el backend reiniciado.
+
+## 2026-11-16 — Docs: auditoría de la documentación
+
+- `README.md`: se quitaron los links a `docs/ui-palette.md` (borrado). La tabla de docs ahora apunta a `DESIGN.md`, `BITACORA`, `DEUDA_TECNICA` y `planes/`.
+  Se sumaron las rutas de favoritos y tipos, y las funciones del detalle: reservar, reseñas, políticas y compartir. El baseline de lint quedó en 10.
+- `docs/ARQUITECTURA.md`: la tabla de services suma favoritos, reservas, reseñas, unidades (`getUnits`/`getAvailableUnits`) y crear/editar perfil.
+  `Tipos` se agregó a `MODULES` y el baseline de lint quedó en 10.
+- Planes de políticas y reseñas: el commit ya estaba hecho (`f86ec80`), así que solo falta la revisión visual.
+- `docs/README.md` indexa `calendario-fechas-ocupadas.md`, y `session-2026-10-04.md` aclara que `ui-palette.md` se retiró.

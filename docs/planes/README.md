@@ -18,8 +18,8 @@ Al terminar un plan: `git mv` a `completados/`, actualizar esta tabla y anotar e
 |---|---|
 | [`reservas-frontend.md`](en-curso/reservas-frontend.md) | **D ✅ (reservar desde el detalle, 2026-11-16; falta revisión visual).** A y B a medias; E se puede hacer ya; C espera la Fase 4 del backend |
 | [`rediseno-panel-admin.md`](en-curso/rediseno-panel-admin.md) | Fase 5 ✅ (2026-11-16). Falta la Fase 6: revisión visual de todo el panel |
-| [`politicas-producto.md`](en-curso/politicas-producto.md) | HU #26: revisión visual + commit |
-| [`resenas.md`](en-curso/resenas.md) | HU #28: revisión visual + commit |
+| [`politicas-producto.md`](en-curso/politicas-producto.md) | HU #26: revisión visual (commit ya hecho) |
+| [`resenas.md`](en-curso/resenas.md) | HU #28: revisión visual (commit ya hecho) |
 | [`compartir-redes.md`](en-curso/compartir-redes.md) | Req. #27: revisión visual |
 | [`favoritos-lista.md`](en-curso/favoritos-lista.md) | Revisión visual |
 
